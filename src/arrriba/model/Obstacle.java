@@ -5,9 +5,8 @@
  */
 package arrriba.model;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Observable;
-import java.util.concurrent.ExecutorService;
 
 /**
  *
@@ -17,6 +16,7 @@ public class Obstacle extends Observable {
     private double posX;
     private double posY;
     private double rotation;
+    private ArrayList<ObstacleListener> listener = new ArrayList<ObstacleListener>();
     
     public Obstacle() {
         
@@ -34,6 +34,10 @@ public class Obstacle extends Observable {
         return rotation;
     }
 
+    public ArrayList<ObstacleListener> getListener() {
+        return listener;
+    }
+
     public void setPosX(double posX) {
         this.posX = posX;
     }
@@ -46,5 +50,14 @@ public class Obstacle extends Observable {
         this.rotation = rotation;
     }
     
+    public void addListener(final ObstacleListener ol) {
+        listener.add(ol);
+    }
+    
+    protected void callListener() {
+        for (ObstacleListener l : getListener()) {
+            l.onPositionChange();
+        }
+    }
     
 }

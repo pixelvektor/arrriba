@@ -5,11 +5,17 @@
  */
 
 
+import arrriba.model.Ball;
+import arrriba.model.Obstacle;
+import arrriba.model.ObstacleListener;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 /**
@@ -19,17 +25,32 @@ import javafx.scene.control.Label;
 public class FXMLDocumentController implements Initializable {
     
     @FXML
-    private Label label;
+    private Button ball0;
     
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
-    }
+    private Ball ball = new Ball();
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        ball0.setLayoutX(ball.getPosX());
+        ball0.setLayoutY(ball.getPosY());
+    }
     
+    public void move() {
+        ball.rollin();
+        ball.addListener(new ObstacleListener() {
+            @Override
+            public void onPositionChange() {
+                updatePosition();
+            }
+        });
+    }
+    
+    private void updatePosition() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ball0.setLayoutX(ball.getPosX());
+            }
+        });
+    }
 }
