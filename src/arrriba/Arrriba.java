@@ -1,9 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package arrriba;
+
+/**
+ * Hochschule Hamm-Lippstadt
+ * Praktikum Visual Computing II (ARRRiba!)
+ * (C) 2016 Kevin Otte, Lara Sievers, Adrian Schmidt, Fabian Schneider
+ */
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
