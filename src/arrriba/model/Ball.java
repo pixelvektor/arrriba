@@ -7,6 +7,8 @@ package arrriba.model;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 
 /**
  *
@@ -16,15 +18,31 @@ public class Ball extends Obstacle {
     private double velocity;
     private final int size;
     private final Material material;
-    private ExecutorService service = Executors.newCachedThreadPool();
+    
+    private Circle shape;
+    
+    private final ExecutorService service = Executors.newCachedThreadPool();
     
     public Ball() {
-        this.size = 1;
-        velocity = 2.0;
-        this.setPosX(20.0);
-        this.setPosY(42.0);
-        this.setRotation(349.0);
-        this.material = new Wood();
+        this(1, 20.0, 20.0, 1.0, new Wood());
+    }
+    
+    public Ball(final int size, final double posX, final double posY,
+            final double velocity) {
+        this(size, posX, posY, velocity, new Wood());
+    }
+    
+    public Ball(final int size, final double posX, final double posY,
+            final double velocity, final Material material) {
+        this.size = size;
+        this.setPosX(posX);
+        this.setPosY(posY);
+        this.setVelocity(velocity);
+        this.material = material;
+        
+        // Erstellt das Shape
+        shape = new Circle(getPosX(), getPosY(), getSize());
+        shape.setFill(Paint.valueOf("RED"));
     }
 
     public double getVelocity() {
@@ -39,24 +57,30 @@ public class Ball extends Obstacle {
         return material;
     }
 
-    public void setVelocity(double velocity) {
-        if (velocity >= 0) {
-            this.velocity = velocity;
-        }
+    public Circle getShape() {
+        return shape;
+    }
+
+    public void setVelocity(final double velocity) {
+        this.velocity = velocity < 0 ? 0 : velocity;
     }
     
+    // TODO Runnable austauschen?
     public void rollin() {
         service.submit(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < 1000; i++) {
+                for (int i = 0; i < 100; i++) {
                     try {
                         Thread.sleep(33);
                     } catch (Exception e) {
                     }
-                    setPosX(getPosX()+1);
+                    setPosX(getPosX()+getVelocity());
+                    shape.setCenterX(getPosX());
+                    //setVelocity(getVelocity()+0.1);
                     callListener();
                 }
+                service.shutdown();
             }
         });
     }

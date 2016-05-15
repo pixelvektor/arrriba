@@ -1,40 +1,41 @@
+
 /**
  * Hochschule Hamm-Lippstadt
  * Praktikum Visual Computing II (ARRRiba!)
  * (C) 2016 Kevin Otte, Lara Sievers, Adrian Schmidt, Fabian Schneider
  */
 
-
 import arrriba.model.Ball;
-import arrriba.model.Obstacle;
 import arrriba.model.ObstacleListener;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.shape.Circle;
 
 /**
  *
  * @author fabian
  */
 public class FXMLDocumentController implements Initializable {
-    
+
     @FXML
     private Button ball0;
     
-    private Ball ball = new Ball();
-    
+    @FXML
+    private Circle ball01;
+
+    private Ball ball = new Ball(5, 20, 20, 4);
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        ball0.setLayoutX(ball.getPosX());
-        ball0.setLayoutY(ball.getPosY());
+        ball01.setCenterX(ball.getPosX());
+        ball01.setCenterY(ball.getPosY());
+        ball01.setRadius(ball.getSize());
     }
-    
+
     public void move() {
         ball.rollin();
         ball.addListener(new ObstacleListener() {
@@ -44,12 +45,13 @@ public class FXMLDocumentController implements Initializable {
             }
         });
     }
-    
+
     private void updatePosition() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                ball0.setLayoutX(ball.getPosX());
+                ball01.setCenterX(ball.getPosX());
+                ball01.setCenterY(ball.getPosY());
             }
         });
     }
