@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="1000.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arrriba.control.GameControl">
+   <children>
+      <Pane fx:id="MenuBar" prefHeight="29.0" prefWidth="1600.0">
+         <children>
+            <MenuBar fx:id="menuBar" prefHeight="29.0" prefWidth="1600.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="ARRRiba!">
+                  <items>
+                        <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#onSettingsMenuItem" text="Einstellungen" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                    <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#onCloseMenuItem" text="Beenden" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Items">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Tonne" />
+                        <MenuItem mnemonicParsing="false" text="Kiste" />
+                        <MenuItem mnemonicParsing="false" text="Kugelfisch" />
+                        <MenuItem mnemonicParsing="false" text="Sprungfeder" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Hilfe">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </children>
+      </Pane>
+      <Pane fx:id="gameArea" layoutY="29.0" prefHeight="971.0" prefWidth="1600.0" />
+   </children>
+</AnchorPane>
