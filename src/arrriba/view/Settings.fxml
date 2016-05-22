@@ -7,6 +7,7 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import arrriba.view.*?>
 
 <AnchorPane id="AnchorPane" prefHeight="425.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arrriba.control.SettingsControl">
    <children>
@@ -35,11 +36,7 @@
                                                       <Insets bottom="5.0" top="25.0" />
                                                    </padding>
                                                 </Label>
-                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0">
-                                                   <padding>
-                                                      <Insets top="10.0" />
-                                                   </padding>
-                                                </Slider>
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
                                                 <Label prefHeight="37.0" prefWidth="300.0" text="Geschwindigkeit">
                                                    <padding>
                                                       <Insets bottom="5.0" top="25.0" />
@@ -51,7 +48,7 @@
                                                       <Insets bottom="5.0" top="25.0" />
                                                    </padding>
                                                 </Label>
-                                                <TextField />
+                                                <DegreeTextField fx:id="degreeTextField1" />
                                              </children>
                                              <padding>
                                                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
@@ -78,11 +75,7 @@
                                                       <Insets bottom="5.0" top="25.0" />
                                                    </padding>
                                                 </Label>
-                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="3.0">
-                                                   <padding>
-                                                      <Insets top="10.0" />
-                                                   </padding>
-                                                </Slider>
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="3.0" />
                                                 <Label prefHeight="37.0" prefWidth="300.0" text="Geschwindigkeit">
                                                    <padding>
                                                       <Insets bottom="5.0" top="25.0" />
@@ -94,7 +87,7 @@
                                                       <Insets bottom="5.0" top="25.0" />
                                                    </padding>
                                                 </Label>
-                                                <TextField />
+                                                <DegreeTextField fx:id="degreeTextField2" />
                                              </children>
                                              <padding>
                                                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
@@ -121,11 +114,7 @@
                                                       <Insets bottom="5.0" top="25.0" />
                                                    </padding>
                                                 </Label>
-                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="2.0">
-                                                   <padding>
-                                                      <Insets top="10.0" />
-                                                   </padding>
-                                                </Slider>
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="2.0" />
                                                 <Label prefHeight="37.0" prefWidth="300.0" text="Geschwindigkeit">
                                                    <padding>
                                                       <Insets bottom="5.0" top="25.0" />
@@ -137,7 +126,7 @@
                                                       <Insets bottom="5.0" top="25.0" />
                                                    </padding>
                                                 </Label>
-                                                <TextField />
+                                                <DegreeTextField fx:id="degreeTextField3" />
                                              </children>
                                              <padding>
                                                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
