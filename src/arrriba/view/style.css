@@ -1,0 +1,11 @@
+/*Error reading included file Templates/Other/Templates/Licenses/license-HSHL.txt 
+    Created on : 22.05.2016, 19:00:17
+    Author     : Lara
+*/
+#gameArea {
+    -fx-background-image: url("Hintergrund1.png");
+}
+
+.rectangle {
+    -fx-background-color: yellow;
+}
