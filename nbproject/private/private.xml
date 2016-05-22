@@ -6,11 +6,11 @@
             <file>file:/Volumes/Data/Dokumente/Studium/HSHL/S4/Grafische%20Benutzeroberflächen/Projekt/arrriba/src/arrriba/view/Settings.fxml</file>
             <file>file:/Volumes/Data/Dokumente/Studium/HSHL/S4/Grafische%20Benutzeroberflächen/Projekt/arrriba/src/arrriba/model/GameModel.java</file>
             <file>file:/Volumes/Data/Dokumente/Studium/HSHL/S4/Grafische%20Benutzeroberflächen/Projekt/arrriba/src/arrriba/model/Ball.java</file>
-            <file>file:/Volumes/Data/Dokumente/Studium/HSHL/S4/Grafische%20Benutzeroberflächen/Projekt/arrriba/src/arrriba/FXMLDocumentController.java</file>
-            <file>file:/Volumes/Data/Dokumente/Studium/HSHL/S4/Grafische%20Benutzeroberflächen/Projekt/arrriba/src/arrriba/view/Arrriba.fxml</file>
             <file>file:/Volumes/Data/Dokumente/Studium/HSHL/S4/Grafische%20Benutzeroberflächen/Projekt/arrriba/src/arrriba/control/GameControl.java</file>
             <file>file:/Volumes/Data/Dokumente/Studium/HSHL/S4/Grafische%20Benutzeroberflächen/Projekt/arrriba/src/arrriba/control/SettingsControl.java</file>
+            <file>file:/Volumes/Data/Dokumente/Studium/HSHL/S4/Grafische%20Benutzeroberflächen/Projekt/arrriba/src/arrriba/model/material/Wood.java</file>
             <file>file:/Volumes/Data/Dokumente/Studium/HSHL/S4/Grafische%20Benutzeroberflächen/Projekt/arrriba/src/arrriba/Arrriba.java</file>
+            <file>file:/Volumes/Data/Dokumente/Studium/HSHL/S4/Grafische%20Benutzeroberflächen/Projekt/arrriba/src/arrriba/model/material/Material.java</file>
         </group>
     </open-files>
 </project-private>

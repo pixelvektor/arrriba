@@ -30,7 +30,7 @@
                                                       <Insets bottom="5.0" top="15.0" />
                                                    </padding>
                                                 </Label>
-                                                <ChoiceBox prefWidth="150.0" />
+                                                <ChoiceBox fx:id="materialChoiceBox1" prefWidth="150.0" />
                                                 <Label prefHeight="37.0" prefWidth="300.0" text="Größe">
                                                    <padding>
                                                       <Insets bottom="5.0" top="25.0" />
@@ -69,7 +69,7 @@
                                                       <Insets bottom="5.0" top="15.0" />
                                                    </padding>
                                                 </Label>
-                                                <ChoiceBox prefWidth="150.0" />
+                                                <ChoiceBox fx:id="materialChoiceBox2" prefWidth="150.0" />
                                                 <Label prefHeight="37.0" prefWidth="300.0" text="Größe">
                                                    <padding>
                                                       <Insets bottom="5.0" top="25.0" />
@@ -108,7 +108,7 @@
                                                       <Insets bottom="5.0" top="15.0" />
                                                    </padding>
                                                 </Label>
-                                                <ChoiceBox prefWidth="150.0" />
+                                                <ChoiceBox fx:id="materialChoiceBox3" prefWidth="150.0" />
                                                 <Label prefHeight="37.0" prefWidth="300.0" text="Größe">
                                                    <padding>
                                                       <Insets bottom="5.0" top="25.0" />

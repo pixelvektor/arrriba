@@ -5,6 +5,8 @@
  */
 package arrriba.model;
 
+import arrriba.model.material.Wood;
+import arrriba.model.material.Material;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.scene.paint.Paint;

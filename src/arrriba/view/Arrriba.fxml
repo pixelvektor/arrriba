@@ -28,6 +28,13 @@
                         <MenuItem fx:id="springMenuItem" mnemonicParsing="false" onAction="#onSpringMenuItem" text="Sprungfeder" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="Level">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Oberdeck" />
+                        <MenuItem mnemonicParsing="false" text="Zwischendeck" />
+                        <MenuItem mnemonicParsing="false" text="Unterdeck" />
+                    </items>
+                  </Menu>
                 <Menu mnemonicParsing="false" text="Hilfe">
                   <items>
                     <MenuItem mnemonicParsing="false" text="About" />
