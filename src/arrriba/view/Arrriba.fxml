@@ -22,10 +22,10 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Items">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Tonne" />
-                        <MenuItem mnemonicParsing="false" text="Kiste" />
-                        <MenuItem mnemonicParsing="false" text="Kugelfisch" />
-                        <MenuItem mnemonicParsing="false" text="Sprungfeder" />
+                    <MenuItem fx:id="barrelMenuItem" mnemonicParsing="false" onAction="#onBarrelMenuItem" text="Tonne" />
+                        <MenuItem fx:id="boxMenuItem" mnemonicParsing="false" onAction="#onBoxMenuItem" text="Kiste" />
+                        <MenuItem fx:id="pufferMenuItem" mnemonicParsing="false" onAction="#onPufferMenuItem" text="Kugelfisch" />
+                        <MenuItem fx:id="springMenuItem" mnemonicParsing="false" onAction="#onSpringMenuItem" text="Sprungfeder" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Hilfe">

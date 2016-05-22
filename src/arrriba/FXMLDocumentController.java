@@ -27,7 +27,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Circle ball01;
 
-    private Ball ball = new Ball(5, 20, 20, 4);
+    private Ball ball = new Ball(30, 20, 20, 4);
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
