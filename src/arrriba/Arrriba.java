@@ -25,7 +25,7 @@ public class Arrriba extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().addAll(this.getClass().getResource("view/style.css").toExternalForm());
 
-        
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }

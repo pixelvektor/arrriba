@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.shape.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -15,6 +16,10 @@
               <menus>
                 <Menu mnemonicParsing="false" text="ARRRiba!">
                   <items>
+                        <MenuItem mnemonicParsing="false" text="Start" />
+                        <MenuItem mnemonicParsing="false" text="Neuer Versuch" />
+                        <MenuItem mnemonicParsing="false" text="Neues Spiel" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#onSettingsMenuItem" text="Einstellungen" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                     <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#onCloseMenuItem" text="Beenden" />
@@ -37,13 +42,81 @@
                   </Menu>
                 <Menu mnemonicParsing="false" text="Hilfe">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem fx:id="helpMenuItem" mnemonicParsing="false" onAction="#onHelpMenuItem" text="Hilfe" />
                   </items>
                 </Menu>
               </menus>
             </MenuBar>
          </children>
       </Pane>
-      <Pane fx:id="gameArea" layoutY="29.0" prefHeight="971.0" prefWidth="1600.0" />
+      <Pane fx:id="gameArea" layoutY="29.0" prefHeight="971.0" prefWidth="1600.0">
+         <children>
+            <Circle layoutX="500.0" layoutY="477.0" radius="29.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
+               <fill>
+                  <RadialGradient centerX="0.4775280898876404" centerY="0.5096153846153846" radius="0.43333333333333335">
+                     <stops>
+                        <Stop color="#f5c400" />
+                        <Stop color="BLACK" offset="0.007434944237918215" />
+                        <Stop color="#ffffff00" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Circle>
+            <Circle layoutX="316.0" layoutY="436.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
+               <fill>
+                  <RadialGradient centerX="0.4775280898876404" centerY="0.5096153846153846" radius="0.4095238095238095">
+                     <stops>
+                        <Stop color="#f5c400" />
+                        <Stop color="BLACK" offset="0.007434944237918215" />
+                        <Stop color="#ffffff00" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Circle>
+            <Circle layoutX="133.0" layoutY="336.0" radius="25.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
+               <fill>
+                  <RadialGradient centerX="1.0" centerY="0.1875" radius="0.6">
+                     <stops>
+                        <Stop color="WHITE" />
+                        <Stop color="WHITE" offset="0.007434944237918215" />
+                        <Stop color="BLACK" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Circle>
+            <Circle layoutX="124.0" layoutY="347.0" radius="23.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
+               <fill>
+                  <RadialGradient centerX="0.4775280898876404" centerY="0.5096153846153846" radius="0.46904761904761905">
+                     <stops>
+                        <Stop color="#f5c400" />
+                        <Stop color="BLACK" offset="0.007434944237918215" />
+                        <Stop color="#ffffff00" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Circle>
+            <Circle layoutX="322.0" layoutY="428.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
+               <fill>
+                  <RadialGradient centerX="1.0" centerY="0.1875" radius="0.6">
+                     <stops>
+                        <Stop color="#f5c400" />
+                        <Stop color="#f5c400" offset="0.007434944237918215" />
+                        <Stop color="#ae6f00" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Circle>
+            <Circle layoutX="512.0" layoutY="466.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
+               <fill>
+                  <RadialGradient centerX="0.8595505617977528" centerY="0.1875" radius="0.6">
+                     <stops>
+                        <Stop color="#63ddfc" />
+                        <Stop color="#63ddfc" offset="0.007434944237918215" />
+                        <Stop color="#2492ff" offset="1.0" />
+                     </stops>
+                  </RadialGradient>
+               </fill>
+            </Circle>
+         </children></Pane>
    </children>
 </AnchorPane>

@@ -5,7 +5,6 @@
  */
 package arrriba.control;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -21,7 +20,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -41,18 +39,10 @@ public class GameControl implements Initializable {
     private Pane gameArea;
     
     private ArrayList<Shape> shapes = new ArrayList<>();
-
-    private static final String texturURL = "file:Textur.png";
-   
-    
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //Scene scene = menuBar.getScene();
-        //Stage stage = (Stage) menuBar.getScene().getWindow();
-       // System.out.println(stage);
-        //scene.getStylesheets().add(this.getClass().getResource("/arrriba/view/obstacles.css").toExternalForm());
-        //System.out.println(this.getClass().getResource("obstacles.css"));
+        
     }
     
     /** Schliesst das Fenster und beendet das Programm.
@@ -72,6 +62,7 @@ public class GameControl implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.DECORATED);
             stage.setTitle("Einstellungen");
+            stage.setResizable(false);
             
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -84,13 +75,12 @@ public class GameControl implements Initializable {
     @FXML
     public void onBarrelMenuItem() {
         Circle circle = new Circle(40, 40, 30);
-        Image textur = new Image("/arrriba/view/Textur.png");
-        circle.setFill(new ImagePattern(textur, 0, 0, 1, 1, true));
+        Image texture = new Image("/arrriba/view/Textur.png");
+        circle.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
         circle.setStroke(Color.BLACK);
         circle.setStrokeWidth(5);
         circle.getStyleClass().add("circle");
         shapes.add(circle);
-        //circle.setFill(Paint.valueOf("DODGERBLUE"));
         
         gameArea.getChildren().add(circle);
         
@@ -121,6 +111,25 @@ public class GameControl implements Initializable {
     @FXML
     public void onSpringMenuItem() {
         
+    }
+    
+    @FXML
+    public void onHelpMenuItem() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/arrriba/view/Help.fxml"));
+            
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setTitle("Hilfe");
+            stage.setResizable(false);
+            
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     private void setPosition(final Shape shape) {
