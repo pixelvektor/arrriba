@@ -75,7 +75,7 @@
                                                       <Insets bottom="5.0" top="25.0" />
                                                    </padding>
                                                 </Label>
-                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="3.0" />
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="2.0" />
                                                 <Label prefHeight="37.0" prefWidth="300.0" text="Geschwindigkeit">
                                                    <padding>
                                                       <Insets bottom="5.0" top="25.0" />
@@ -114,7 +114,7 @@
                                                       <Insets bottom="5.0" top="25.0" />
                                                    </padding>
                                                 </Label>
-                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="2.0" />
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="3.0" />
                                                 <Label prefHeight="37.0" prefWidth="300.0" text="Geschwindigkeit">
                                                    <padding>
                                                       <Insets bottom="5.0" top="25.0" />
@@ -148,7 +148,7 @@
                      <children>
                         <TabPane prefHeight="322.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
-                              <Tab text="Kisten">
+                              <Tab text="Kiste">
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                                 </content>
