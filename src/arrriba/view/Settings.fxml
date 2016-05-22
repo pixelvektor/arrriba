@@ -150,22 +150,114 @@
                           <tabs>
                               <Tab text="Kiste">
                                 <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox prefHeight="295.0" prefWidth="300.0">
+                                             <children>
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Material">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="15.0" />
+                                                   </padding>
+                                                </Label>
+                                                <ChoiceBox prefWidth="150.0" />
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Größe">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="25.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Winkel">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="25.0" />
+                                                   </padding>
+                                                </Label>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children></AnchorPane>
                                 </content>
                               </Tab>
                               <Tab text="Tonne">
                                 <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox prefHeight="295.0" prefWidth="300.0">
+                                             <children>
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Material">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="15.0" />
+                                                   </padding>
+                                                </Label>
+                                                <ChoiceBox prefWidth="150.0" />
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Größe">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="25.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Winkel">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="25.0" />
+                                                   </padding>
+                                                </Label>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children></AnchorPane>
                                 </content>
                               </Tab>
                               <Tab text="Kugelfisch">
                                 <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox prefHeight="295.0" prefWidth="300.0">
+                                             <children>
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Puststärke">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="15.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Winkel">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="25.0" />
+                                                   </padding>
+                                                </Label>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children></AnchorPane>
                                 </content>
                               </Tab>
                               <Tab text="Sprungfeder">
                                 <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox prefHeight="295.0" prefWidth="300.0">
+                                             <children>
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Federhärte">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="15.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Winkel">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="25.0" />
+                                                   </padding>
+                                                </Label>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children></AnchorPane>
                                 </content>
                               </Tab>
                           </tabs>
@@ -182,12 +274,42 @@
                            <tabs>
                               <Tab text="Untergrund">
                                  <content>
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox prefHeight="295.0" prefWidth="300.0">
+                                             <children>
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Reibungskoeffizient">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="15.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children></AnchorPane>
                                  </content>
                               </Tab>
                               <Tab text="Pfützen">
                                  <content>
-                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox prefHeight="295.0" prefWidth="300.0">
+                                             <children>
+                                                <Label prefHeight="37.0" prefWidth="300.0" text="Reibungskoeffizient">
+                                                   <padding>
+                                                      <Insets bottom="5.0" top="15.0" />
+                                                   </padding>
+                                                </Label>
+                                                <Slider majorTickUnit="2.0" max="3.0" min="1.0" minorTickCount="1" prefHeight="16.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children></AnchorPane>
                                  </content>
                               </Tab>
                            </tabs>
