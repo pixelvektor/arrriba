@@ -6,7 +6,6 @@
  */
 
 import arrriba.model.Ball;
-import arrriba.model.ObstacleListener;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -14,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.shape.Circle;
+import arrriba.model.ModelListener;
 
 /**
  *
@@ -38,7 +38,7 @@ public class FXMLDocumentController implements Initializable {
 
     public void move() {
         ball.rollin();
-        ball.addListener(new ObstacleListener() {
+        ball.addListener(new ModelListener() {
             @Override
             public void onPositionChange() {
                 updatePosition();

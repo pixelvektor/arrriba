@@ -54,32 +54,11 @@ public class GameControl implements Initializable {
     }
     
     @FXML
-    public void onSettingsMenuItem() {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/arrriba/view/Settings.fxml"));
-            
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.DECORATED);
-            stage.setTitle("Einstellungen");
-            stage.setResizable(false);
-            
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    @FXML
     public void onBarrelMenuItem() {
-        Circle circle = new Circle(40, 40, 30);
+        Circle circle = new Circle(50, 165, 35);
         Image texture = new Image("/arrriba/view/Textur.png");
         circle.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
-        circle.setStroke(Color.BLACK);
-        circle.setStrokeWidth(5);
-        circle.getStyleClass().add("circle");
+        circle.getStyleClass().add("obstacle");
         shapes.add(circle);
         
         gameArea.getChildren().add(circle);
@@ -89,16 +68,16 @@ public class GameControl implements Initializable {
     
     @FXML
     public void onBoxMenuItem() {
-        Rectangle rect = new Rectangle(40, 60);
+        Rectangle rect = new Rectangle(50, 70);
         shapes.add(rect);
+        
         Image textur = new Image("/arrriba/view/Textur.png");
         rect.setFill(new ImagePattern(textur, 0, 0, 1, 1, true));
-        rect.setStroke(Color.BLACK);
-        rect.setStrokeWidth(5);
         rect.setX(100);
-        rect.setY(200);  
-        rect.setArcWidth(5);
-        rect.setArcHeight(5);
+        rect.setY(130);
+        rect.getStyleClass().add("obstacle");
+//        rect.setArcWidth(5);
+//        rect.setArcHeight(5);
         gameArea.getChildren().add(rect); 
         setPosition(rect);
     }
@@ -137,26 +116,41 @@ public class GameControl implements Initializable {
     }
     
     private void setPosition(final Shape shape, final boolean isCircle) {
-            shape.setOnMouseMoved(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (isCircle) {
-                        Circle c = (Circle) shape;
-                        c.setCenterX(event.getX());
-                        c.setCenterY(event.getY());
-                    } else {
-                        Rectangle r = (Rectangle) shape;
-                        r.setX(event.getX()-20);
-                        r.setY(event.getY()-30);
-                    }
+        shape.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                shape.toFront();
+                if (isCircle) {
+                    Circle c = (Circle) shape;
+                    c.setCenterX(event.getX());
+                    c.setCenterY(event.getY());
+                } else {
+                    Rectangle r = (Rectangle) shape;
+                    r.setX(event.getX()-20);
+                    r.setY(event.getY()-30);
                 }
-            });
-
-            shape.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    shape.setOnMouseMoved(null);
-                }
-            });
+            }
+        });
+//        shape.setOnMouseMoved(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent event) {
+//                if (isCircle) {
+//                    Circle c = (Circle) shape;
+//                    c.setCenterX(event.getX());
+//                    c.setCenterY(event.getY());
+//                } else {
+//                    Rectangle r = (Rectangle) shape;
+//                    r.setX(event.getX()-20);
+//                    r.setY(event.getY()-30);
+//                }
+//            }
+//        });
+//
+//        shape.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent event) {
+//                shape.setOnMouseMoved(null);
+//            }
+//        });
     }
 }

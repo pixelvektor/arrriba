@@ -1,22 +1,14 @@
-/**
+/*
  * Hochschule Hamm-Lippstadt
  * Praktikum Visual Computing II (ARRRiba!)
  * (C) 2016 Kevin Otte, Lara Sievers, Adrian Schmidt, Fabian Schneider
  */
-package arrriba.model;
-
-import java.util.ArrayList;
+package arrriba.model.material;
 
 /**
  *
  * @author fabian
  */
-public class Obstacle extends GameModel {
-    
-    
-    
-    public Obstacle() {
-        
-    }
+public class Metal extends Material {
     
 }

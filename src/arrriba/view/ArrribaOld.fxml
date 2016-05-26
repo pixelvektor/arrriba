@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane id="GridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arrriba.control.GameControl">
+   <children>
+      <Pane fx:id="gameArea" layoutY="29.0" prefHeight="971.0" prefWidth="1250.0" GridPane.rowIndex="1">
+         <children>
+            <Circle fill="#1bcc37" layoutX="133.0" layoutY="336.0" radius="25.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+         </children>
+      </Pane>
+      <MenuBar fx:id="menuBar" prefHeight="29.0" prefWidth="1600.0" GridPane.columnSpan="2">
+        <menus>
+          <Menu mnemonicParsing="false" text="ARRRiba!">
+            <items>
+                  <MenuItem mnemonicParsing="false" text="Start" />
+                  <MenuItem mnemonicParsing="false" text="Neuer Versuch" />
+                  <MenuItem mnemonicParsing="false" text="Neues Spiel" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#onCloseMenuItem" text="Beenden" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Items">
+            <items>
+              <MenuItem fx:id="barrelMenuItem" mnemonicParsing="false" onAction="#onBarrelMenuItem" text="Tonne" />
+                  <MenuItem fx:id="boxMenuItem" mnemonicParsing="false" onAction="#onBoxMenuItem" text="Kiste" />
+                  <MenuItem fx:id="pufferMenuItem" mnemonicParsing="false" onAction="#onPufferMenuItem" text="Kugelfisch" />
+                  <MenuItem fx:id="springMenuItem" mnemonicParsing="false" onAction="#onSpringMenuItem" text="Sprungfeder" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Level">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Oberdeck" />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Zwischendeck" />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Unterdeck" />
+              </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Hilfe">
+            <items>
+                  <MenuItem fx:id="helpMenuItem" mnemonicParsing="false" onAction="#onHelpMenuItem" text="Hilfe anzeigen" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <Pane fx:id="settingsPane" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="350.0" styleClass="test" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <children>
+            <Slider layoutX="51.0" layoutY="128.0" prefHeight="15.0" prefWidth="246.0" />
+         </children>
+      </Pane>
+   </children>
+   <columnConstraints>
+      <ColumnConstraints prefWidth="1250.0" />
+      <ColumnConstraints maxWidth="350.0" minWidth="350.0" prefWidth="350.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="29.0" />
+      <RowConstraints />
+   </rowConstraints>
+</GridPane>
