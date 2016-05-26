@@ -107,6 +107,7 @@ public class Ball extends Obstacle {
                     setPosX(x);
                     setPosY(y);
                     shape.setCenterX(getPosX());
+                    shape.setCenterY(getPosY());
                     callListener();
                 }
                 service.shutdown();
