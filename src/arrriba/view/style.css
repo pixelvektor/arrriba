@@ -7,6 +7,7 @@
     -fx-background-image: url("Hintergrund1.png");
 }
 
-.rectangle {
-    -fx-background-color: yellow;
+.obstacle {
+    -fx-stroke-width: 4px;
+    -fx-stroke: black;
 }

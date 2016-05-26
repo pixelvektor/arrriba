@@ -23,9 +23,8 @@ public class Arrriba extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
         
         Scene scene = new Scene(root);
-        scene.getStylesheets().addAll(this.getClass().getResource("view/style.css").toExternalForm());
 
-        stage.setResizable(false);
+        stage.setResizable(true);
         stage.setScene(scene);
         stage.show();
     }

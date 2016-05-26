@@ -9,6 +9,6 @@ package arrriba.model;
  *
  * @author fabian
  */
-public interface ObstacleListener {
+public interface ModelListener {
     void onPositionChange();
 }

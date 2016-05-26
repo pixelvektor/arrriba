@@ -17,7 +17,6 @@ import javafx.scene.shape.Circle;
  * @author fabian
  */
 public class Ball extends Obstacle {
-    private double velocity;
     private double velocityX;
     private double startX;
     private double velocityY;
@@ -25,6 +24,7 @@ public class Ball extends Obstacle {
     private double friction= -0.1;
     private double number = 0.5;
     private final int size;
+
     private final Material material;
     
     private Circle shape;
@@ -52,7 +52,7 @@ public class Ball extends Obstacle {
         this.material = material;
         
         // Erstellt das Shape
-        shape = new Circle(getPosX(), getPosY(), getSize());
+        shape = new Circle(getPosX(), getPosY(), size);
         shape.setFill(Paint.valueOf("RED"));
     }
 
@@ -62,10 +62,6 @@ public class Ball extends Obstacle {
     
     public double getVelocityY() {
         return velocityY;
-    }
-
-    public int getSize() {
-        return size;
     }
 
     public Material getMaterial() {

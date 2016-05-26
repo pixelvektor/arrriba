@@ -1,122 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
+<?import java.net.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="1000.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arrriba.control.GameControl">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arrriba.control.GameControl">
+    <stylesheets>
+      <URL value="@style.css" />
+   </stylesheets>
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" prefWidth="1300.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="300.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="29.0" vgrow="SOMETIMES" />
+    <RowConstraints prefHeight="971.0" vgrow="SOMETIMES" />
+  </rowConstraints>
    <children>
-      <Pane fx:id="MenuBar" prefHeight="29.0" prefWidth="1600.0">
+      <MenuBar fx:id="menuBar" GridPane.columnSpan="2">
+        <menus>
+          <Menu mnemonicParsing="false" text="ARRRiba!">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#onCloseMenuItem" text="Beenden" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Items">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#onBoxMenuItem" text="Kiste" />
+                  <MenuItem mnemonicParsing="false" onAction="#onBarrelMenuItem" text="Tonne" />
+                  <MenuItem mnemonicParsing="false" onAction="#onPufferMenuItem" text="Kugelfisch" />
+                  <MenuItem mnemonicParsing="false" onAction="#onSpringMenuItem" text="Sprungfeder" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Level">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Oberdeck" />
+                  <MenuItem mnemonicParsing="false" text="Zwischendeck" />
+                  <MenuItem mnemonicParsing="false" text="Unterdeck" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <MenuBar fx:id="menuBar" prefHeight="29.0" prefWidth="1600.0">
-              <menus>
-                <Menu mnemonicParsing="false" text="ARRRiba!">
-                  <items>
-                        <MenuItem mnemonicParsing="false" text="Start" />
-                        <MenuItem mnemonicParsing="false" text="Neuer Versuch" />
-                        <MenuItem mnemonicParsing="false" text="Neues Spiel" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#onSettingsMenuItem" text="Einstellungen" />
-                        <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#onCloseMenuItem" text="Beenden" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Items">
-                  <items>
-                    <MenuItem fx:id="barrelMenuItem" mnemonicParsing="false" onAction="#onBarrelMenuItem" text="Tonne" />
-                        <MenuItem fx:id="boxMenuItem" mnemonicParsing="false" onAction="#onBoxMenuItem" text="Kiste" />
-                        <MenuItem fx:id="pufferMenuItem" mnemonicParsing="false" onAction="#onPufferMenuItem" text="Kugelfisch" />
-                        <MenuItem fx:id="springMenuItem" mnemonicParsing="false" onAction="#onSpringMenuItem" text="Sprungfeder" />
-                  </items>
-                </Menu>
-                  <Menu mnemonicParsing="false" text="Level">
-                    <items>
-                      <MenuItem mnemonicParsing="false" text="Oberdeck" />
-                        <MenuItem disable="true" mnemonicParsing="false" text="Zwischendeck" />
-                        <MenuItem disable="true" mnemonicParsing="false" text="Unterdeck" />
-                    </items>
-                  </Menu>
-                <Menu mnemonicParsing="false" text="Hilfe">
-                  <items>
-                        <MenuItem fx:id="helpMenuItem" mnemonicParsing="false" onAction="#onHelpMenuItem" text="Hilfe anzeigen" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </children>
-      </Pane>
-      <Pane fx:id="gameArea" layoutY="29.0" prefHeight="971.0" prefWidth="1600.0">
-         <children>
-            <Circle layoutX="500.0" layoutY="477.0" radius="29.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
-               <fill>
-                  <RadialGradient centerX="0.4775280898876404" centerY="0.5096153846153846" radius="0.43333333333333335">
-                     <stops>
-                        <Stop color="#f5c400" />
-                        <Stop color="BLACK" offset="0.007434944237918215" />
-                        <Stop color="#ffffff00" offset="1.0" />
-                     </stops>
-                  </RadialGradient>
-               </fill>
-            </Circle>
-            <Circle layoutX="316.0" layoutY="436.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
-               <fill>
-                  <RadialGradient centerX="0.4775280898876404" centerY="0.5096153846153846" radius="0.4095238095238095">
-                     <stops>
-                        <Stop color="#f5c400" />
-                        <Stop color="BLACK" offset="0.007434944237918215" />
-                        <Stop color="#ffffff00" offset="1.0" />
-                     </stops>
-                  </RadialGradient>
-               </fill>
-            </Circle>
-            <Circle layoutX="133.0" layoutY="336.0" radius="25.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
-               <fill>
-                  <RadialGradient centerX="1.0" centerY="0.1875" radius="0.6">
-                     <stops>
-                        <Stop color="WHITE" />
-                        <Stop color="WHITE" offset="0.007434944237918215" />
-                        <Stop color="BLACK" offset="1.0" />
-                     </stops>
-                  </RadialGradient>
-               </fill>
-            </Circle>
-            <Circle layoutX="124.0" layoutY="347.0" radius="23.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
-               <fill>
-                  <RadialGradient centerX="0.4775280898876404" centerY="0.5096153846153846" radius="0.46904761904761905">
-                     <stops>
-                        <Stop color="#f5c400" />
-                        <Stop color="BLACK" offset="0.007434944237918215" />
-                        <Stop color="#ffffff00" offset="1.0" />
-                     </stops>
-                  </RadialGradient>
-               </fill>
-            </Circle>
-            <Circle layoutX="322.0" layoutY="428.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
-               <fill>
-                  <RadialGradient centerX="1.0" centerY="0.1875" radius="0.6">
-                     <stops>
-                        <Stop color="#f5c400" />
-                        <Stop color="#f5c400" offset="0.007434944237918215" />
-                        <Stop color="#ae6f00" offset="1.0" />
-                     </stops>
-                  </RadialGradient>
-               </fill>
-            </Circle>
-            <Circle layoutX="512.0" layoutY="466.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
-               <fill>
-                  <RadialGradient centerX="0.8595505617977528" centerY="0.1875" radius="0.6">
-                     <stops>
-                        <Stop color="#63ddfc" />
-                        <Stop color="#63ddfc" offset="0.007434944237918215" />
-                        <Stop color="#2492ff" offset="1.0" />
-                     </stops>
-                  </RadialGradient>
-               </fill>
-            </Circle>
+            <Slider layoutX="35.0" layoutY="70.0" majorTickUnit="50.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" value="25.0" />
+            <TextField layoutX="185.0" layoutY="71.0" prefHeight="27.0" prefWidth="70.0" />
+            <Label layoutX="40.0" layoutY="43.0" prefHeight="17.0" prefWidth="147.0" text="Größe">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
          </children></Pane>
+      <ScrollPane prefHeight="971.0" prefWidth="1299.0" GridPane.rowIndex="1">
+         <content>
+            <HBox alignment="CENTER" prefHeight="969.0" prefWidth="1298.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="969.0" prefWidth="1298.0">
+                     <children>
+                        <Pane fx:id="gameArea" prefHeight="969.0" prefWidth="1298.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </content>
+      </ScrollPane>
    </children>
-</AnchorPane>
+</GridPane>
