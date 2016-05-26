@@ -20,7 +20,7 @@ public class Arrriba extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("view/Arrriba.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
         
         Scene scene = new Scene(root);
         scene.getStylesheets().addAll(this.getClass().getResource("view/style.css").toExternalForm());
