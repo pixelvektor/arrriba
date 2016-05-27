@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Shape;
 
 /**
  *
@@ -21,13 +22,10 @@ public class Ball extends Obstacle {
     private double startX;
     private double velocityY;
     private double startY;
-    private double friction= -0.1;
-    private double number = 0.5;
-    private final int size;
+    private static final double FRICTION= -0.1;
+    private static final double NUMBER = 0.5;
 
-    private final Material material;
-    
-    private Circle shape;
+    private Material material;
     
     private final ExecutorService service = Executors.newCachedThreadPool();
     
@@ -42,7 +40,7 @@ public class Ball extends Obstacle {
     
     public Ball(final int size, final double posX, final double posY,
             final double velocityX, final double velocityY, final double startX, final double startY, final Material material) {
-        this.size = size;
+        this.setSize(size);
         this.setPosX(posX);
         this.setPosY(posY);
         this.setVelocityX(velocityX);
@@ -52,8 +50,9 @@ public class Ball extends Obstacle {
         this.material = material;
         
         // Erstellt das Shape
-        shape = new Circle(getPosX(), getPosY(), size);
+        Circle shape = new Circle(getPosX(), getPosY(), getSize());
         shape.setFill(Paint.valueOf("RED"));
+        this.setShape(shape);
     }
 
     public double getVelocityX() {
@@ -67,11 +66,7 @@ public class Ball extends Obstacle {
     public Material getMaterial() {
         return material;
     }
-
-    public Circle getShape() {
-        return shape;
-    }
-
+    
     public void setVelocityX(final double velocity) {
         this.velocityX = velocity < 0 ? 0 : velocity;
     }
@@ -80,12 +75,25 @@ public class Ball extends Obstacle {
         this.velocityY = velocity < 0 ? 0 : velocity;
     }
     
-    private void setStartX(double startX) {
+    private void setStartX(final double startX) {
         this.startX = startX;
     }
     
-    private void setStartY(double startY) {
+    private void setStartY(final double startY) {
         this.startY = startY;
+    }
+    
+    @Override
+    public void setSize(final double size) {
+        Circle c = (Circle) this.getShape();
+        if (c != null) {
+            c.setRadius(size);
+        }
+        super.setSize(size);
+    }
+
+    public void setMaterial(Material material) {
+        this.material = material;
     }
     
     // TODO Runnable austauschen?
@@ -98,12 +106,13 @@ public class Ball extends Obstacle {
                         Thread.sleep(33);
                     } catch (Exception e) {
                     }
-                    double x = number*friction*t*t+t*velocityX+startX;
-                    double y = number*friction*t*t+t*velocityY+startY;
+                    double x = NUMBER*FRICTION*t*t+t*velocityX+startX;
+                    double y = NUMBER*FRICTION*t*t+t*velocityY+startY;
                     setPosX(x);
                     setPosY(y);
-                    shape.setCenterX(getPosX());
-                    shape.setCenterY(getPosY());
+                    Circle c = (Circle) getShape();
+                    c.setCenterX(getPosX());
+                    c.setCenterY(getPosY());
                     callListener();
                 }
                 service.shutdown();

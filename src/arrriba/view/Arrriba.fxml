@@ -7,6 +7,7 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import arrriba.view.*?>
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arrriba.control.GameControl">
     <stylesheets>
@@ -47,8 +48,8 @@
       </MenuBar>
       <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <Slider layoutX="35.0" layoutY="70.0" majorTickUnit="50.0" minorTickCount="1" showTickLabels="true" showTickMarks="true" value="25.0" />
-            <TextField layoutX="185.0" layoutY="71.0" prefHeight="27.0" prefWidth="70.0" />
+            <Slider fx:id="sizeSlider" layoutX="33.0" layoutY="77.0" majorTickUnit="50.0" minorTickCount="1" onMouseDragged="#onSizeSlider" value="25.0" />
+            <NumberTextField fx:id="sizeNTF" layoutX="185.0" layoutY="71.0" onKeyPressed="#onSizeNTF" prefHeight="27.0" prefWidth="70.0" />
             <Label layoutX="40.0" layoutY="43.0" prefHeight="17.0" prefWidth="147.0" text="Größe">
                <font>
                   <Font size="14.0" />

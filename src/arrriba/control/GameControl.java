@@ -5,8 +5,14 @@
  */
 package arrriba.control;
 
+import arrriba.model.Barrel;
+import arrriba.model.Box;
+import arrriba.model.Obstacle;
+import arrriba.view.NumberTextField;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,10 +21,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -31,17 +37,36 @@ import javafx.stage.StageStyle;
  *
  * @author fabian
  */
-public class GameControl implements Initializable {
+public class GameControl implements Initializable, Observer {
+    // Menuebar
     @FXML
     private MenuBar menuBar;
     
+    // Einstellungen
+    @FXML
+    private Slider sizeSlider;
+    
+    @FXML
+    private NumberTextField sizeNTF;
+    
+    // Spielfeld
     @FXML
     private Pane gameArea;
     
+    /** Angewaehltes Shape. */
+    private Shape active = null;
+    
     private ArrayList<Shape> shapes = new ArrayList<>();
+    
+    private ArrayList<Obstacle> obstacles = new ArrayList<>();
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        
+    }
+    
+    @Override
+    public void update(Observable o, Object arg) {
         
     }
     
@@ -55,12 +80,11 @@ public class GameControl implements Initializable {
     
     @FXML
     public void onBarrelMenuItem() {
-        Circle circle = new Circle(50, 165, 35);
-        Image texture = new Image("/arrriba/view/Textur.png");
-        circle.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
-        circle.getStyleClass().add("obstacle");
-        shapes.add(circle);
+        Barrel barrel = new Barrel(50, 165, 10);
+        obstacles.add(barrel);
         
+        Circle circle = (Circle) obstacles.get(0).getShape();
+        shapes.add(circle);
         gameArea.getChildren().add(circle);
         
         setPosition(circle, true);
@@ -68,16 +92,11 @@ public class GameControl implements Initializable {
     
     @FXML
     public void onBoxMenuItem() {
-        Rectangle rect = new Rectangle(50, 70);
+        Box box = new Box(100, 130, 70);
+        obstacles.add(box);
+        Rectangle rect = (Rectangle) box.getShape();
         shapes.add(rect);
         
-        Image textur = new Image("/arrriba/view/Textur.png");
-        rect.setFill(new ImagePattern(textur, 0, 0, 1, 1, true));
-        rect.setX(100);
-        rect.setY(130);
-        rect.getStyleClass().add("obstacle");
-//        rect.setArcWidth(5);
-//        rect.setArcHeight(5);
         gameArea.getChildren().add(rect); 
         setPosition(rect);
     }
@@ -131,26 +150,18 @@ public class GameControl implements Initializable {
                 }
             }
         });
-//        shape.setOnMouseMoved(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent event) {
-//                if (isCircle) {
-//                    Circle c = (Circle) shape;
-//                    c.setCenterX(event.getX());
-//                    c.setCenterY(event.getY());
-//                } else {
-//                    Rectangle r = (Rectangle) shape;
-//                    r.setX(event.getX()-20);
-//                    r.setY(event.getY()-30);
-//                }
-//            }
-//        });
-//
-//        shape.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent event) {
-//                shape.setOnMouseMoved(null);
-//            }
-//        });
+    }
+    
+    @FXML
+    public void onSizeSlider() {
+        double roundedSlider = (double) Math.round(sizeSlider.getValue() * 10) / 10;
+        obstacles.get(0).setSize(roundedSlider);
+        sizeNTF.setValue(roundedSlider);
+//        System.out.println(sizeNTF.getValue());
+    }
+
+    @FXML
+    public void onSizeNTF() {
+        System.out.println(sizeNTF.getValue());
     }
 }

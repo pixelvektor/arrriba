@@ -7,6 +7,7 @@ package arrriba.model;
 
 import java.util.ArrayList;
 import java.util.Observable;
+import javafx.scene.shape.Shape;
 
 /**
  *
@@ -17,6 +18,7 @@ public class GameModel extends Observable {
     private double posY;
     private double rotation;
     private double size;
+    private Shape shape;
     private ArrayList<ModelListener> listener = new ArrayList<ModelListener>();
 
     public double getPosX() {
@@ -35,20 +37,37 @@ public class GameModel extends Observable {
         return size;
     }
 
-    public void setPosX(double posX) {
+    public Shape getShape() {
+        return shape;
+    }
+
+    public void setPosX(final double posX) {
         this.posX = posX;
+        this.setChanged();
+        this.notifyObservers();
     }
 
-    public void setPosY(double posY) {
+    public void setPosY(final double posY) {
         this.posY = posY;
+        this.hasChanged();
+        this.notifyObservers();
     }
 
-    public void setRotation(double rotation) {
+    public void setRotation(final double rotation) {
         this.rotation = rotation;
+        this.hasChanged();
+        this.notifyObservers();
     }
 
-    public void setSize(double size) {
+    public void setSize(final double size) {
         this.size = size;
+        this.hasChanged();
+        this.notifyObservers();
+    }
+
+    protected void setShape(final Shape shape) {
+        this.shape = shape;
+        this.shape.setUserData(this);
     }
     
     public ArrayList<ModelListener> getListener() {

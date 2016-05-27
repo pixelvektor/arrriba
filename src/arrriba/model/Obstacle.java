@@ -5,15 +5,11 @@
  */
 package arrriba.model;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author fabian
  */
 public class Obstacle extends GameModel {
-    
-    
     
     public Obstacle() {
         
