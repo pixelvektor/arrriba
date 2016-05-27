@@ -29,6 +29,24 @@ public class Box extends Obstacle {
     }
     
     @Override
+    public void setPosX(final double posX) {
+        Rectangle r = (Rectangle) this.getShape();
+        if (r != null) {
+            r.setX(posX);
+        }
+        super.setPosX(posX);
+    }
+    
+    @Override
+    public void setPosY(final double posY) {
+        Rectangle r = (Rectangle) this.getShape();
+        if (r != null) {
+            r.setY(posY);
+        }
+        super.setPosY(posY);
+    }
+    
+    @Override
     public void setSize(final double size) {
         Rectangle r = (Rectangle) this.getShape();
         if (r != null) {

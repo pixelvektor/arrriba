@@ -11,3 +11,8 @@
     -fx-stroke-width: 4px;
     -fx-stroke: black;
 }
+
+.puffer {
+    -fx-stroke-width: 4px;
+    -fx-stroke: #ff00ff;
+}

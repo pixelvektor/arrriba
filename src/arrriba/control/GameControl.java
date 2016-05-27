@@ -8,6 +8,7 @@ package arrriba.control;
 import arrriba.model.Barrel;
 import arrriba.model.Box;
 import arrriba.model.Obstacle;
+import arrriba.model.Puffer;
 import arrriba.view.NumberTextField;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,8 +25,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -54,9 +53,34 @@ public class GameControl implements Initializable, Observer {
     /** Angewaehltes Shape. */
     private Shape activeShape = null;
     
-    private ArrayList<Shape> shapes = new ArrayList<>();
+    /** Alle Gegenstaende auf dem Spielfeld. */
+    private final ArrayList<Obstacle> obstacles = new ArrayList<>();
     
-    private ArrayList<Obstacle> obstacles = new ArrayList<>();
+    private final EventHandler<MouseEvent> shapeOnMousePressedEH;
+    
+    private final EventHandler<MouseEvent> shapeOnMouseDraggedEH;
+    
+    private double origSceneX, origSceneY, origTranslateX, origTranslateY;
+
+    public GameControl() {
+        this.shapeOnMousePressedEH = (MouseEvent e) -> {
+            origSceneX = e.getSceneX();
+            origSceneY = e.getSceneY();
+            origTranslateX = ((Obstacle) ((Shape) e.getSource()).getUserData()).getPosX();
+            origTranslateY = ((Obstacle) ((Shape) e.getSource()).getUserData()).getPosY();
+            
+            activeShape = (Shape) e.getSource();
+            activeShape.toFront();
+        };
+        
+        this.shapeOnMouseDraggedEH = (MouseEvent e) -> {
+            double newTranslateX = origTranslateX + e.getSceneX() - origSceneX;
+            double newTranslateY = origTranslateY + e.getSceneY() - origSceneY;
+            
+            ((Obstacle) ((Shape) (e.getSource())).getUserData()).setPosX(newTranslateX);
+            ((Obstacle) ((Shape) (e.getSource())).getUserData()).setPosY(newTranslateY);
+        };
+    }
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -65,7 +89,6 @@ public class GameControl implements Initializable, Observer {
     
     @Override
     public void update(Observable o, Object arg) {
-        
     }
     
     /** Schliesst das Fenster und beendet das Programm.
@@ -76,25 +99,43 @@ public class GameControl implements Initializable, Observer {
         stage.close();
     }
     
+    /** Erstellt ein neues Fass.
+     * Fass wird dem Spielfeld hinzugefuegt.
+     */
     @FXML
     public void onBarrelMenuItem() {
         Barrel barrel = new Barrel(50, 165, 10);
+        barrel.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+        barrel.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
+        barrel.addObserver(this);
         obstacles.add(barrel);
         gameArea.getChildren().add(barrel.getShape());
-        setPosition(barrel.getShape(), true);
+        activeShape = barrel.getShape();
     }
     
+    /** Erstellt eine neue Kiste.
+     * Kiste wird dem Spielfeld hinzugefuegt.
+     */
     @FXML
     public void onBoxMenuItem() {
         Box box = new Box(100, 130, 70);
+        box.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+        box.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
+        box.addObserver(this);
         obstacles.add(box);
-        gameArea.getChildren().add(box.getShape()); 
-        setPosition(box.getShape(), false);
+        gameArea.getChildren().add(box.getShape());
+        activeShape = box.getShape();
     }
     
     @FXML
     public void onPufferMenuItem() {
-        
+        Puffer puffer = new Puffer(100, 130, 15);
+        puffer.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+        puffer.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
+        puffer.addObserver(this);
+        obstacles.add(puffer);
+        gameArea.getChildren().add(puffer.getShape());
+        activeShape = puffer.getShape();
     }
     
     @FXML
@@ -121,32 +162,11 @@ public class GameControl implements Initializable, Observer {
         }
     }
     
-    private void setPosition(final Shape shape, final boolean isCircle) {
-        shape.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                activeShape = shape;
-                shape.toFront();
-                if (isCircle) {
-                    Circle c = (Circle) shape;
-                    c.setCenterX(event.getX());
-                    c.setCenterY(event.getY());
-                } else {
-                    Rectangle r = (Rectangle) shape;
-                    r.setX(event.getX()-20);
-                    r.setY(event.getY()-30);
-                }
-            }
-        });
-    }
-    
     @FXML
     public void onSizeSlider() {
         double roundedSlider = (double) Math.round(sizeSlider.getValue() * 10) / 10;
-        Obstacle o = (Obstacle) activeShape.getUserData();
-        o.setSize(roundedSlider);
+        ((Obstacle) activeShape.getUserData()).setSize(roundedSlider);
         sizeNTF.setValue(roundedSlider);
-//        System.out.println(sizeNTF.getValue());
     }
 
     @FXML
