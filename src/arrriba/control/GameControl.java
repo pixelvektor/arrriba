@@ -22,10 +22,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -54,7 +52,7 @@ public class GameControl implements Initializable, Observer {
     private Pane gameArea;
     
     /** Angewaehltes Shape. */
-    private Shape active = null;
+    private Shape activeShape = null;
     
     private ArrayList<Shape> shapes = new ArrayList<>();
     
@@ -82,23 +80,16 @@ public class GameControl implements Initializable, Observer {
     public void onBarrelMenuItem() {
         Barrel barrel = new Barrel(50, 165, 10);
         obstacles.add(barrel);
-        
-        Circle circle = (Circle) obstacles.get(0).getShape();
-        shapes.add(circle);
-        gameArea.getChildren().add(circle);
-        
-        setPosition(circle, true);
+        gameArea.getChildren().add(barrel.getShape());
+        setPosition(barrel.getShape(), true);
     }
     
     @FXML
     public void onBoxMenuItem() {
         Box box = new Box(100, 130, 70);
         obstacles.add(box);
-        Rectangle rect = (Rectangle) box.getShape();
-        shapes.add(rect);
-        
-        gameArea.getChildren().add(rect); 
-        setPosition(rect);
+        gameArea.getChildren().add(box.getShape()); 
+        setPosition(box.getShape(), false);
     }
     
     @FXML
@@ -130,14 +121,11 @@ public class GameControl implements Initializable, Observer {
         }
     }
     
-    private void setPosition(final Shape shape) {
-        setPosition(shape, false);
-    }
-    
     private void setPosition(final Shape shape, final boolean isCircle) {
         shape.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                activeShape = shape;
                 shape.toFront();
                 if (isCircle) {
                     Circle c = (Circle) shape;
@@ -155,7 +143,8 @@ public class GameControl implements Initializable, Observer {
     @FXML
     public void onSizeSlider() {
         double roundedSlider = (double) Math.round(sizeSlider.getValue() * 10) / 10;
-        obstacles.get(0).setSize(roundedSlider);
+        Obstacle o = (Obstacle) activeShape.getUserData();
+        o.setSize(roundedSlider);
         sizeNTF.setValue(roundedSlider);
 //        System.out.println(sizeNTF.getValue());
     }
