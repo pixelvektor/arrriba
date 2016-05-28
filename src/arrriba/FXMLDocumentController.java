@@ -40,6 +40,7 @@ public class FXMLDocumentController implements Initializable {
     
     private Ball ball;
     private Circle circle;
+    
 
     
 
@@ -49,8 +50,10 @@ public class FXMLDocumentController implements Initializable {
     }
 
     public void create(){
-        ball = new Ball(40, 40.0, 40.0, 5.0, 0.0);
+
+        ball = new Ball(40, 40.0, 40.0, 5.0, 5.0);
         balls.add(ball);
+
         
         circle = (Circle) balls.get(0).getShape();
         shapes.add(circle);
@@ -70,25 +73,13 @@ public class FXMLDocumentController implements Initializable {
         });
     }
     
-    private void checkCollision() {
-        if(ball.getPosX()+21>=1600){
-            circle.setFill(Paint.valueOf("BLUE"));
-            ball.setStartX(1560);
-            System.out.println(ball.getStartX());
-            ball.setStartY(ball.getPosY());
-            ball.setVelocityX(0-ball.getVelocityX());
-            ball.setVelocityY(0-ball.getVelocityY());
-            ball.setPosX(ball.getStartX());
-        }
-    }
+
     
 
     private void updatePosition() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-
-                checkCollision();
                 circle.setCenterX(ball.getPosX());
                 circle.setCenterY(ball.getPosY());
             }
