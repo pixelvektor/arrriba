@@ -5,13 +5,11 @@
  */
 package arrriba.view;
 
-import javafx.scene.control.TextField;
-
 /**
  *
  * @author fabian
  */
-public class DegreeTextField extends TextField {
+public class DegreeTextField extends NumberTextField {
 
     @Override
     public void replaceText(final int start, final int end, final String text) {

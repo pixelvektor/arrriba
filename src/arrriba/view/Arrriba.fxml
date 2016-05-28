@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.net.*?>
@@ -48,14 +50,67 @@
       </MenuBar>
       <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <Slider fx:id="sizeSlider" layoutX="33.0" layoutY="77.0" majorTickUnit="50.0" minorTickCount="1" onMouseDragged="#onSizeSlider" onMousePressed="#onSizeSlider" value="25.0" />
-            <NumberTextField fx:id="sizeNTF" layoutX="185.0" layoutY="71.0" onKeyPressed="#onSizeNTF" prefHeight="27.0" prefWidth="70.0" />
-            <Label layoutX="40.0" layoutY="43.0" prefHeight="17.0" prefWidth="147.0" text="Größe">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Button fx:id="gamePlay" layoutX="121.0" layoutY="212.0" mnemonicParsing="false" onAction="#onGamePlay" text="Play" />
+            <TabPane prefHeight="804.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                  <Tab text="Element">
+                     <content>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="184.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <DegreeTextField fx:id="rotationDTF" onKeyPressed="#onRotationNTF" prefHeight="27.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Slider fx:id="sizeSlider" majorTickUnit="50.0" min="20.0" minorTickCount="1" onMouseDragged="#onSizeSlider" onMousePressed="#onSizeSlider" value="20.0" GridPane.rowIndex="1" />
+                              <Label prefHeight="17.0" prefWidth="147.0" text="Größe">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets top="20.0" />
+                                 </padding>
+                              </Label>
+                              <NumberTextField fx:id="sizeNTF" onKeyPressed="#onSizeNTF" prefHeight="27.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label prefHeight="17.0" prefWidth="147.0" text="Rotation" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets top="20.0" />
+                                 </padding>
+                              </Label>
+                              <Slider fx:id="rotationSlider" majorTickUnit="50.0" max="359.0" minorTickCount="1" onMouseDragged="#onRotationSlider" onMousePressed="#onRotationSlider" GridPane.rowIndex="3" />
+                              <Label text="Material" GridPane.rowIndex="4">
+                                 <padding>
+                                    <Insets top="20.0" />
+                                 </padding>
+                              </Label>
+                              <ChoiceBox prefHeight="27.0" prefWidth="184.0" GridPane.rowIndex="5" />
+                           </children>
+                           <padding>
+                              <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                           </padding>
+                        </GridPane>
+                     </content>
+                  </Tab>
+                <Tab text="Krams">
+                     <content>
+                        <VBox prefHeight="333.0" prefWidth="300.0" />
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+            <Button fx:id="gamePlay" layoutX="52.0" layoutY="897.0" mnemonicParsing="false" onAction="#onGamePlay" text="Play" />
+            <Button fx:id="gamePause" layoutX="119.0" layoutY="897.0" mnemonicParsing="false" onAction="#onGamePause" text="Pause" />
+            <Button fx:id="gameReset" layoutX="195.0" layoutY="897.0" mnemonicParsing="false" onAction="#onGameReset" text="Reset" />
          </children></Pane>
       <ScrollPane prefHeight="971.0" prefWidth="1299.0" GridPane.rowIndex="1">
          <content>
@@ -63,7 +118,7 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="969.0" prefWidth="1298.0">
                      <children>
-                        <Pane fx:id="gameArea" prefHeight="969.0" prefWidth="1298.0" />
+                        <Pane fx:id="gameArea" prefHeight="969.0" prefWidth="1298.0"/>
                      </children>
                   </VBox>
                </children>

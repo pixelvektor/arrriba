@@ -13,45 +13,17 @@ import javafx.scene.shape.Rectangle;
  *
  * @author fabian
  */
-public class Spring extends Obstacle {
+public class Spring extends GameModel {
     
     public Spring (final double posX, final double posY, final double size) {
-        this.setPosX(posX);
-        this.setPosY(posY);
-        this.setSize(size);
-        
         Rectangle shape = new Rectangle(posX, posY, size, size);
         Image texture = new Image("/arrriba/view/Textur.png");
         shape.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
         shape.getStyleClass().add("spring");
         this.setShape(shape);
-    }
-    
-    @Override
-    public void setPosX(final double posX) {
-        Rectangle r = (Rectangle) this.getShape();
-        if (r != null) {
-            r.setX(posX);
-        }
-        super.setPosX(posX);
-    }
-    
-    @Override
-    public void setPosY(final double posY) {
-        Rectangle r = (Rectangle) this.getShape();
-        if (r != null) {
-            r.setY(posY);
-        }
-        super.setPosY(posY);
-    }
-    
-    @Override
-    public void setSize(final double size) {
-        Rectangle r = (Rectangle) this.getShape();
-        if (r != null) {
-            r.setHeight(size);
-            r.setWidth(size);
-        }
-        super.setSize(size);
+        
+        this.setPosX(posX);
+        this.setPosY(posY);
+        this.setSize(size);
     }
 }

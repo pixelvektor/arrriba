@@ -28,10 +28,6 @@ public class Ball extends GameModel {
     
     private final ExecutorService service = Executors.newCachedThreadPool();
     
-    public Ball() {
-        this(1, 20.0, 20.0, 1.0, 1.0, new Wood());
-    }
-    
     public Ball(final int size, final double posX, final double posY,
             final double velocityX, final double velocityY) {
         this(size, posX, posY, velocityX, velocityY, new Wood());
@@ -39,6 +35,11 @@ public class Ball extends GameModel {
     
     public Ball(final int size, final double posX, final double posY,
             final double velocityX, final double velocityY, final Material material) {
+        // Erstellt das Shape
+        Circle shape = new Circle(posX, posY, size / 2);
+        shape.setFill(Paint.valueOf("RED"));
+        this.setShape(shape);
+        
         this.setSize(size);
         this.setPosX(posX);
         this.setPosY(posY);
@@ -47,11 +48,6 @@ public class Ball extends GameModel {
         this.setStartX(posX);
         this.setStartY(posY);
         this.material = material;
-        
-        // Erstellt das Shape
-        Circle shape = new Circle(getPosX(), getPosY(), getSize());
-        shape.setFill(Paint.valueOf("RED"));
-        this.setShape(shape);
     }
 
     public double getVelocityX() {
@@ -84,15 +80,6 @@ public class Ball extends GameModel {
     
     public void setStartY(final double startY) {
         this.startY = startY;
-    }
-    
-    @Override
-    public void setSize(final double size) {
-        Circle c = (Circle) this.getShape();
-        if (c != null) {
-            c.setRadius(size / 2);
-        }
-        super.setSize(size / 2);
     }
 
     public void setMaterial(Material material) {

@@ -7,6 +7,8 @@ package arrriba.model;
 
 import java.util.ArrayList;
 import java.util.Observable;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 /**
@@ -33,6 +35,10 @@ public class GameModel extends Observable {
         return rotation;
     }
 
+    /** Gibt die Groesse eines Objektes zurueck.
+     * Immer Breite / Hoehe / Durchmesser, nicht Radius.
+     * @return Groesse des Objektes.
+     */
     public double getSize() {
         return size;
     }
@@ -43,24 +49,48 @@ public class GameModel extends Observable {
 
     public void setPosX(final double posX) {
         this.posX = posX;
+        if (isCircle()) {
+            Circle c = (Circle) this.shape;
+            c.setCenterX(posX);
+        } else {
+            Rectangle r = (Rectangle) this.shape;
+            r.setX(posX);
+        }
         this.setChanged();
         this.notifyObservers();
     }
 
     public void setPosY(final double posY) {
         this.posY = posY;
+        if (isCircle()) {
+            Circle c = (Circle) this.shape;
+            c.setCenterY(posY);
+        } else {
+            Rectangle r = (Rectangle) this.shape;
+            r.setY(posY);
+        }
         this.hasChanged();
         this.notifyObservers();
     }
 
     public void setRotation(final double rotation) {
         this.rotation = rotation;
+        this.shape.setRotate(rotation);
         this.hasChanged();
         this.notifyObservers();
     }
 
     public void setSize(final double size) {
-        this.size = size;
+        if (isCircle()) {
+            Circle c = (Circle) this.shape;
+            c.setRadius(size / 2);
+            this.size = size;
+        } else {
+            Rectangle r = (Rectangle) this.shape;
+            r.setWidth(size);
+            r.setHeight(size);
+            this.size = size;
+        }
         this.hasChanged();
         this.notifyObservers();
     }
@@ -82,5 +112,9 @@ public class GameModel extends Observable {
         for (ModelListener l : getListener()) {
             l.onPositionChange();
         }
+    }
+    
+    private boolean isCircle() {
+        return this.getShape().toString().substring(0, 1).equals("C");
     }
 }

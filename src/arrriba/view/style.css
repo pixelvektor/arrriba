@@ -25,3 +25,7 @@
 .collision {
     -fx-stroke: #00ffff;
 }
+
+.wall {
+    -fx-opacity: 0;
+}

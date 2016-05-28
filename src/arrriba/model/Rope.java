@@ -9,6 +9,6 @@ package arrriba.model;
  *
  * @author fabian
  */
-public class Rope extends Obstacle {
+public class Rope extends GameModel {
     
 }

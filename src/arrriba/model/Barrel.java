@@ -13,44 +13,17 @@ import javafx.scene.shape.Circle;
  *
  * @author fabian
  */
-public class Barrel extends Obstacle {
+public class Barrel extends GameModel {
     
     public Barrel (final double posX, final double posY, final double size) {
-        this.setSize(size);
-        this.setPosX(posX);
-        this.setPosY(posY);
-        
-        Circle shape = new Circle(getPosX(), getPosY(), getSize());
+        Circle shape = new Circle(posX, posY, size / 2);
         Image texture = new Image("/arrriba/view/Textur.png");
         shape.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
         shape.getStyleClass().add("obstacle");
         this.setShape(shape);
-    }
-    
-    @Override
-    public void setPosX(final double posX) {
-        Circle r = (Circle) this.getShape();
-        if (r != null) {
-            r.setCenterX(posX);
-        }
-        super.setPosX(posX);
-    }
-    
-    @Override
-    public void setPosY(final double posY) {
-        Circle r = (Circle) this.getShape();
-        if (r != null) {
-            r.setCenterY(posY);
-        }
-        super.setPosY(posY);
-    }
-    
-    @Override
-    public void setSize(final double size) {
-        Circle c = (Circle) this.getShape();
-        if (c != null) {
-            c.setRadius(size / 2);
-        }
-        super.setSize(size / 2);
+        
+        this.setPosX(posX);
+        this.setPosY(posY);
+        this.setSize(size);
     }
 }
