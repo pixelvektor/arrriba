@@ -16,7 +16,7 @@ import javafx.scene.shape.Circle;
  *
  * @author fabian
  */
-public class Ball extends Obstacle {
+public class Ball extends GameModel {
     private double velocityX;
     private double startX;
     private double velocityY;
@@ -29,23 +29,23 @@ public class Ball extends Obstacle {
     private final ExecutorService service = Executors.newCachedThreadPool();
     
     public Ball() {
-        this(1, 20.0, 20.0, 1.0, 1.0, 20.0, 20.0, new Wood());
+        this(1, 20.0, 20.0, 1.0, 1.0, new Wood());
     }
     
     public Ball(final int size, final double posX, final double posY,
-            final double velocityX, final double velocityY, final double startX, final double startY) {
-        this(size, posX, posY, velocityX, velocityY, startX, startY, new Wood());
+            final double velocityX, final double velocityY) {
+        this(size, posX, posY, velocityX, velocityY, new Wood());
     }
     
     public Ball(final int size, final double posX, final double posY,
-            final double velocityX, final double velocityY, final double startX, final double startY, final Material material) {
+            final double velocityX, final double velocityY, final Material material) {
         this.setSize(size);
         this.setPosX(posX);
         this.setPosY(posY);
         this.setVelocityX(velocityX);
         this.setVelocityY(velocityY);
-        this.setStartX(startX);
-        this.setStartY(startY);
+        this.setStartX(posX);
+        this.setStartY(posY);
         this.material = material;
         
         // Erstellt das Shape
@@ -86,9 +86,9 @@ public class Ball extends Obstacle {
     public void setSize(final double size) {
         Circle c = (Circle) this.getShape();
         if (c != null) {
-            c.setRadius(size);
+            c.setRadius(size / 2);
         }
-        super.setSize(size);
+        super.setSize(size / 2);
     }
 
     public void setMaterial(Material material) {
@@ -100,7 +100,7 @@ public class Ball extends Obstacle {
         service.submit(new Runnable() {
             @Override
             public void run() {
-                for (int t = 0; t < 100; t++) {
+                for (int t = 0; t < 200; t++) {
                     try {
                         Thread.sleep(33);
                     } catch (Exception e) {

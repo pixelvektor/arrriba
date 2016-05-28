@@ -48,13 +48,14 @@
       </MenuBar>
       <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <Slider fx:id="sizeSlider" layoutX="33.0" layoutY="77.0" majorTickUnit="50.0" minorTickCount="1" onMouseDragged="#onSizeSlider" value="25.0" />
+            <Slider fx:id="sizeSlider" layoutX="33.0" layoutY="77.0" majorTickUnit="50.0" minorTickCount="1" onMouseDragged="#onSizeSlider" onMousePressed="#onSizeSlider" value="25.0" />
             <NumberTextField fx:id="sizeNTF" layoutX="185.0" layoutY="71.0" onKeyPressed="#onSizeNTF" prefHeight="27.0" prefWidth="70.0" />
             <Label layoutX="40.0" layoutY="43.0" prefHeight="17.0" prefWidth="147.0" text="Größe">
                <font>
                   <Font size="14.0" />
                </font>
             </Label>
+            <Button fx:id="gamePlay" layoutX="121.0" layoutY="212.0" mnemonicParsing="false" onAction="#onGamePlay" text="Play" />
          </children></Pane>
       <ScrollPane prefHeight="971.0" prefWidth="1299.0" GridPane.rowIndex="1">
          <content>

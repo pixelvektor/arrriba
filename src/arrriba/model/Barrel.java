@@ -49,8 +49,8 @@ public class Barrel extends Obstacle {
     public void setSize(final double size) {
         Circle c = (Circle) this.getShape();
         if (c != null) {
-            c.setRadius(size);
+            c.setRadius(size / 2);
         }
-        super.setSize(size);
+        super.setSize(size / 2);
     }
 }

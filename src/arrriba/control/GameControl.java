@@ -5,10 +5,12 @@
  */
 package arrriba.control;
 
+import arrriba.model.Ball;
 import arrriba.model.Barrel;
 import arrriba.model.Box;
 import arrriba.model.Obstacle;
 import arrriba.model.Puffer;
+import arrriba.model.Spring;
 import arrriba.view.NumberTextField;
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,6 +58,9 @@ public class GameControl implements Initializable, Observer {
     /** Alle Gegenstaende auf dem Spielfeld. */
     private final ArrayList<Obstacle> obstacles = new ArrayList<>();
     
+    /** Alle Baelle, die sich im Spiel befinden. */
+    private ArrayList<Ball> balls = new ArrayList<>();
+    
     private final EventHandler<MouseEvent> shapeOnMousePressedEH;
     
     private final EventHandler<MouseEvent> shapeOnMouseDraggedEH;
@@ -84,7 +89,17 @@ public class GameControl implements Initializable, Observer {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
+        // Temp Offset
+        int offset = 50;
+        for (int i = 0; i < 1; i++) {
+            Ball b = new Ball(30,
+                    200 + offset * i,
+                    200 + (offset * i) / 2,
+                    1, 2);
+            b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+            balls.add(b);
+            gameArea.getChildren().add(b.getShape());
+        }
     }
     
     @Override
@@ -104,7 +119,7 @@ public class GameControl implements Initializable, Observer {
      */
     @FXML
     public void onBarrelMenuItem() {
-        Barrel barrel = new Barrel(50, 165, 10);
+        Barrel barrel = new Barrel(50, 165, 20);
         barrel.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
         barrel.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
         barrel.addObserver(this);
@@ -127,6 +142,9 @@ public class GameControl implements Initializable, Observer {
         activeShape = box.getShape();
     }
     
+    /** Erstellt einen neue Kugelfisch.
+     * Kugelfisch wird dem Spielfeld hinzugefuegt.
+     */
     @FXML
     public void onPufferMenuItem() {
         Puffer puffer = new Puffer(100, 130, 15);
@@ -138,11 +156,22 @@ public class GameControl implements Initializable, Observer {
         activeShape = puffer.getShape();
     }
     
+    /** Erstellt eine neue Sprungfeder.
+     * Springfeder wird dem Spielfeld hinzugefuegt.
+     */
     @FXML
     public void onSpringMenuItem() {
-        
+        Spring spring = new Spring(100, 130, 70);
+        spring.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+        spring.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
+        spring.addObserver(this);
+        obstacles.add(spring);
+        gameArea.getChildren().add(spring.getShape());
+        activeShape = spring.getShape();
     }
     
+    /** Ruft das Hilfefenster auf.
+     */
     @FXML
     public void onHelpMenuItem() {
         try {
@@ -159,6 +188,13 @@ public class GameControl implements Initializable, Observer {
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    @FXML
+    public void onGamePlay() {
+        for (Ball b : balls) {
+            b.rollin();
         }
     }
     
