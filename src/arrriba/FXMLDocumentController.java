@@ -8,6 +8,7 @@ package arrriba;
  */
 
 import arrriba.model.Ball;
+import arrriba.model.GameModel;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -36,7 +37,7 @@ public class FXMLDocumentController implements Initializable {
     
     private ArrayList<Shape> shapes = new ArrayList<>();
     
-    private ArrayList<Obstacle> obstacles = new ArrayList<>();
+    private ArrayList<GameModel> balls = new ArrayList<>();
     
     private Ball ball;
     private Circle circle;
@@ -50,10 +51,12 @@ public class FXMLDocumentController implements Initializable {
     }
 
     public void create(){
-        ball = new Ball(40, 40.0, 40.0, 5.0, 5.0, 40.0, 40.0);
-        obstacles.add(ball);
+
+        ball = new Ball(40, 40.0, 40.0, 5.0, 5.0);
+        balls.add(ball);
+
         
-        circle = (Circle) obstacles.get(0).getShape();
+        circle = (Circle) balls.get(0).getShape();
         shapes.add(circle);
         gameArea.getChildren().add(circle);
         circle.setCenterX(ball.getPosX());
@@ -71,6 +74,7 @@ public class FXMLDocumentController implements Initializable {
         });
     }
     
+
     
 
     private void updatePosition() {

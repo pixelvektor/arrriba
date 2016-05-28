@@ -5,16 +5,20 @@
  */
 package arrriba.control;
 
+import arrriba.model.Ball;
 import arrriba.model.Barrel;
 import arrriba.model.Box;
 import arrriba.model.Obstacle;
 import arrriba.model.Puffer;
+import arrriba.model.Spring;
 import arrriba.view.NumberTextField;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -50,11 +54,16 @@ public class GameControl implements Initializable, Observer {
     @FXML
     private Pane gameArea;
     
+    private Timer timer;
+    
     /** Angewaehltes Shape. */
     private Shape activeShape = null;
     
     /** Alle Gegenstaende auf dem Spielfeld. */
     private final ArrayList<Obstacle> obstacles = new ArrayList<>();
+    
+    /** Alle Baelle, die sich im Spiel befinden. */
+    private ArrayList<Ball> balls = new ArrayList<>();
     
     private final EventHandler<MouseEvent> shapeOnMousePressedEH;
     
@@ -84,7 +93,27 @@ public class GameControl implements Initializable, Observer {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                nextStep();
+            }
+        };
         
+        timer = new Timer(true);
+        timer.schedule(timerTask, 0, 30);
+        
+        // Temp Offset
+        int offset = 50;
+        for (int i = 0; i < 1; i++) {
+            Ball b = new Ball(30,
+                    200 + offset * i,
+                    200 + (offset * i) / 2,
+                    1, 2);
+            b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+            balls.add(b);
+            gameArea.getChildren().add(b.getShape());
+        }
     }
     
     @Override
@@ -104,7 +133,7 @@ public class GameControl implements Initializable, Observer {
      */
     @FXML
     public void onBarrelMenuItem() {
-        Barrel barrel = new Barrel(50, 165, 10);
+        Barrel barrel = new Barrel(50, 165, 20);
         barrel.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
         barrel.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
         barrel.addObserver(this);
@@ -127,6 +156,9 @@ public class GameControl implements Initializable, Observer {
         activeShape = box.getShape();
     }
     
+    /** Erstellt einen neue Kugelfisch.
+     * Kugelfisch wird dem Spielfeld hinzugefuegt.
+     */
     @FXML
     public void onPufferMenuItem() {
         Puffer puffer = new Puffer(100, 130, 15);
@@ -138,11 +170,22 @@ public class GameControl implements Initializable, Observer {
         activeShape = puffer.getShape();
     }
     
+    /** Erstellt eine neue Sprungfeder.
+     * Springfeder wird dem Spielfeld hinzugefuegt.
+     */
     @FXML
     public void onSpringMenuItem() {
-        
+        Spring spring = new Spring(100, 130, 70);
+        spring.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+        spring.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
+        spring.addObserver(this);
+        obstacles.add(spring);
+        gameArea.getChildren().add(spring.getShape());
+        activeShape = spring.getShape();
     }
     
+    /** Ruft das Hilfefenster auf.
+     */
     @FXML
     public void onHelpMenuItem() {
         try {
@@ -163,6 +206,13 @@ public class GameControl implements Initializable, Observer {
     }
     
     @FXML
+    public void onGamePlay() {
+        for (Ball b : balls) {
+            b.rollin();
+        }
+    }
+    
+    @FXML
     public void onSizeSlider() {
         double roundedSlider = (double) Math.round(sizeSlider.getValue() * 10) / 10;
         ((Obstacle) activeShape.getUserData()).setSize(roundedSlider);
@@ -172,5 +222,13 @@ public class GameControl implements Initializable, Observer {
     @FXML
     public void onSizeNTF() {
         System.out.println(sizeNTF.getValue());
+    }
+    
+    long startTime = System.currentTimeMillis();
+    
+    private void nextStep() {
+        long newTime = System.currentTimeMillis();
+        System.out.println("Vergangen: " + (newTime - startTime));
+        startTime = newTime;
     }
 }
