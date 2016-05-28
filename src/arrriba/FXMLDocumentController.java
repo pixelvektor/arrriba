@@ -1,3 +1,5 @@
+package arrriba;
+
 
 /**
  * Hochschule Hamm-Lippstadt
@@ -14,6 +16,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.shape.Circle;
 import arrriba.model.ModelListener;
+import arrriba.model.Obstacle;
+import java.util.ArrayList;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Shape;
 
 /**
  *
@@ -25,17 +32,34 @@ public class FXMLDocumentController implements Initializable {
     private Button ball0;
     
     @FXML
-    private Circle ball01;
+    private AnchorPane gameArea;
+    
+    private ArrayList<Shape> shapes = new ArrayList<>();
+    
+    private ArrayList<Obstacle> obstacles = new ArrayList<>();
+    
+    private Ball ball;
+    private Circle circle;
 
-    private Ball ball = new Ball(40, 20.0, 20.0, 10.0, 5.0, 20.0, 20.0);
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        ball01.setCenterX(ball.getPosX());
-        ball01.setCenterY(ball.getPosY());
-        ball01.setRadius(ball.getSize());
+        
     }
 
+    public void create(){
+        ball = new Ball(40, 40.0, 40.0, 5.0, 0.0, 40.0, 40.0);
+        obstacles.add(ball);
+        
+        circle = (Circle) obstacles.get(0).getShape();
+        shapes.add(circle);
+        gameArea.getChildren().add(circle);
+        circle.setCenterX(ball.getPosX());
+        circle.setCenterY(ball.getPosY());
+        circle.setRadius(ball.getSize());
+    }
+    
     public void move() {
         ball.rollin();
         ball.addListener(new ModelListener() {
@@ -45,14 +69,31 @@ public class FXMLDocumentController implements Initializable {
             }
         });
     }
+    
+    private void checkCollision() {
+        if(ball.getPosX()+41>=1600){
+            circle.setFill(Paint.valueOf("BLUE"));
+            ball.setStartX(1560);
+            System.out.println(ball.getStartX());
+            ball.setStartY(ball.getPosY());
+            ball.setVelocityX(0-ball.getVelocityX());
+            ball.setVelocityY(0-ball.getVelocityY());
+            ball.setPosX(ball.getStartX());
+        }
+    }
+    
 
     private void updatePosition() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                ball01.setCenterX(ball.getPosX());
-                ball01.setCenterY(ball.getPosY());
+
+                checkCollision();
+                circle.setCenterX(ball.getPosX());
+                circle.setCenterY(ball.getPosY());
             }
+
+            
         });
     }
 }

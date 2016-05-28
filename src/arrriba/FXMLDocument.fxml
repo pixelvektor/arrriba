@@ -7,9 +7,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="1000.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXMLDocumentController">
+<AnchorPane id="AnchorPane" fx:id="gameArea" prefHeight="1000.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arrriba.FXMLDocumentController">
    <children>
       <Button fx:id="ball0" layoutX="141.0" layoutY="355.0" mnemonicParsing="false" onAction="#move" prefHeight="100.0" prefWidth="100.0" text="Beweg dich!" />
-      <Circle fx:id="ball01" fill="DODGERBLUE" layoutX="191.0" layoutY="141.0" radius="100.0" />
+      <Button layoutX="292.0" layoutY="393.0" mnemonicParsing="false" onAction="#create" text="Erstell" />
    </children>
 </AnchorPane>
