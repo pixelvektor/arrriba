@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,6 +53,8 @@ public class GameControl implements Initializable, Observer {
     // Spielfeld
     @FXML
     private Pane gameArea;
+    
+    private Timer timer;
     
     /** Angewaehltes Shape. */
     private Shape activeShape = null;
@@ -89,6 +93,16 @@ public class GameControl implements Initializable, Observer {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                nextStep();
+            }
+        };
+        
+        timer = new Timer(true);
+        timer.schedule(timerTask, 0, 30);
+        
         // Temp Offset
         int offset = 50;
         for (int i = 0; i < 1; i++) {
@@ -208,5 +222,13 @@ public class GameControl implements Initializable, Observer {
     @FXML
     public void onSizeNTF() {
         System.out.println(sizeNTF.getValue());
+    }
+    
+    long startTime = System.currentTimeMillis();
+    
+    private void nextStep() {
+        long newTime = System.currentTimeMillis();
+        System.out.println("Vergangen: " + (newTime - startTime));
+        startTime = newTime;
     }
 }

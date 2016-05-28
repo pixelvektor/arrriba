@@ -21,7 +21,7 @@ public class Ball extends GameModel {
     private double startX;
     private double velocityY;
     private double startY;
-    private static final double FRICTION= -0.1;
+    private static final double FRICTION= 0.0;
     private static final double NUMBER = 0.5;
 
     private Material material;
@@ -58,6 +58,10 @@ public class Ball extends GameModel {
         return velocityX;
     }
     
+    public double getStartX(){
+        return startX;
+    }
+    
     public double getVelocityY() {
         return velocityY;
     }
@@ -67,18 +71,18 @@ public class Ball extends GameModel {
     }
     
     public void setVelocityX(final double velocity) {
-        this.velocityX = velocity < 0 ? 0 : velocity;
+        this.velocityX = velocity;
     }
     
     public void setVelocityY(final double velocity) {
-        this.velocityY = velocity < 0 ? 0 : velocity;
+        this.velocityY = velocity;
     }
     
-    private void setStartX(final double startX) {
+    public void setStartX(final double startX) {
         this.startX = startX;
     }
     
-    private void setStartY(final double startY) {
+    public void setStartY(final double startY) {
         this.startY = startY;
     }
     
@@ -100,7 +104,7 @@ public class Ball extends GameModel {
         service.submit(new Runnable() {
             @Override
             public void run() {
-                for (int t = 0; t < 200; t++) {
+                for (int t = 0; t < 400; t++) {
                     try {
                         Thread.sleep(33);
                     } catch (Exception e) {
@@ -109,9 +113,6 @@ public class Ball extends GameModel {
                     double y = NUMBER*FRICTION*t*t+t*velocityY+startY;
                     setPosX(x);
                     setPosY(y);
-                    Circle c = (Circle) getShape();
-                    c.setCenterX(getPosX());
-                    c.setCenterY(getPosY());
                     callListener();
                 }
                 service.shutdown();
