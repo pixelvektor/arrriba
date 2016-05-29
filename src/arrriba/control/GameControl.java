@@ -20,12 +20,10 @@ import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -126,7 +124,7 @@ public class GameControl implements Initializable, Observer {
             Ball b = new Ball(100,
                     200 + offset * i,
                     200 + (offset * i) / 2,
-                    1, 2);
+                    10, 10);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
             gameArea.getChildren().add(b.getShape());
@@ -143,8 +141,6 @@ public class GameControl implements Initializable, Observer {
         
         timer = new Timer(true);
         timer.schedule(timerTask, 0, 30);
-        
-        
     }
     
     @Override
@@ -282,6 +278,8 @@ public class GameControl implements Initializable, Observer {
      */
     private void createWall() {
         String styleClass = "wall";
+        // Eckdaten aller Waende
+        // Format: posX, posY, width, height, rotation
         double[][] config = {{0, 77, 1200, 43, 0},
             {0, 884, 1200, 43, 0},
             {1202, 83, 100, 43, 7.5},
