@@ -5,7 +5,10 @@
  */
 package arrriba.view;
 
+import java.util.regex.Pattern;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.util.converter.DoubleStringConverter;
 
 /**
  *
@@ -14,22 +17,35 @@ import javafx.scene.control.TextField;
 public class NumberTextField extends TextField {
     private double value;
     
+    public NumberTextField() {
+        Pattern doublePattern = Pattern.compile(
+                "((([0-9])\\d*\\.([0-9])\\d*)|(([0-9])\\d*\\.)|(([0-9])\\d*))");
+        
+        TextFormatter<Double> textFormatter = new TextFormatter<Double>(
+                new DoubleStringConverter(), 0.0,
+                change -> {
+                    String newText = change.getControlNewText();
+                    if (doublePattern.matcher(newText).matches()) {
+                        value = Double.parseDouble(newText);
+                        return change;
+                    } else
+                        return null;
+                });
+        
+        this.setTextFormatter(textFormatter);
+        
+        textFormatter.valueProperty().addListener((obs, oldValue, newValue) -> {
+            System.out.println("new double vlaue: " + newValue);
+        });
+    }
+    
     public double getValue() {
         return value;
     }
     
     public void setValue(final double value) {
-//        double roundedValue = (double) Math.round(value * 10) / 10;
         this.value = value;
         String stringValue = "" + value;
         this.setText(stringValue);
-    }
-    
-    @Override
-    public void replaceText(final int start, final int end, final String text) {
-        if (text.matches("[0-9.]") || text.isEmpty()) {
-            super.replaceText(start, end, text);
-            this.value = Double.parseDouble(super.getText());
-        }
     }
 }

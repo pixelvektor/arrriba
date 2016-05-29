@@ -11,7 +11,6 @@ import arrriba.model.Box;
 import arrriba.model.GameModel;
 import arrriba.model.Puffer;
 import arrriba.model.Spring;
-import arrriba.view.DegreeTextField;
 import arrriba.view.NumberTextField;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class GameControl implements Initializable, Observer {
     private Slider rotationSlider;
     
     @FXML
-    private DegreeTextField rotationDTF;
+    private NumberTextField rotationNTF;
     
     @FXML
     private Label labelPosX;
@@ -96,15 +95,15 @@ public class GameControl implements Initializable, Observer {
             origTranslateX = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosX();
             origTranslateY = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosY();
             
+            // Setzen des aktuellen Shapes als ausgewaehlt
             activeShape = (Shape) e.getSource();
             activeShape.toFront();
             
+            // Laden der aktuellen Werte des Objektes in die Einstellungen
             sizeSlider.setValue(((GameModel) activeShape.getUserData()).getSize());
             sizeNTF.setValue(((GameModel) activeShape.getUserData()).getSize());
             rotationSlider.setValue(((GameModel) activeShape.getUserData()).getRotation());
-            rotationDTF.setValue(((GameModel) activeShape.getUserData()).getRotation());
-            
-            
+            rotationNTF.setValue(((GameModel) activeShape.getUserData()).getRotation());
         };
         
         this.shapeOnMouseDraggedEH = (MouseEvent e) -> {
@@ -118,6 +117,7 @@ public class GameControl implements Initializable, Observer {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        
         // Temp Offset
         int offset = 50;
         for (int i = 0; i < 1; i++) {
@@ -160,7 +160,7 @@ public class GameControl implements Initializable, Observer {
      */
     @FXML
     public void onBarrelMenuItem() {
-        Barrel barrel = new Barrel(50, 165, 20);
+        Barrel barrel = new Barrel(125, 165, 50);
         barrel.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
         barrel.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
         barrel.addObserver(this);
@@ -174,7 +174,7 @@ public class GameControl implements Initializable, Observer {
      */
     @FXML
     public void onBoxMenuItem() {
-        Box box = new Box(100, 130, 70);
+        Box box = new Box(25, 140, 50);
         box.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
         box.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
         box.addObserver(this);
@@ -188,7 +188,7 @@ public class GameControl implements Initializable, Observer {
      */
     @FXML
     public void onPufferMenuItem() {
-        Puffer puffer = new Puffer(100, 130, 15);
+        Puffer puffer = new Puffer(200, 165, 50);
         puffer.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
         puffer.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
         puffer.addObserver(this);
@@ -202,7 +202,7 @@ public class GameControl implements Initializable, Observer {
      */
     @FXML
     public void onSpringMenuItem() {
-        Spring spring = new Spring(100, 130, 70);
+        Spring spring = new Spring(250, 140, 50);
         spring.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
         spring.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
         spring.addObserver(this);
@@ -252,24 +252,48 @@ public class GameControl implements Initializable, Observer {
     @FXML
     public void onSizeSlider() {
         final double size = round(sizeSlider.getValue());
-        ((GameModel) activeShape.getUserData()).setSize(size);
+        if (activeShape != null) {
+            ((GameModel) activeShape.getUserData()).setSize(size);
+        }
         sizeNTF.setValue(size);
     }
 
     @FXML
     public void onSizeNTF() {
-        System.out.println(sizeNTF.getValue());
+        final double origSize = sizeNTF.getValue();
+        double size;
+        
+        if (origSize > 100) {
+            size = 100;
+        } else if (origSize < 20) {
+            size = 20;
+        } else {
+            size = origSize;
+        }
+        
+        sizeNTF.setText(Double.toString(size));
+        if (activeShape != null) {
+            ((GameModel) activeShape.getUserData()).setSize(size);
+        }
+        sizeSlider.setValue(size);
     }
     
     @FXML
     public void onRotationSlider() {
         final double rotation = round(rotationSlider.getValue());
-        ((GameModel) activeShape.getUserData()).setRotation(rotation);
-        rotationDTF.setValue(rotation);
+        if (activeShape != null) {
+            ((GameModel) activeShape.getUserData()).setRotation(rotation);
+        }
+        rotationNTF.setValue(rotation);
     }
     @FXML
     public void onRotationNTF() {
-        System.out.println(rotationDTF.getValue());
+        double rotation = rotationNTF.getValue() % 360;
+        rotationNTF.setText(Double.toString(rotation));
+        if (activeShape != null) {
+            ((GameModel) activeShape.getUserData()).setRotation(rotation);
+        }
+        rotationSlider.setValue(rotation);
     }
     
     long startTime = System.currentTimeMillis();

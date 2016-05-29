@@ -68,7 +68,7 @@
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <DegreeTextField fx:id="rotationDTF" onKeyPressed="#onRotationNTF" prefHeight="27.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <NumberTextField fx:id="rotationNTF" onAction="#onRotationNTF" prefHeight="27.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Slider fx:id="sizeSlider" majorTickUnit="50.0" min="20.0" minorTickCount="1" onMouseDragged="#onSizeSlider" onMousePressed="#onSizeSlider" value="20.0" GridPane.rowIndex="1" />
                               <Label prefHeight="17.0" prefWidth="147.0" text="Größe">
                                  <font>
@@ -78,7 +78,7 @@
                                     <Insets top="20.0" />
                                  </padding>
                               </Label>
-                              <NumberTextField fx:id="sizeNTF" onKeyPressed="#onSizeNTF" prefHeight="27.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <NumberTextField fx:id="sizeNTF" onAction="#onSizeNTF" prefHeight="27.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label prefHeight="17.0" prefWidth="147.0" text="Rotation" GridPane.rowIndex="2">
                                  <font>
                                     <Font size="14.0" />
@@ -87,7 +87,7 @@
                                     <Insets top="20.0" />
                                  </padding>
                               </Label>
-                              <Slider fx:id="rotationSlider" majorTickUnit="50.0" max="359.0" minorTickCount="1" onMouseDragged="#onRotationSlider" onMousePressed="#onRotationSlider" GridPane.rowIndex="3" />
+                              <Slider fx:id="rotationSlider" majorTickUnit="50.0" max="359.9" minorTickCount="1" onMouseDragged="#onRotationSlider" onMousePressed="#onRotationSlider" GridPane.rowIndex="3" />
                               <Label text="Material" GridPane.rowIndex="4">
                                  <padding>
                                     <Insets top="20.0" />
@@ -118,7 +118,7 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="969.0" prefWidth="1298.0">
                      <children>
-                        <Pane fx:id="gameArea" prefHeight="969.0" prefWidth="1298.0"/>
+                        <Pane fx:id="gameArea" prefHeight="969.0" prefWidth="1298.0" />
                      </children>
                   </VBox>
                </children>
