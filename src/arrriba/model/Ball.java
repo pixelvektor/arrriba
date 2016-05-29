@@ -17,8 +17,9 @@ import javafx.scene.shape.Circle;
  * @author fabian
  */
 public class Ball extends GameModel {
-    private double velocity;
+    private double velocityX;
     private double startX;
+    private double velocityY;
     private double startY;
     private static final double FRICTION= 0.0;
     private static final double NUMBER = 0.5;
@@ -26,9 +27,9 @@ public class Ball extends GameModel {
     private double gY=40-960;
     private double ngX=-gY;
     private double ngY=gX;
-    private double grad;
-    private double cos;
-    private double sin;
+    private double grad=15;
+    private double cos= Math.cos(Math.toRadians(grad));
+    private double sin= Math.sin(Math.toRadians(grad));
     private double vX;
     private double vY;
     private double hit;
@@ -39,12 +40,12 @@ public class Ball extends GameModel {
     private final ExecutorService service = Executors.newCachedThreadPool();
     
     public Ball(final int size, final double posX, final double posY,
-            final double velocity, final double grad) {
-        this(size, posX, posY, velocity, grad, new Wood());
+            final double velocityX, final double velocityY) {
+        this(size, posX, posY, velocityX, velocityY, new Wood());
     }
     
     public Ball(final int size, final double posX, final double posY,
-            final double velocity, final double grad, final Material material) {
+            final double velocityX, final double velocityY, final Material material) {
         // Erstellt das Shape
         Circle shape = new Circle(posX, posY, size / 2);
         shape.setFill(Paint.valueOf("RED"));
@@ -53,43 +54,40 @@ public class Ball extends GameModel {
         this.setSize(size);
         this.setPosX(posX);
         this.setPosY(posY);
-        this.setVelocity(velocity);
-        this.setGrad(grad);
+        this.setVelocityX(velocityX);
+        this.setVelocityY(velocityY);
         this.setStartX(posX);
         this.setStartY(posY);
         this.material = material;
-        
-        cos= Math.cos(Math.toRadians(grad));
-        sin= Math.sin(Math.toRadians(grad));
-        vX=velocity*cos;
-        vY=velocity*sin;
+        vX=velocityX*cos;
+        vY=velocityY*sin;
         double e= VectorCalculation.times(ngX, ngY, startX-1560, startY-0);
         double d= Math.abs(e)/VectorCalculation.abs(ngX, ngY);               
         hit =d/vX;
     }
 
-    public double getVelocity() {
-        return velocity;
+    public double getVelocityX() {
+        return velocityX;
     }
     
     public double getStartX(){
         return startX;
     }
     
-    public double getGrad() {
-        return grad;
+    public double getVelocityY() {
+        return velocityY;
     }
 
     public Material getMaterial() {
         return material;
     }
     
-    public void setVelocity(final double velocity) {
-        this.velocity = velocity;
+    public void setVelocityX(final double velocity) {
+        this.velocityX = velocity;
     }
     
-    public void setGrad(final double grad) {
-        this.grad = grad;
+    public void setVelocityY(final double velocity) {
+        this.velocityY = velocity;
     }
     
     public void setStartX(final double startX) {
