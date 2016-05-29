@@ -16,7 +16,7 @@ import javafx.scene.shape.Circle;
 public class Puffer extends GameModel {
     public Puffer (final double posX, final double posY, final double size) {
         Circle shape = new Circle(posX, posY, size / 2);
-        Image texture = new Image("/arrriba/view/Textur.png");
+        Image texture = new Image("/arrriba/view/Kugelfisch.png");
         shape.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
         shape.getStyleClass().add("puffer");
         this.setShape(shape);

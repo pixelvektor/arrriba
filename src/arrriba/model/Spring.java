@@ -17,7 +17,7 @@ public class Spring extends GameModel {
     
     public Spring (final double posX, final double posY, final double size) {
         Rectangle shape = new Rectangle(posX, posY, size, size);
-        Image texture = new Image("/arrriba/view/Textur.png");
+        Image texture = new Image("/arrriba/view/Sprungfeder.png");
         shape.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
         shape.getStyleClass().add("spring");
         this.setShape(shape);

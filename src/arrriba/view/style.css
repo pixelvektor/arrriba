@@ -12,15 +12,15 @@
     -fx-stroke: black;
 }
 
-.puffer {
+/*.puffer {
     -fx-stroke-width: 4px;
     -fx-stroke: #ff00ff;
-}
+}*/
 
-.spring {
+/*.spring {
     -fx-stroke-width: 4px;
     -fx-stroke: #99ff00;
-}
+}*/
 
 .collision {
     -fx-stroke: #00ffff;
