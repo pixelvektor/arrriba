@@ -11,6 +11,7 @@ import arrriba.model.Box;
 import arrriba.model.GameModel;
 import arrriba.model.Puffer;
 import arrriba.model.Spring;
+import arrriba.model.VectorCalculation;
 import arrriba.view.NumberTextField;
 import java.net.URL;
 import java.util.ArrayList;
@@ -61,6 +62,15 @@ public class GameControl implements Initializable, Observer {
     // Spielfeld
     @FXML
     private Pane gameArea;
+    
+    private Ball subject;
+    
+    private double gX=1248-1248;
+    private double gY=50-946;
+    private double ngX=-gY;
+    private double ngY=gX;
+    private double hit;
+    private int zeroCounter=0; 
     
     /** Timer fuer die regelmaessige Berechnung. */
     private Timer timer;
@@ -121,7 +131,9 @@ public class GameControl implements Initializable, Observer {
                     10, 10);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
+            b.addObserver(this);
             gameArea.getChildren().add(b.getShape());
+            
         }
         
         // Erstellen des Timers fuer den Spielablauf
@@ -138,7 +150,37 @@ public class GameControl implements Initializable, Observer {
     
     @Override
     public void update(Observable o, Object arg) {
+        if(subject==null){
+            subject = (Ball) o;
+        }
+        double t=(Double)arg;
+        
+        if(zeroCounter<1){
+            double e= VectorCalculation.times(ngX, ngY, subject.getStartX()-1248, subject.getStartY()-0);
+            double d= Math.abs(e)/VectorCalculation.abs(ngX, ngY);
+            hit =d/Math.abs(subject.getVX());
+        }
+        
+        if(zeroCounter>=1){
+            if(t>=hit){            
+                    subject.setLastHit(t);
+                    
+                    double gamma = Math.toDegrees(Math.atan(subject.getVY()/subject.getVX()))-(2*Math.toDegrees(Math.atan(ngY/ngX)));
+                    subject.setVX(VectorCalculation.abs(subject.getVX(),subject.getVY())*Math.cos(gamma));
+                    subject.setVY(VectorCalculation.abs(subject.getVX(),subject.getVY())*Math.sin(Math.toRadians(gamma)));
+                    
+                    subject.setStartX(subject.getPosX());
+                    subject.setStartY(subject.getPosY());
+
+            }
+        }
+        if(t==0){
+            zeroCounter=zeroCounter+1;
+        }
+
     }
+    
+    
     
     /** Schliesst das Fenster und beendet das Programm.
      */

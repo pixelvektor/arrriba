@@ -22,7 +22,8 @@ public class GameModel extends Observable {
     private double size;
     private Shape shape;
     private ArrayList<ModelListener> listener = new ArrayList<ModelListener>();
-
+    private double[] cornerPoints;
+    
     public double getPosX() {
         return posX;
     }
@@ -46,6 +47,18 @@ public class GameModel extends Observable {
     public Shape getShape() {
         return shape;
     }
+    
+    public double[] getCornerPoints(){
+        
+        if (isCircle()) {
+            //double[] cornerPoints={getPosX(),getPosY(),getPosX()+r.getWidth(),getPosY(),getPosX()+r.getWidth(),getPosY()+r.getHeight(),getPosX()+r.getHeight()};
+        } else {
+            Rectangle r = (Rectangle) this.shape;
+            double[] cornerPoints={getPosX(),getPosY(),getPosX()+r.getWidth(),getPosY(),getPosX()+r.getWidth(),getPosY()+r.getHeight(),getPosX()+r.getHeight()};
+            return cornerPoints;
+        }      
+        return cornerPoints;
+    }
 
     public void setPosX(final double posX) {
         this.posX = posX;
@@ -56,8 +69,8 @@ public class GameModel extends Observable {
             Rectangle r = (Rectangle) this.shape;
             r.setX(posX);
         }
-        this.setChanged();
-        this.notifyObservers();
+        //this.setChanged();
+        //this.notifyObservers();
     }
 
     public void setPosY(final double posY) {
@@ -69,8 +82,8 @@ public class GameModel extends Observable {
             Rectangle r = (Rectangle) this.shape;
             r.setY(posY);
         }
-        this.hasChanged();
-        this.notifyObservers();
+        //this.hasChanged();
+        //this.notifyObservers();
     }
 
     public void setRotation(final double rotation) {
