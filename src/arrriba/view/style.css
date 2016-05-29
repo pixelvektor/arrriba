@@ -12,16 +12,6 @@
     -fx-stroke: black;
 }
 
-/*.puffer {
-    -fx-stroke-width: 4px;
-    -fx-stroke: #ff00ff;
-}*/
-
-/*.spring {
-    -fx-stroke-width: 4px;
-    -fx-stroke: #99ff00;
-}*/
-
 .collision {
     -fx-stroke: #00ffff;
 }

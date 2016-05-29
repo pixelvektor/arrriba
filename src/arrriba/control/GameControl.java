@@ -58,12 +58,6 @@ public class GameControl implements Initializable, Observer {
     @FXML
     private NumberTextField rotationNTF;
     
-    @FXML
-    private Label labelPosX;
-    
-    @FXML
-    private Label labelPosY;
-    
     // Spielfeld
     @FXML
     private Pane gameArea;
@@ -130,8 +124,7 @@ public class GameControl implements Initializable, Observer {
             gameArea.getChildren().add(b.getShape());
         }
         
-        createWall();
-        
+        // Erstellen des Timers fuer den Spielablauf
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
@@ -297,26 +290,6 @@ public class GameControl implements Initializable, Observer {
     }
     
     long startTime = System.currentTimeMillis();
-    
-    /** Erstellt die Waende des Schiffes fuer die Kollisionskontrolle.
-     */
-    private void createWall() {
-        String styleClass = "wall";
-        // Eckdaten aller Waende
-        // Format: posX, posY, width, height, rotation
-        double[][] config = {{0, 77, 1200, 43, 0},
-            {0, 884, 1200, 43, 0},
-            {1202, 83, 100, 43, 7.5},
-            {1202, 878, 100, 43, -7.5}};
-        
-        for (int i = 0; i < config.length; i++) {
-            Rectangle r = new Rectangle(config[i][0], config[i][1], config[i][2], config[i][3]);
-            r.setRotate(config[i][4]);
-            r.getStyleClass().add(styleClass);
-            gameArea.getChildren().add(r);
-            wallElements.add(r);
-        }
-    }
     
     private void nextStep() {
         long newTime = System.currentTimeMillis();
