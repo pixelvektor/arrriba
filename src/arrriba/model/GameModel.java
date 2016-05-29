@@ -104,7 +104,7 @@ public class GameModel extends Observable {
             r.setHeight(size);
             this.size = size;
         }
-        this.hasChanged();
+        this.setChanged();
         this.notifyObservers();
     }
 
@@ -128,6 +128,6 @@ public class GameModel extends Observable {
     }
     
     private boolean isCircle() {
-        return this.getShape().toString().substring(0, 1).equals("C");
+        return this.getShape().toString().contains("Circle");
     }
 }

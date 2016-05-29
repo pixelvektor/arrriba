@@ -10,5 +10,11 @@ package arrriba.model.material;
  * @author fabian
  */
 public class Sponge extends Material {
+    private static final String NAME = "Schwamm";
+
+    @Override
+    public String toString() {
+        return NAME;
+    }
     
 }

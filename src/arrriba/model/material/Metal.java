@@ -10,5 +10,11 @@ package arrriba.model.material;
  * @author fabian
  */
 public class Metal extends Material {
+    private static final String NAME = "Metall";
+
+    @Override
+    public String toString() {
+        return NAME;
+    }
     
 }

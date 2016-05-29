@@ -10,5 +10,10 @@ package arrriba.model.material;
  * @author fabian
  */
 public class Fabric extends Material {
+    private static final String NAME = "Kunststoff";
     
+    @Override
+    public String toString() {
+        return NAME;
+    }
 }
