@@ -10,8 +10,14 @@ package arrriba.model.material;
  * @author fabian
  */
 public class Wood extends Material {
+    private static final String NAME = "Holz";
     
     public Wood() {
         
+    }
+    
+    @Override
+    public String toString() {
+        return NAME;
     }
 }

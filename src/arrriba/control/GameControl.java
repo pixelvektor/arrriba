@@ -12,6 +12,11 @@ import arrriba.model.GameModel;
 import arrriba.model.Puffer;
 import arrriba.model.Spring;
 import arrriba.model.VectorCalculation;
+import arrriba.model.material.Fabric;
+import arrriba.model.material.Material;
+import arrriba.model.material.Metal;
+import arrriba.model.material.Sponge;
+import arrriba.model.material.Wood;
 import arrriba.view.NumberTextField;
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,12 +25,16 @@ import java.util.Observer;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
@@ -59,11 +68,18 @@ public class GameControl implements Initializable, Observer {
     @FXML
     private NumberTextField rotationNTF;
     
+    @FXML
+    private ChoiceBox<Material> materialMenu;
+    
     // Spielfeld
     @FXML
     private Pane gameArea;
       
     private int t=0;
+  
+    /** Materialien. */
+    private final ArrayList<Material> materials = new ArrayList<>();
+
     
     /** Timer fuer die regelmaessige Berechnung. */
     private Timer timer;
@@ -83,6 +99,7 @@ public class GameControl implements Initializable, Observer {
     
     private final EventHandler<MouseEvent> shapeOnMouseDraggedEH;
     
+    /** Hilfskoordinaten fuer die Verschiebung der Elemente. */
     private double origSceneX, origSceneY, origTranslateX, origTranslateY;
     private boolean play=false;
 
@@ -102,6 +119,14 @@ public class GameControl implements Initializable, Observer {
             sizeNTF.setValue(((GameModel) activeShape.getUserData()).getSize());
             rotationSlider.setValue(((GameModel) activeShape.getUserData()).getRotation());
             rotationNTF.setValue(((GameModel) activeShape.getUserData()).getRotation());
+            
+            // Materialmenue bei Baellen
+            if (activeShape.getUserData().toString().contains("Ball")) {
+                materialMenu.disableProperty().set(false);
+                materialMenu.getSelectionModel().select(((Ball) activeShape.getUserData()).getMaterial());
+            } else {
+                materialMenu.disableProperty().set(true);
+            }
         };
         
         this.shapeOnMouseDraggedEH = (MouseEvent e) -> {
@@ -115,14 +140,29 @@ public class GameControl implements Initializable, Observer {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Materialien erstellen
+        materials.add(new Wood());
+        materials.add(new Metal());
+        materials.add(new Fabric());
+        materials.add(new Sponge());
         
+        // Materialmenue
+        materialMenu.setItems(FXCollections.observableArrayList(materials));
+        materialMenu.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                ((Ball) activeShape.getUserData()).setMaterial(materials.get(newValue.intValue()));
+            }
+        });
+        
+        // Baelle erstellen
         // Temp Offset
         int offset = 50;
         for (int i = 0; i < 1; i++) {
             Ball b = new Ball(100,
                     200 + offset * i,
                     200 + (offset * i) / 2,
-                    10, 10);
+                    10, 10, materials.get(i));
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
             b.addObserver(this);
