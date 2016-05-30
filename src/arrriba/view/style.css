@@ -19,3 +19,8 @@
 .wall {
     -fx-opacity: 0;
 }
+
+.active {
+    -fx-stroke: #33ff33;
+    -fx-stroke-width: 4px;
+}

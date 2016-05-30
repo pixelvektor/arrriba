@@ -9,7 +9,7 @@ package arrriba.model.material;
  *
  * @author fabian
  */
-public class Fabric extends Material {
+public class Plastic extends Material {
     private static final String NAME = "Kunststoff";
     
     @Override

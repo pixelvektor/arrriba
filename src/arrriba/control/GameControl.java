@@ -12,7 +12,7 @@ import arrriba.model.GameModel;
 import arrriba.model.Puffer;
 import arrriba.model.Spring;
 import arrriba.model.VectorCalculation;
-import arrriba.model.material.Fabric;
+import arrriba.model.material.Plastic;
 import arrriba.model.material.Material;
 import arrriba.model.material.Metal;
 import arrriba.model.material.Sponge;
@@ -35,7 +35,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
@@ -69,6 +68,12 @@ public class GameControl implements Initializable, Observer {
     private NumberTextField rotationNTF;
     
     @FXML
+    private NumberTextField posXNTF;
+    
+    @FXML
+    private NumberTextField posYNTF;
+    
+    @FXML
     private ChoiceBox<Material> materialMenu;
     
     // Spielfeld
@@ -93,6 +98,9 @@ public class GameControl implements Initializable, Observer {
     /** Angewaehltes Shape. */
     private Shape activeShape = null;
     
+    /** CSS-Klasse fuer das aktive Shape. */
+    private static final String ACTIVE = "active";
+    
     /** Alle Gegenstaende auf dem Spielfeld. */
     private final ArrayList<GameModel> obstacles = new ArrayList<>();
     
@@ -116,7 +124,11 @@ public class GameControl implements Initializable, Observer {
             origTranslateY = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosY();
             
             // Setzen des aktuellen Shapes als ausgewaehlt
+            if (activeShape != null) {
+                activeShape.getStyleClass().remove(ACTIVE);
+            }
             activeShape = (Shape) e.getSource();
+            activeShape.getStyleClass().add(ACTIVE);
             activeShape.toFront();
             
             // Laden der aktuellen Werte des Objektes in die Einstellungen
@@ -124,13 +136,19 @@ public class GameControl implements Initializable, Observer {
             sizeNTF.setValue(((GameModel) activeShape.getUserData()).getSize());
             rotationSlider.setValue(((GameModel) activeShape.getUserData()).getRotation());
             rotationNTF.setValue(((GameModel) activeShape.getUserData()).getRotation());
+            posXNTF.setValue(((GameModel) activeShape.getUserData()).getPosX());
+            posYNTF.setValue(((GameModel) activeShape.getUserData()).getPosY());
             
             // Materialmenue bei Baellen
             if (activeShape.getUserData().toString().contains("Ball")) {
                 materialMenu.disableProperty().set(false);
+                posXNTF.disableProperty().set(true);
+                posYNTF.disableProperty().set(true);
                 materialMenu.getSelectionModel().select(((Ball) activeShape.getUserData()).getMaterial());
             } else {
                 materialMenu.disableProperty().set(true);
+                posXNTF.disableProperty().set(false);
+                posYNTF.disableProperty().set(false);
             }
         };
         
@@ -148,7 +166,7 @@ public class GameControl implements Initializable, Observer {
         // Materialien erstellen
         materials.add(new Wood());
         materials.add(new Metal());
-        materials.add(new Fabric());
+        materials.add(new Plastic());
         materials.add(new Sponge());
         
         // Materialmenue
@@ -172,7 +190,6 @@ public class GameControl implements Initializable, Observer {
             balls.add(b);
             b.addObserver(this);
             gameArea.getChildren().add(b.getShape());
-            
         }
         
         // Erstellen des Timers fuer den Spielablauf
@@ -219,8 +236,6 @@ public class GameControl implements Initializable, Observer {
 
     }
     
-    
-    
     /** Schliesst das Fenster und beendet das Programm.
      */
     @FXML
@@ -240,7 +255,6 @@ public class GameControl implements Initializable, Observer {
         barrel.addObserver(this);
         obstacles.add(barrel);
         gameArea.getChildren().add(barrel.getShape());
-        activeShape = barrel.getShape();
     }
     
     /** Erstellt eine neue Kiste.
@@ -254,10 +268,9 @@ public class GameControl implements Initializable, Observer {
         box.addObserver(this);
         obstacles.add(box);
         gameArea.getChildren().add(box.getShape());
-        activeShape = box.getShape();
     }
     
-    /** Erstellt einen neue Kugelfisch.
+    /** Erstellt einen neuen Kugelfisch.
      * Kugelfisch wird dem Spielfeld hinzugefuegt.
      */
     @FXML
@@ -268,7 +281,6 @@ public class GameControl implements Initializable, Observer {
         puffer.addObserver(this);
         obstacles.add(puffer);
         gameArea.getChildren().add(puffer.getShape());
-        activeShape = puffer.getShape();
     }
     
     /** Erstellt eine neue Sprungfeder.
@@ -282,7 +294,6 @@ public class GameControl implements Initializable, Observer {
         spring.addObserver(this);
         obstacles.add(spring);
         gameArea.getChildren().add(spring.getShape());
-        activeShape = spring.getShape();
     }
     
     /** Ruft das Hilfefenster auf.
@@ -314,7 +325,7 @@ public class GameControl implements Initializable, Observer {
     }
     
     @FXML
-    public void onGamePause() {
+    public void onGameRetry() {
         
     }
     
@@ -368,6 +379,18 @@ public class GameControl implements Initializable, Observer {
             ((GameModel) activeShape.getUserData()).setRotation(rotation);
         }
         rotationSlider.setValue(rotation);
+    }
+    
+    @FXML
+    public void onPosXNTF() {
+        double posX = posXNTF.getValue();
+        ((GameModel) activeShape.getUserData()).setPosX(posX);
+    }
+    
+    @FXML
+    public void onPosYNTF() {
+        double posY = posYNTF.getValue();
+        ((GameModel) activeShape.getUserData()).setPosY(posY);
     }
     
     long startTime = System.currentTimeMillis();
