@@ -54,7 +54,7 @@ public class GameModel extends Observable {
             //double[] cornerPoints={getPosX(),getPosY(),getPosX()+r.getWidth(),getPosY(),getPosX()+r.getWidth(),getPosY()+r.getHeight(),getPosX()+r.getHeight()};
         } else {
             Rectangle r = (Rectangle) this.shape;
-            double[] cornerPoints={getPosX(),getPosY(),getPosX()+r.getWidth(),getPosY(),getPosX()+r.getWidth(),getPosY()+r.getHeight(),getPosX(),getPosY()+r.getHeight(), getPosX(), getPosY()};
+            double[] cornerPoints={getPosX(),getPosY(),getPosX()+r.getWidth(),getPosY(),getPosX()+r.getWidth(),getPosY()+r.getHeight(),getPosX()-40,getPosY()+r.getHeight(), getPosX()-40, getPosY()};
             return cornerPoints;
         }      
         return cornerPoints;

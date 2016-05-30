@@ -426,15 +426,11 @@ public class GameControl implements Initializable, Observer {
         }
     }
     
-    long startTime = System.currentTimeMillis();
-    
     private void nextStep() {
-        long newTime = System.currentTimeMillis();
-//        System.out.println("Vergangen: " + (newTime - startTime));
-        startTime = newTime;
+     
         if(play){
             for (Ball b : balls) {
-                for(GameModel obstacle:obstacles){
+                for(GameModel obstacle:obstacles){                   
                     b.checkCollision(obstacle,t);
                 }
                 b.rollin(t);

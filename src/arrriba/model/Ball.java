@@ -30,16 +30,11 @@ public class Ball extends GameModel {
     private double startY;
     private static final double FRICTION= 0.0;
     private static final double NUMBER = 0.5;
-    //private double gX=1560-1560;
-    //private double gY=40-960;
-    //private double ngX=-gY;
-    //private double ngY=gX;
     private double grad=15;
     private double cos= Math.cos(Math.toRadians(grad));
     private double sin= Math.sin(Math.toRadians(grad));
     private double vX;
     private double vY;
-    //private double hit;
     private double lastHit=0;
     private ArrayList<Double> gX=new ArrayList<Double>();
     private ArrayList<Double> gY=new ArrayList<Double>();
@@ -49,10 +44,11 @@ public class Ball extends GameModel {
     private int zeroCounter=0; 
     private Boolean punch=true;
     private int lowIndex=0;
-
+    private ArrayList<Integer> hitIndex=new ArrayList<Integer>();
     private Material material;
     
     private final ExecutorService service = Executors.newCachedThreadPool();
+
     
     public Ball(final int size, final double posX, final double posY,
             final double velocityX, final double velocityY) {
@@ -76,9 +72,6 @@ public class Ball extends GameModel {
         this.material = material;
         vX=velocityX*cos;
         vY=velocityY*sin;
-        //double e= VectorCalculation.times(ngX, ngY, startX-1560, startY-0);
-        //double d= Math.abs(e)/VectorCalculation.abs(ngX, ngY);               
-        //hit =d/vX;
     }
 
     public double getVelocityX() {
@@ -157,45 +150,27 @@ public class Ball extends GameModel {
                     ngY.add(gX.get(gX.size()-1));
                     double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getStartX()-cornerPoints[c], getStartY()-cornerPoints[c+1]);
                     double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
-                    double x=-(cornerPoints[c+2]-cornerPoints[c]);
-                    if((cornerPoints[c+2]-cornerPoints[c])==0){
-                        x=(cornerPoints[c+2]-cornerPoints[c]);
-                    }
+                    
                     RealMatrix coefficients =
-                    new Array2DRowRealMatrix(new double[][] { { getVX()-getStartX(),x}, { getVY()-getStartY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
+                    new Array2DRowRealMatrix(new double[][] { { (getVX()+200)-getStartX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
+                        { (getVY()+200)-getStartY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
                        false);
                     DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
+                    
                     RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getStartX(),cornerPoints[c+1]-getStartY()}, false);
-                    RealVector solution = solver.solve(constants);                    
-                    //double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
-                    double collX=getStartX()+solution.getEntry(0)*(getVX()-getStartX());
-                    System.out.println(collX + "collX");
-                    System.out.println(cornerPoints[c+2]);
-                    System.out.println(cornerPoints[c]);
-                    //double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
-                    double collY=getStartY()+solution.getEntry(0)*(getVY()-getStartY());
-                    System.out.println(constants.getEntry(0)+ " " + constants.getEntry(1));
-                    System.out.println(solution.getEntry(0)+"w0");
-                    System.out.println(solution.getEntry(1));
-                    System.out.println(collY + "collY");
-                    System.out.println(cornerPoints[c+3]);
-                    System.out.println(cornerPoints[c+1]);
-                    System.out.println(getVX() + "vx");
-                    System.out.println(getVY() + "vy");
-                    System.out.println(getStartX() + "sx");
-                    System.out.println(getStartY() + "sy");
-                    for(int k=0;k<=1;k++){
-                        for(int i=0;i<=1;i++){
-                            System.out.println(coefficients.getRowVector(k).getEntry(i));
-                        }
-                    }
+                    RealVector solution = solver.solve(constants); 
                     
+                    double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
+                    //double collX=getStartX()+solution.getEntry(0)*((getVX()+200)-getStartX());
                     
+                    double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
+                    //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
+                                      
                     if(collX>=cornerPoints[c+2] && collX<=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
                        hit.add(d/Math.abs(getVX())); 
+                       hitIndex.add(c);
                        System.out.println(hit.get(hit.size()-1));
                     }       
-                    //System.out.println(hit.get(hit.size()-1));
                     
                 }
             if(hit.size()>0){    
