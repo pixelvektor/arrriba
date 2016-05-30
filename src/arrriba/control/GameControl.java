@@ -11,7 +11,6 @@ import arrriba.model.Box;
 import arrriba.model.GameModel;
 import arrriba.model.Puffer;
 import arrriba.model.Spring;
-import arrriba.model.VectorCalculation;
 import arrriba.model.material.Plastic;
 import arrriba.model.material.Material;
 import arrriba.model.material.Metal;
@@ -34,9 +33,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -50,9 +52,22 @@ import javafx.stage.StageStyle;
  * @author fabian
  */
 public class GameControl implements Initializable, Observer {
+    // Konstanten
+    /** Anzahl der Baelle im Spiel. */
+    private static final int BALL_COUNT = 1;
+    
+    /** CSS-Klasse fuer das aktive Shape. */
+    private static final String ACTIVE = "active";
+    
     // Menuebar
     @FXML
     private MenuBar menuBar;
+    
+    @FXML
+    private Accordion settingsAccord;
+    
+    @FXML
+    private TitledPane settingsPane0;
     
     // Einstellungen
     @FXML
@@ -76,6 +91,9 @@ public class GameControl implements Initializable, Observer {
     @FXML
     private ChoiceBox<Material> materialMenu;
     
+    @FXML
+    private Button deleteButton;
+    
     // Spielfeld
     @FXML
     private Pane gameArea;
@@ -84,16 +102,15 @@ public class GameControl implements Initializable, Observer {
   
     /** Materialien. */
     private final ArrayList<Material> materials = new ArrayList<>();
-
     
     /** Timer fuer die regelmaessige Berechnung. */
     private Timer timer;
     
+    /** Speichert ob das Spiel laeuft. */
+    private boolean play=false;
+    
     /** Angewaehltes Shape. */
     private Shape activeShape = null;
-    
-    /** CSS-Klasse fuer das aktive Shape. */
-    private static final String ACTIVE = "active";
     
     /** Alle Gegenstaende auf dem Spielfeld. */
     private final ArrayList<GameModel> obstacles = new ArrayList<>();
@@ -109,7 +126,7 @@ public class GameControl implements Initializable, Observer {
     
     /** Hilfskoordinaten fuer die Verschiebung der Elemente. */
     private double origSceneX, origSceneY, origTranslateX, origTranslateY;
-    private boolean play=false;
+    
 
     public GameControl() {
         this.shapeOnMousePressedEH = (MouseEvent e) -> {
@@ -139,11 +156,13 @@ public class GameControl implements Initializable, Observer {
                 materialMenu.disableProperty().set(false);
                 posXNTF.disableProperty().set(true);
                 posYNTF.disableProperty().set(true);
+                deleteButton.disableProperty().set(true);
                 materialMenu.getSelectionModel().select(((Ball) activeShape.getUserData()).getMaterial());
             } else {
                 materialMenu.disableProperty().set(true);
                 posXNTF.disableProperty().set(false);
                 posYNTF.disableProperty().set(false);
+                deleteButton.disableProperty().set(false);
             }
         };
         
@@ -173,19 +192,9 @@ public class GameControl implements Initializable, Observer {
             }
         });
         
-        // Baelle erstellen
-        // Temp Offset
-        int offset = 50;
-        for (int i = 0; i < 1; i++) {
-            Ball b = new Ball(100,
-                    200 + offset * i,
-                    200 + (offset * i) / 2,
-                    10, 10, materials.get(i));
-            b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
-            balls.add(b);
-            b.addObserver(this);
-            gameArea.getChildren().add(b.getShape());
-        }
+        settingsAccord.setExpandedPane(settingsPane0);
+        
+        createBalls();
         
         // Erstellen des Timers fuer den Spielablauf
         TimerTask timerTask = new TimerTask() {
@@ -198,6 +207,8 @@ public class GameControl implements Initializable, Observer {
         timer = new Timer(true);
         timer.schedule(timerTask, 0, 30);
     }
+
+    
     
     @Override
     public void update(Observable o, Object arg) {
@@ -263,6 +274,21 @@ public class GameControl implements Initializable, Observer {
         gameArea.getChildren().add(spring.getShape());
     }
     
+    @FXML
+    public void onOberdeckMI() {
+        System.out.println("arrriba.control.GameControl.onOberdeckMI()");
+    }
+    
+    @FXML
+    public void onZwischendeckMI() {
+        System.out.println("arrriba.control.GameControl.onZwischendeckMI()");
+    }
+    
+    @FXML
+    public void onUnterdeckMI() {
+        System.out.println("arrriba.control.GameControl.onUnterdeckMI()");
+    }
+    
     /** Ruft das Hilfefenster auf.
      */
     @FXML
@@ -286,18 +312,34 @@ public class GameControl implements Initializable, Observer {
     
     @FXML
     public void onGamePlay() {
-        play=true;
+        play = true;
     }
     
     @FXML
     public void onGameRetry() {
+        play = false;
         
+        for (Ball b : balls) {
+            gameArea.getChildren().remove(b.getShape());
+        }
+        balls.removeAll(balls);
+        t = 0;
+        
+        createBalls();
     }
     
     @FXML
     public void onGameReset() {
+        play = false;
         
+        gameArea.getChildren().remove(0, gameArea.getChildren().size());
+        balls.removeAll(balls);
+        obstacles.removeAll(obstacles);
+        t = 0;
+        
+        createBalls();
     }
+    
     
     @FXML
     public void onSizeSlider() {
@@ -356,6 +398,32 @@ public class GameControl implements Initializable, Observer {
     public void onPosYNTF() {
         double posY = posYNTF.getValue();
         ((GameModel) activeShape.getUserData()).setPosY(posY);
+    }
+    
+    @FXML
+    public void onDeleteButton() {
+        gameArea.getChildren().remove(activeShape);
+        obstacles.remove((GameModel) activeShape.getUserData());
+        activeShape = null;
+        deleteButton.disableProperty().set(true);
+    }
+    
+    /** Erstellt die Baelle auf dem Spielfeld.
+     */
+    private void createBalls() {
+        // Baelle erstellen
+        // Temp Offset
+        int offset = 50;
+        for (int i = 0; i < BALL_COUNT; i++) {
+            Ball b = new Ball(100,
+                    200 + offset * i,
+                    200 + (offset * i) / 2,
+                    10, 10, materials.get(i));
+            b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+            balls.add(b);
+            b.addObserver(this);
+            gameArea.getChildren().add(b.getShape());
+        }
     }
     
     long startTime = System.currentTimeMillis();

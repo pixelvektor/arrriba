@@ -41,20 +41,20 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Level">
             <items>
-              <MenuItem mnemonicParsing="false" text="Oberdeck" />
-                  <MenuItem mnemonicParsing="false" text="Zwischendeck" />
-                  <MenuItem mnemonicParsing="false" text="Unterdeck" />
+              <MenuItem fx:id="oberdeckMI" mnemonicParsing="false" onAction="#onOberdeckMI" text="Oberdeck" />
+                  <MenuItem fx:id="zwischendeckMI" mnemonicParsing="false" onAction="#onZwischendeckMI" text="Zwischendeck" />
+                  <MenuItem fx:id="unterdeckMI" mnemonicParsing="false" onAction="#onUnterdeckMI" text="Unterdeck" />
             </items>
           </Menu>
         </menus>
       </MenuBar>
       <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <Accordion prefHeight="410.0" prefWidth="300.0">
+            <Accordion fx:id="settingsAccord" prefHeight="461.0" prefWidth="300.0">
               <panes>
-                <TitledPane animated="false" text="Element">
+                <TitledPane fx:id="settingsPane0" text="Element">
                      <content>
-                        <GridPane maxWidth="-Infinity" minWidth="-Infinity" prefWidth="298.0">
+                        <GridPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="357.0" prefWidth="298.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="184.0" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
@@ -68,6 +68,7 @@
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="70.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
                               <NumberTextField fx:id="rotationNTF" onAction="#onRotationNTF" prefHeight="27.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
@@ -112,18 +113,14 @@
                               </HBox>
                               <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="5">
                                  <children>
-                                    <NumberTextField onAction="#onPosXNTF" prefWidth="80.0" fx:id="posXNTF">
-                                       <HBox.margin>
-                                          <Insets top="6.0" />
-                                       </HBox.margin>
-                                    </NumberTextField>
-                                    <NumberTextField fx:id="posYNTF" onAction="#onPosYNTF" prefWidth="80.0">
-                                       <HBox.margin>
-                                          <Insets left="12.0" top="6.0" />
-                                       </HBox.margin>
-                                    </NumberTextField>
+                                    <NumberTextField fx:id="posXNTF" onAction="#onPosXNTF" prefWidth="80.0" />
+                                    <NumberTextField fx:id="posYNTF" onAction="#onPosYNTF" prefWidth="80.0" />
                                  </children>
                               </HBox>
+                              <Button fx:id="deleteButton" disable="true" mnemonicParsing="false" onAction="#onDeleteButton" styleClass="danger" text="Element löschen" GridPane.rowIndex="8">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin></Button>
                            </children>
                            <padding>
                               <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
@@ -131,7 +128,23 @@
                         </GridPane>
                      </content>
                   </TitledPane>
-                <TitledPane animated="false" text="Untergrund" />
+                <TitledPane fx:id="settingsPane1" text="Untergrund">
+                     <content>
+                        <GridPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="357.0" prefWidth="298.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="184.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <padding>
+                              <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                           </padding>
+                        </GridPane>
+                     </content></TitledPane>
               </panes>
             </Accordion>
             <Button fx:id="gamePlay" layoutX="52.0" layoutY="897.0" mnemonicParsing="false" onAction="#onGamePlay" text="Play" />
