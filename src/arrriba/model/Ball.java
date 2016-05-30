@@ -7,6 +7,7 @@ package arrriba.model;
 
 import arrriba.model.material.Wood;
 import arrriba.model.material.Material;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javafx.scene.paint.Paint;
@@ -32,8 +33,16 @@ public class Ball extends GameModel {
     private double sin= Math.sin(Math.toRadians(grad));
     private double vX;
     private double vY;
-    private double hit;
+    //private double hit;
     private double lastHit=0;
+    private ArrayList<Double> gX=new ArrayList<Double>();
+    private ArrayList<Double> gY=new ArrayList<Double>();
+    private ArrayList<Double> ngX=new ArrayList<Double>();
+    private ArrayList<Double> ngY=new ArrayList<Double>();
+    private ArrayList<Double> hit=new ArrayList<Double>();
+    private int zeroCounter=0; 
+    private Boolean punch=true;
+    private int lowIndex=0;
 
     private Material material;
     
@@ -126,50 +135,65 @@ public class Ball extends GameModel {
         this.lastHit=lastHit;
     }
     
-    private void checkCollision(double t) {
-                if(t>=hit){
-                    lastHit=t;
-                   // double gamma = Math.toDegrees(Math.atan(vY/vX))-(2*Math.toDegrees(Math.atan(ngY/ngX)));
-                   // vX=VectorCalculation.abs(vX,vY)*Math.cos(gamma);
-                    //vY=VectorCalculation.abs(vX,vY)*Math.sin(Math.toRadians(gamma));
-                    setStartX(getPosX());
-                    setStartY(getPosY());
+    public void checkCollision(GameModel obstacle, double time) {
+                
+        double t=time-lastHit;
+        if(punch){                     
+                double[] cornerPoints;
+                cornerPoints=obstacle.getCornerPoints();
+                
+                for(int c=0;c<=cornerPoints.length-3;c=c+2){
+                    System.out.println(c);
+                    double a=cornerPoints[c]-cornerPoints[c+2];
+                    double b=cornerPoints[c+1]-cornerPoints[c+3];
+                    gX.add(a);
+                    gY.add(b);                   
+                    ngX.add(-gY.get(gY.size()-1));
+                    ngY.add(gX.get(gX.size()-1));
+                    double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getStartX()-cornerPoints[c], getStartY()-cornerPoints[c+1]);
+                    double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
+                    hit.add(d/Math.abs(getVX()));
+                    System.out.println(hit.get(hit.size()-1));
+                }
+            double low=hit.get(0);          
+            for(int i=0; i<=hit.size()-1; i++){
+                if(hit.get(i)<low){
+                    low=hit.get(i);
+                    lowIndex=i;
                 }
             }
+            lowIndex=hit.size()-1;
+            System.out.println(VectorCalculation.abs(gX.get(lowIndex), gY.get(lowIndex))+"bumm");
+            
+            punch=false;
+        }        
+        
+        if(zeroCounter>=1){
+            if(t>=hit.get(lowIndex)){
+                setLastHit(t);
+                //punch=true;
+                double gamma = Math.toDegrees(Math.atan(getVY()/getVX()))-(2*Math.toDegrees(Math.atan(ngY.get(lowIndex)/ngX.get(lowIndex))));
+                setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(gamma));
+                setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma)));
+                
+                setStartX(getPosX());
+                setStartY(getPosY());
+                
+            }
+        }
+        if(t==0){
+            zeroCounter=zeroCounter+1;
+        }
+    }
+            
     
     // TODO Runnable austauschen?
-    public void rollin() {
-        service.submit(new Runnable() {
-            @Override
-            public void run() {
-
-                for (double t = 0; t < 1000; t++) {
-
-                    try {
-                        Thread.sleep(33);
-                    } catch (Exception e) {
-                    }
-                    setChanged();
-                    notifyObservers(t-lastHit);
-                    //checkCollision(t-lastHit);
+    public void rollin(double t) {                            
                     double x = NUMBER*FRICTION*t*t+(t-lastHit)*vX+startX;
                     double y = NUMBER*FRICTION*t*t+(t-lastHit)*vY+startY;
                     setPosX(x);
                     setPosY(y);
                     callListener();
-                }
-                service.shutdown();
-            }
-
-            
-        });
+                                
     }
-
-    private void setCorners() {
-        
-    }
-
-    
-
-
 }

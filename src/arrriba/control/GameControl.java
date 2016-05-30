@@ -62,15 +62,8 @@ public class GameControl implements Initializable, Observer {
     // Spielfeld
     @FXML
     private Pane gameArea;
-    
-    private Ball subject;
-    
-    private double gX=1248-1248;
-    private double gY=50-946;
-    private double ngX=-gY;
-    private double ngY=gX;
-    private double hit;
-    private int zeroCounter=0; 
+      
+    private int t=0;
     
     /** Timer fuer die regelmaessige Berechnung. */
     private Timer timer;
@@ -91,6 +84,7 @@ public class GameControl implements Initializable, Observer {
     private final EventHandler<MouseEvent> shapeOnMouseDraggedEH;
     
     private double origSceneX, origSceneY, origTranslateX, origTranslateY;
+    private boolean play=false;
 
     public GameControl() {
         this.shapeOnMousePressedEH = (MouseEvent e) -> {
@@ -150,38 +144,8 @@ public class GameControl implements Initializable, Observer {
     
     @Override
     public void update(Observable o, Object arg) {
-        if(subject==null){
-            subject = (Ball) o;
-        }
-        double t=(Double)arg;
-        
-        if(zeroCounter<1){
-            double e= VectorCalculation.times(ngX, ngY, subject.getStartX()-1248, subject.getStartY()-0);
-            double d= Math.abs(e)/VectorCalculation.abs(ngX, ngY);
-            hit =d/Math.abs(subject.getVX());
-        }
-        
-        if(zeroCounter>=1){
-            if(t>=hit){            
-                    subject.setLastHit(t);
-                    
-                    double gamma = Math.toDegrees(Math.atan(subject.getVY()/subject.getVX()))-(2*Math.toDegrees(Math.atan(ngY/ngX)));
-                    subject.setVX(VectorCalculation.abs(subject.getVX(),subject.getVY())*Math.cos(gamma));
-                    subject.setVY(VectorCalculation.abs(subject.getVX(),subject.getVY())*Math.sin(Math.toRadians(gamma)));
-                    
-                    subject.setStartX(subject.getPosX());
-                    subject.setStartY(subject.getPosY());
-
-            }
-        }
-        if(t==0){
-            zeroCounter=zeroCounter+1;
-        }
-
     }
-    
-    
-    
+   
     /** Schliesst das Fenster und beendet das Programm.
      */
     @FXML
@@ -269,9 +233,7 @@ public class GameControl implements Initializable, Observer {
     
     @FXML
     public void onGamePlay() {
-        for (Ball b : balls) {
-            b.rollin();
-        }
+        play=true;
     }
     
     @FXML
@@ -337,6 +299,15 @@ public class GameControl implements Initializable, Observer {
         long newTime = System.currentTimeMillis();
 //        System.out.println("Vergangen: " + (newTime - startTime));
         startTime = newTime;
+        if(play){
+            for (Ball b : balls) {
+                for(GameModel obstacle:obstacles){
+                    b.checkCollision(obstacle,t);
+                }
+                b.rollin(t);
+            }
+            t++;
+        }
         
     }
     
