@@ -7,6 +7,10 @@
     -fx-background-image: url("Hintergrund1.png");
 }
 
+#deleteButton {
+    -fx-margin-top: 15px;
+}
+
 .obstacle {
     -fx-stroke-width: 4px;
     -fx-stroke: black;
@@ -23,4 +27,10 @@
 .active {
     -fx-stroke: #33ff33;
     -fx-stroke-width: 4px;
+}
+
+.danger {
+    -fx-background-color: #ff0000;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10px 41px;
 }
