@@ -8,8 +8,6 @@ package arrriba.model;
 import arrriba.model.material.Wood;
 import arrriba.model.material.Material;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -27,21 +25,20 @@ public class Ball extends GameModel {
     private double velocity;
     private double startX;
     private double startY;
-    private static final double FRICTION= 0.0;
+    private static final double FRICTION= -0.01;
     private static final double ONE_HALF = 0.5;
     private double cos;
     private double sin;
     private double vX;
     private double vY;
+    private double timeline;
+    private boolean finish = false;
     private ArrayList<Double> gX=new ArrayList<Double>();
     private ArrayList<Double> gY=new ArrayList<Double>();
     private ArrayList<Double> ngX=new ArrayList<Double>();
     private ArrayList<Double> ngY=new ArrayList<Double>();
     private ArrayList<Double> hit=new ArrayList<Double>();
     private Material material;
-    
-    private final ExecutorService service = Executors.newCachedThreadPool();
-
     
     public Ball(final int size, final double posX, final double posY,
             final double velocity, final double rotation) {
@@ -117,13 +114,26 @@ public class Ball extends GameModel {
     this.vY=vY;
     }
     
+    private void setFinish() {
+        finish = true;
+    }
+    
     public void checkCollision(final GameModel that, final double time) {
         if (that.isCircle()) {
             double distance = Math.sqrt(
                     Math.pow(that.getPosX() - this.getPosX(), 2)
                             + Math.pow(that.getPosY() - this.getPosY(), 2));
-            if (distance <= ((this.getSize() + that.getSize())/2)) {
-                // TODO put in here Magic Maths for kullerschubsen
+            if (distance < ((this.getSize() + that.getSize())/2)) {
+                if (that.toString().contains("Hole")) {
+                    this.setFinish();
+                }
+                double[][] intersectPoints = intersectCircles(that);
+                if (intersectPoints == null) {
+                    System.err.println("Keine Intersection");
+                }
+//                else {
+//                    System.out.println(intersectPoints[0][0] + " " + intersectPoints[0][1] + " " + intersectPoints[1][0] + " " + intersectPoints[1][1]);
+//                }
             }
         } else {
             System.out.println("arrriba.model.Ball.checkCollision() JOOOOOOOOOOOOOOOO");
@@ -159,7 +169,6 @@ public class Ball extends GameModel {
                     System.out.println(d+"distance");
 
                     if(d<=getSize()/2){
-                        //punch=true;
                         System.out.println(vX+"vor");
                         double gamma = Math.toDegrees(Math.atan(getVY()/getVX()))-(2*Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1))));
                         setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(gamma));
@@ -171,12 +180,55 @@ public class Ball extends GameModel {
         }
     }
     
+    private double[][] intersectCircles(final GameModel that) {
+        double lineX = that.getPosX() - this.getPosX();
+        double lineY = that.getPosY() - this.getPosY();
+        double distanceCenter = Math.sqrt(lineX * lineX + lineY * lineY);
+        if (distanceCenter == 0) {
+//            System.err.println("on center");
+            return null;
+        }
+        
+        double thisRadius = this.getSize() / 2;
+        double thatRadius = that.getSize() / 2;
+        double x = (Math.pow(thisRadius, 2) + Math.pow(distanceCenter, 2) - Math.pow(thatRadius, 2)) / (2 * distanceCenter);
+        double y = thisRadius * thisRadius - x * x;
+        if (y < 0) {
+//            System.err.println("no intersection");
+            return null;
+        }
+        
+        if (y > 0) {
+            y = Math.sqrt(y);
+        }
+        
+        double ex0 = lineX / distanceCenter;
+        double ex1 = lineY / distanceCenter;
+        double ey0 = -ex1;
+        double ey1 = ex0;
+        
+        double intersect0X = this.getPosX() + x * ex0;
+        double intersect0Y = this.getPosY() + x * ex1;
+        // Bei einem Shcnittpunkt (evtl rauswerfen, da wir nur zwei haben beim Aufruf)
+        if (y == 0) {
+            double[][] intersect0 = {{intersect0X, intersect0Y}};
+            return intersect0;
+        }
+        
+        // Zwei Schnittpunkte
+        double intersect1X = intersect0X - y * ey0;
+        double intersect1Y = intersect0Y - y * ey1;
+        double[][] intersections = {{intersect0X, intersect0Y}, {intersect1X, intersect1Y}};
+        return intersections;
+    }
+    
     /** Bewegt die Kugel.
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
      */
-    public void rollin(final double elapsedTime) {
-        double x = ONE_HALF*FRICTION*elapsedTime*elapsedTime+(elapsedTime)*vX+this.getPosX();
-        double y = ONE_HALF*FRICTION*elapsedTime*elapsedTime+(elapsedTime)*vY+this.getPosY();
+    public void move(final double elapsedTime) {
+        timeline += elapsedTime;
+        double x = ONE_HALF*(FRICTION * (vX/vY))*timeline*timeline+elapsedTime*vX+this.getPosX();
+        double y = ONE_HALF*FRICTION*timeline*timeline+elapsedTime*vY+this.getPosY();
         setPosX(x);
         setPosY(y);
         callListener();

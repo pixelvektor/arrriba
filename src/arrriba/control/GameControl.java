@@ -446,7 +446,7 @@ public class GameControl implements Initializable, Observer {
                 for(GameModel obstacle : obstacles){                   
                     b.checkCollision(obstacle, deltaTime);
                 }
-                b.rollin(deltaTime);
+                b.move(deltaTime);
             }
         }
         
