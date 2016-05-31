@@ -426,6 +426,7 @@ public class GameControl implements Initializable, Observer {
                     200 + offset * i,
                     200 + (offset * i) / 2,
                     50, 15, materials.get(i), ground);
+
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
             b.addObserver(this);
@@ -448,7 +449,7 @@ public class GameControl implements Initializable, Observer {
                 for(GameModel obstacle : obstacles){                   
                     b.checkCollision(obstacle, deltaTime);
                 }
-                b.rollin(deltaTime);
+                b.move(deltaTime);
             }
         }
         
