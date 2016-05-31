@@ -24,15 +24,13 @@ import org.apache.commons.math3.linear.RealVector;
  * @author fabian
  */
 public class Ball extends GameModel {
-    private double velocityX;
+    private double velocity;
     private double startX;
-    private double velocityY;
     private double startY;
     private static final double FRICTION= 0.0;
     private static final double NUMBER = 0.5;
-    private double grad=15;
-    private double cos= Math.cos(Math.toRadians(grad));
-    private double sin= Math.sin(Math.toRadians(grad));
+    private double cos;
+    private double sin;
     private double vX;
     private double vY;
     private double lastHit=0;
@@ -51,12 +49,12 @@ public class Ball extends GameModel {
 
     
     public Ball(final int size, final double posX, final double posY,
-            final double velocityX, final double velocityY) {
-        this(size, posX, posY, velocityX, velocityY, new Wood());
+            final double velocity, final double rotation) {
+        this(size, posX, posY, velocity, rotation, new Wood());
     }
     
     public Ball(final int size, final double posX, final double posY,
-            final double velocityX, final double velocityY, final Material material) {
+            final double velocity, final double rotation, final Material material) {
         // Erstellt das Shape
         Circle shape = new Circle(posX, posY, size / 2);
         shape.setFill(Paint.valueOf("RED"));
@@ -65,17 +63,19 @@ public class Ball extends GameModel {
         this.setSize(size);
         this.setPosX(posX);
         this.setPosY(posY);
-        this.setVelocityX(velocityX);
-        this.setVelocityY(velocityY);
+        this.setVelocity(velocity);
+        this.setRotation(rotation);
         this.setStartX(posX);
         this.setStartY(posY);
         this.material = material;
-        vX=velocityX*cos;
-        vY=velocityY*sin;
+        cos= Math.cos(Math.toRadians(getRotation()));
+        sin= Math.sin(Math.toRadians(getRotation()));
+        vX=getVelocity()*cos;
+        vY=getVelocity()*sin;
     }
 
-    public double getVelocityX() {
-        return velocityX;
+    public double getVelocity() {
+        return velocity;
     }
     
     public double getStartX(){
@@ -84,10 +84,6 @@ public class Ball extends GameModel {
     
     public double getStartY(){
         return startY;
-    }
-    
-    public double getVelocityY() {
-        return velocityY;
     }
     
     public double getVX(){
@@ -102,12 +98,8 @@ public class Ball extends GameModel {
         return material;
     }
     
-    public void setVelocityX(final double velocity) {
-        this.velocityX = velocity;
-    }
-    
-    public void setVelocityY(final double velocity) {
-        this.velocityY = velocity;
+    public void setVelocity(final double velocity) {
+        this.velocity = velocity;
     }
     
     public void setStartX(final double startX) {
