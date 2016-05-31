@@ -168,19 +168,31 @@ public class Ball extends GameModel {
             if(hit.size()>0){    
                 double low=hit.get(0);          
                 for(int i=0; i<=hit.size()-1; i++){
-                    if(hit.get(i)<low){
+                    if(hit.get(i)<=low){
                         low=hit.get(i);
-                        lowIndex=i;
+                        if(hitIndex.get(i)==0){
+                           lowIndex=0; 
+                        }else if(hitIndex.get(i)==2){
+                           lowIndex=1; 
+                        }else if(hitIndex.get(i)==4){
+                           lowIndex=2; 
+                        }else if(hitIndex.get(i)==6){
+                           lowIndex=3; 
+                        }
+                        
+                        
                     }
                 }
-                lowIndex=hit.size()-1;
+                 
+                System.out.println(hit.size());
+                System.out.println(lowIndex);
             System.out.println(VectorCalculation.abs(gX.get(lowIndex), gY.get(lowIndex))+"bumm");
             }                        
             punch=false;
         }        
         
         if(zeroCounter>=1 && hit.size()>0){
-            if(t>=hit.get(lowIndex)){
+            if(t>=hit.get(0)){
                 setLastHit(t);
                 //punch=true;
                 double gamma = Math.toDegrees(Math.atan(getVY()/getVX()))-(2*Math.toDegrees(Math.atan(ngY.get(lowIndex)/ngX.get(lowIndex))));
