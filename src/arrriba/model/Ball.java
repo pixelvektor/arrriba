@@ -24,15 +24,13 @@ import org.apache.commons.math3.linear.RealVector;
  * @author fabian
  */
 public class Ball extends GameModel {
-    private double velocityX;
+    private double velocity;
     private double startX;
-    private double velocityY;
     private double startY;
     private static final double FRICTION= 0.0;
     private static final double NUMBER = 0.5;
-    private double grad=15;
-    private double cos= Math.cos(Math.toRadians(grad));
-    private double sin= Math.sin(Math.toRadians(grad));
+    private double cos;
+    private double sin;
     private double vX;
     private double vY;
     private double lastHit=0;
@@ -51,12 +49,12 @@ public class Ball extends GameModel {
 
     
     public Ball(final int size, final double posX, final double posY,
-            final double velocityX, final double velocityY) {
-        this(size, posX, posY, velocityX, velocityY, new Wood());
+            final double velocity, final double rotation) {
+        this(size, posX, posY, velocity, rotation, new Wood());
     }
     
     public Ball(final int size, final double posX, final double posY,
-            final double velocityX, final double velocityY, final Material material) {
+            final double velocity, final double rotation, final Material material) {
         // Erstellt das Shape
         Circle shape = new Circle(posX, posY, size / 2);
         shape.setFill(Paint.valueOf("RED"));
@@ -65,17 +63,19 @@ public class Ball extends GameModel {
         this.setSize(size);
         this.setPosX(posX);
         this.setPosY(posY);
-        this.setVelocityX(velocityX);
-        this.setVelocityY(velocityY);
+        this.setVelocity(velocity);
+        this.setRotation(rotation);
         this.setStartX(posX);
         this.setStartY(posY);
         this.material = material;
-        vX=velocityX*cos;
-        vY=velocityY*sin;
+        cos= Math.cos(Math.toRadians(getRotation()));
+        sin= Math.sin(Math.toRadians(getRotation()));
+        vX=getVelocity()*cos;
+        vY=getVelocity()*sin;
     }
 
-    public double getVelocityX() {
-        return velocityX;
+    public double getVelocity() {
+        return velocity;
     }
     
     public double getStartX(){
@@ -84,10 +84,6 @@ public class Ball extends GameModel {
     
     public double getStartY(){
         return startY;
-    }
-    
-    public double getVelocityY() {
-        return velocityY;
     }
     
     public double getVX(){
@@ -102,12 +98,8 @@ public class Ball extends GameModel {
         return material;
     }
     
-    public void setVelocityX(final double velocity) {
-        this.velocityX = velocity;
-    }
-    
-    public void setVelocityY(final double velocity) {
-        this.velocityY = velocity;
+    public void setVelocity(final double velocity) {
+        this.velocity = velocity;
     }
     
     public void setStartX(final double startX) {
@@ -144,83 +136,57 @@ public class Ball extends GameModel {
                 
             }
         } else {
-        if(punch){                     
-                double[] cornerPoints;
-                cornerPoints=that.getCornerPoints();
-                
-                for(int c=0;c<=cornerPoints.length-3;c=c+2){
-                    double a=cornerPoints[c]-cornerPoints[c+2];
-                    double b=cornerPoints[c+1]-cornerPoints[c+3];
-                    gX.add(a);
-                    gY.add(b);                   
-                    ngX.add(-gY.get(gY.size()-1));
-                    ngY.add(gX.get(gX.size()-1));
-                    double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getStartX()-cornerPoints[c], getStartY()-cornerPoints[c+1]);
-                    double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
-                    
-                    RealMatrix coefficients =
-                    new Array2DRowRealMatrix(new double[][] { { (getVX()+200)-getStartX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
-                        { (getVY()+200)-getStartY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
-                       false);
-                    DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
-                    
-                    RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getStartX(),cornerPoints[c+1]-getStartY()}, false);
-                    RealVector solution = solver.solve(constants); 
-                    
-                    double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
-                    //double collX=getStartX()+solution.getEntry(0)*((getVX()+200)-getStartX());
-                    
-                    double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
-                    //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
-                                      
-                    if(collX>=cornerPoints[c+2] && collX<=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-                       hit.add(d/Math.abs(getVX())); 
-                       hitIndex.add(c);
-                       System.out.println(hit.get(hit.size()-1));
-                    }       
-                    
-                }
-                calculateHitTime();                        
-            punch=false;
-        }        
-        
-        if(zeroCounter>=1 && hit.size()>0){
-            if(t>=hit.get(lowIndex)){
-                setLastHit(t);
-                //punch=true;
-                double gamma = Math.toDegrees(Math.atan(getVY()/getVX()))-(2*Math.toDegrees(Math.atan(ngY.get(lowIndex)/ngX.get(lowIndex))));
-                setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(gamma));
-                setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma)));
-                
-                setStartX(getPosX());
-                setStartY(getPosY());
-                
-            }
-        }
-        if(t==0){
-            zeroCounter=zeroCounter+1;
-        }
-        
-        }
-    }
+            double[] cornerPoints;
+            cornerPoints=that.getCornerPoints();
+            //System.out.println(obstacle.getSize());
+            for(int c=0;c<=cornerPoints.length-3;c=c+2){
+                double a=cornerPoints[c]-cornerPoints[c+2];
+                double b=cornerPoints[c+1]-cornerPoints[c+3];
+                gX.add(a);
+                gY.add(b);                   
+                ngX.add(-gY.get(gY.size()-1));
+                ngY.add(gX.get(gX.size()-1));
+                double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
+                double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
 
-    private void calculateHitTime() {
-        if(hit.size()>0){
-            double low=hit.get(0);
-            for(int i=0; i<hit.size(); i++){
-                if(hit.get(i)<low){
-                    low=hit.get(i);
-                    lowIndex=i;
+                RealMatrix coefficients =
+                new Array2DRowRealMatrix(new double[][] { { (getVX()+getStartX())-getStartX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
+                    { (getVY()+getStartY())-getStartY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
+                   false);
+                DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
+
+                RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getStartX(),cornerPoints[c+1]-getStartY()}, false);
+                RealVector solution = solver.solve(constants); 
+
+                double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
+                //double collX=getStartX()+solution.getEntry(0)*((getVX()+200)-getStartX());
+
+                double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
+                //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
+
+                if(collX>=cornerPoints[c+2] && collX<=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
+                    System.out.println(d+"distance");
+
+                    if(d<=getSize()/2){
+                        setLastHit(t); 
+                        //punch=true;
+                        System.out.println(vX+"vor");
+                        double gamma = Math.toDegrees(Math.atan(getVY()/getVX()))-(2*Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1))));
+                        setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(gamma));
+                        setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma)));
+                        System.out.println(vX+"nach");
+                        setStartX(getPosX());
+                        setStartY(getPosY());
+                    }
                 }
             }
-            lowIndex=hit.size()-1;
-            System.out.println(VectorCalculation.abs(gX.get(lowIndex), gY.get(lowIndex))+"bumm");
         }
     }
             
     
     // TODO Runnable austauschen?
-    public void rollin(double t) {                            
+    public void rollin(double t) {
+        System.out.println(vX);
                     double x = NUMBER*FRICTION*t*t+(t-lastHit)*vX+startX;
                     double y = NUMBER*FRICTION*t*t+(t-lastHit)*vY+startY;
                     setPosX(x);

@@ -54,7 +54,25 @@ public class GameModel extends Observable {
             //double[] cornerPoints={getPosX(),getPosY(),getPosX()+r.getWidth(),getPosY(),getPosX()+r.getWidth(),getPosY()+r.getHeight(),getPosX()+r.getHeight()};
         } else {
             Rectangle r = (Rectangle) this.shape;
-            double[] cornerPoints={getPosX(),getPosY(),getPosX()+r.getWidth(),getPosY(),getPosX()+r.getWidth(),getPosY()+r.getHeight(),getPosX()-40,getPosY()+r.getHeight(), getPosX()-40, getPosY()};
+            double mX=getPosX()+getSize()/2;
+            //System.out.println(mX+"X");
+            double mY=getPosY()+getSize()/2;
+            //System.out.println(mY+"Y");
+            double radius=Math.sqrt((getSize()/2)*(getSize()/2)+(getSize()/2)*(getSize()/2));
+            //System.out.println(radius+"rad");
+            double[] cornerPoints={mX-Math.cos(Math.toRadians(getRotation()-45))*radius
+                ,mY+Math.sin(Math.toRadians(getRotation()-45))*radius
+                ,mX-Math.cos(Math.toRadians(getRotation()-135))*radius
+                ,mY+Math.sin(Math.toRadians(getRotation()-135))*radius
+                ,mX+Math.cos(Math.toRadians(getRotation()-45))*radius
+                ,mY-Math.sin(Math.toRadians(getRotation()-45))*radius
+                ,mX+Math.cos(Math.toRadians(getRotation()-135))*radius
+                ,mY-Math.sin(Math.toRadians(getRotation()-135))*radius
+                ,mX-Math.cos(Math.toRadians(getRotation()-45))*radius
+                ,mY+Math.sin(Math.toRadians(getRotation()-45))*radius};
+            //for(int i=0;i<cornerPoints.length;i++ ){
+              //  System.out.println(cornerPoints[i] + " " + i);
+            //}
             return cornerPoints;
         }      
         return cornerPoints;
