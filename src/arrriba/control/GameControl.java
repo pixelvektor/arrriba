@@ -423,7 +423,7 @@ public class GameControl implements Initializable, Observer {
             Ball b = new Ball(100,
                     200 + offset * i,
                     200 + (offset * i) / 2,
-                    50, 15, materials.get(i));
+                    500, 15, materials.get(i));
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
             b.addObserver(this);

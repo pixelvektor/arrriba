@@ -136,7 +136,7 @@ public class Ball extends GameModel {
 //                }
             }
         } else {
-            System.out.println("arrriba.model.Ball.checkCollision() JOOOOOOOOOOOOOOOO");
+            
             double[] cornerPoints;
             cornerPoints=that.getCornerPoints();
             //System.out.println(obstacle.getSize());
@@ -160,20 +160,45 @@ public class Ball extends GameModel {
                 RealVector solution = solver.solve(constants); 
 
                 double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
+                
                 //double collX=getStartX()+solution.getEntry(0)*((getVX()+200)-getStartX());
 
                 double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
 
+                if(c==6){
+                    System.out.println(collX+"colx");
+                    System.out.println(collY+"collY");
+                    System.out.println(cornerPoints[c+2]+"kleiner als colX");
+                    System.out.println(cornerPoints[c]+"größer als colX");
+                    System.out.println(cornerPoints[c+3]+"kleiner als colY");
+                    System.out.println(cornerPoints[c+1]+"größer als colY");
+                    if(getPosX()<=collX){
+                        System.out.println(getPosX()+ " " + c+ "posx!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        //System.out.println(getPosY()+ " " + c+ "posy!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    }
+                     if(getPosY()<=collY){
+                        //System.out.println(getPosX()+ " " + c+ "posx!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        System.out.println(getPosY()+ " " + c+ "posy!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    }
+                }
+                
+                
                 if(collX>=cornerPoints[c+2] && collX<=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
                     System.out.println(d+"distance");
 
                     if(d<=getSize()/2){
-                        System.out.println(vX+"vor");
-                        double gamma = Math.toDegrees(Math.atan(getVY()/getVX()))-(2*Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1))));
-                        setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(gamma));
-                        setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma)));
-                        System.out.println(vX+"nach");
+                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        //punch=true;
+                        System.out.println(VectorCalculation.abs(vX,vY)+"vor");
+                        double alpha= Math.toDegrees(Math.atan(getVY()/getVX()));
+                        double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
+                        double gamma = alpha-(2*beta);
+                        double delta= 180-2*gamma;
+                        System.out.println(gamma);
+                        setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(Math.toRadians(gamma+delta)));
+                        setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma+delta)));
+                        System.out.println(VectorCalculation.abs(vX,vY)+"nach");
                     }
                 }
             }
