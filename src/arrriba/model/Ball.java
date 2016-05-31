@@ -28,21 +28,16 @@ public class Ball extends GameModel {
     private double startX;
     private double startY;
     private static final double FRICTION= 0.0;
-    private static final double NUMBER = 0.5;
+    private static final double ONE_HALF = 0.5;
     private double cos;
     private double sin;
     private double vX;
     private double vY;
-    private double lastHit=0;
     private ArrayList<Double> gX=new ArrayList<Double>();
     private ArrayList<Double> gY=new ArrayList<Double>();
     private ArrayList<Double> ngX=new ArrayList<Double>();
     private ArrayList<Double> ngY=new ArrayList<Double>();
     private ArrayList<Double> hit=new ArrayList<Double>();
-    private int zeroCounter=0; 
-    private Boolean punch=true;
-    private int lowIndex=0;
-    private ArrayList<Integer> hitIndex=new ArrayList<Integer>();
     private Material material;
     
     private final ExecutorService service = Executors.newCachedThreadPool();
@@ -122,20 +117,16 @@ public class Ball extends GameModel {
     this.vY=vY;
     }
     
-   public void setLastHit(double lastHit) {
-        this.lastHit=lastHit;
-    }
-    
     public void checkCollision(final GameModel that, final double time) {
-        double t=time-lastHit;
         if (that.isCircle()) {
             double distance = Math.sqrt(
                     Math.pow(that.getPosX() - this.getPosX(), 2)
                             + Math.pow(that.getPosY() - this.getPosY(), 2));
             if (distance <= ((this.getSize() + that.getSize())/2)) {
-                
+                // TODO put in here Magic Maths for kullerschubsen
             }
         } else {
+            System.out.println("arrriba.model.Ball.checkCollision() JOOOOOOOOOOOOOOOO");
             double[] cornerPoints;
             cornerPoints=that.getCornerPoints();
             //System.out.println(obstacle.getSize());
@@ -150,12 +141,12 @@ public class Ball extends GameModel {
                 double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
 
                 RealMatrix coefficients =
-                new Array2DRowRealMatrix(new double[][] { { (getVX()+getStartX())-getStartX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
-                    { (getVY()+getStartY())-getStartY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
+                new Array2DRowRealMatrix(new double[][] { { (getVX()+getPosX())-getPosX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
+                    { (getVY()+getPosY())-getPosY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
                    false);
                 DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
 
-                RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getStartX(),cornerPoints[c+1]-getStartY()}, false);
+                RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getPosX(),cornerPoints[c+1]-getPosY()}, false);
                 RealVector solution = solver.solve(constants); 
 
                 double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
@@ -168,30 +159,26 @@ public class Ball extends GameModel {
                     System.out.println(d+"distance");
 
                     if(d<=getSize()/2){
-                        setLastHit(t); 
                         //punch=true;
                         System.out.println(vX+"vor");
                         double gamma = Math.toDegrees(Math.atan(getVY()/getVX()))-(2*Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1))));
                         setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(gamma));
                         setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma)));
                         System.out.println(vX+"nach");
-                        setStartX(getPosX());
-                        setStartY(getPosY());
                     }
                 }
             }
         }
     }
-            
     
-    // TODO Runnable austauschen?
-    public void rollin(double t) {
-        System.out.println(vX);
-                    double x = NUMBER*FRICTION*t*t+(t-lastHit)*vX+startX;
-                    double y = NUMBER*FRICTION*t*t+(t-lastHit)*vY+startY;
-                    setPosX(x);
-                    setPosY(y);
-                    callListener();
-                                
+    /** Bewegt die Kugel.
+     * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
+     */
+    public void rollin(final double elapsedTime) {
+        double x = ONE_HALF*FRICTION*elapsedTime*elapsedTime+(elapsedTime)*vX+this.getPosX();
+        double y = ONE_HALF*FRICTION*elapsedTime*elapsedTime+(elapsedTime)*vY+this.getPosY();
+        setPosX(x);
+        setPosY(y);
+        callListener();
     }
 }

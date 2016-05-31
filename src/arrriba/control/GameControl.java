@@ -59,17 +59,21 @@ public class GameControl implements Initializable, Observer {
     /** CSS-Klasse fuer das aktive Shape. */
     private static final String ACTIVE = "active";
     
-    // Menuebar
+    /** Zeit zwischen Frames in Millisekunden. */
+    private static final int FRAME_RATE = 30;
+    
+    // FXML Variablen
+    /** Menuebar. */
     @FXML
     private MenuBar menuBar;
     
+// Einstellungen
     @FXML
     private Accordion settingsAccord;
     
     @FXML
     private TitledPane settingsPane0;
     
-    // Einstellungen
     @FXML
     private Slider sizeSlider;
     
@@ -97,8 +101,6 @@ public class GameControl implements Initializable, Observer {
     // Spielfeld
     @FXML
     private Pane gameArea;
-      
-    private int t=0;
   
     /** Materialien. */
     private final ArrayList<Material> materials = new ArrayList<>();
@@ -126,6 +128,9 @@ public class GameControl implements Initializable, Observer {
     
     /** Hilfskoordinaten fuer die Verschiebung der Elemente. */
     private double origSceneX, origSceneY, origTranslateX, origTranslateY;
+    
+    /** Letzter Bildaufruf. */
+    private long lastFrame = 0;
     
 
     public GameControl() {
@@ -205,7 +210,7 @@ public class GameControl implements Initializable, Observer {
         };
         
         timer = new Timer(true);
-        timer.schedule(timerTask, 0, 30);
+        timer.schedule(timerTask, 0, FRAME_RATE);
     }
 
     
@@ -323,7 +328,7 @@ public class GameControl implements Initializable, Observer {
             gameArea.getChildren().remove(b.getShape());
         }
         balls.removeAll(balls);
-        t = 0;
+        lastFrame = 0;
         
         createBalls();
     }
@@ -335,7 +340,7 @@ public class GameControl implements Initializable, Observer {
         gameArea.getChildren().remove(0, gameArea.getChildren().size());
         balls.removeAll(balls);
         obstacles.removeAll(obstacles);
-        t = 0;
+        lastFrame = 0;
         
         createBalls();
     }
@@ -418,7 +423,7 @@ public class GameControl implements Initializable, Observer {
             Ball b = new Ball(100,
                     200 + offset * i,
                     200 + (offset * i) / 2,
-                    10, 15, materials.get(i));
+                    50, 15, materials.get(i));
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
             b.addObserver(this);
@@ -427,18 +432,26 @@ public class GameControl implements Initializable, Observer {
     }
     
     private void nextStep() {
-     
         if(play){
-            for (Ball b : balls) {
-                for(GameModel obstacle:obstacles){                   
-                    b.checkCollision(obstacle,t);
-                }
-                b.rollin(t);
+            if (lastFrame == 0) {
+                lastFrame = System.currentTimeMillis() - FRAME_RATE;
             }
-            t++;
+
+            // vergangene Zeit zum letzten Bildaufruf in Sekunden (SI-Einheit)
+            long actualTime = System.currentTimeMillis();
+            double deltaTime = (actualTime - lastFrame) / 1000.0;
+            lastFrame = actualTime;
+            
+            for (Ball b : balls) {
+                for(GameModel obstacle : obstacles){                   
+                    b.checkCollision(obstacle, deltaTime);
+                }
+                b.rollin(deltaTime);
+            }
         }
         
     }
+    
     
     /** Rundet auf eine Nachkommastelle.
      * @param unround Der zu rundende Wert.
