@@ -187,31 +187,15 @@ public class Ball extends GameModel {
 
                 double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
-
-                if(c==6){
-                    System.out.println(collX+"colx");
-                    System.out.println(collY+"collY");
-                    System.out.println(cornerPoints[c+2]+"kleiner als colX");
-                    System.out.println(cornerPoints[c]+"größer als colX");
-                    System.out.println(cornerPoints[c+3]+"kleiner als colY");
-                    System.out.println(cornerPoints[c+1]+"größer als colY");
-                    if(getPosX()<=collX){
-                        System.out.println(getPosX()+ " " + c+ "posx!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        //System.out.println(getPosY()+ " " + c+ "posy!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    }
-                     if(getPosY()<=collY){
-                        //System.out.println(getPosX()+ " " + c+ "posx!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        System.out.println(getPosY()+ " " + c+ "posy!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    }
-                }
+                 
                 
                 
-                if(collX>=cornerPoints[c+2] && collX<=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-                    System.out.println(d+"distance");
+                
+                if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
+                    //System.out.println(d+"distance");
 
                     if(d<=getSize()/2){
-                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        //punch=true;
+                        //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");                                               
                         System.out.println(VectorCalculation.abs(vX,vY)+"vor");
                         double alpha= Math.toDegrees(Math.atan(getVY()/getVX()));
                         double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
