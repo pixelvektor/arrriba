@@ -134,12 +134,19 @@ public class Ball extends GameModel {
         this.lastHit=lastHit;
     }
     
-    public void checkCollision(GameModel obstacle, double time) {
-                
+    public void checkCollision(final GameModel that, final double time) {
         double t=time-lastHit;
+        if (that.isCircle()) {
+            double distance = Math.sqrt(
+                    Math.pow(that.getPosX() - this.getPosX(), 2)
+                            + Math.pow(that.getPosY() - this.getPosY(), 2));
+            if (distance <= ((this.getSize() + that.getSize())/2)) {
+                
+            }
+        } else {
         if(punch){                     
                 double[] cornerPoints;
-                cornerPoints=obstacle.getCornerPoints();
+                cornerPoints=that.getCornerPoints();
                 
                 for(int c=0;c<=cornerPoints.length-3;c=c+2){
                     double a=cornerPoints[c]-cornerPoints[c+2];
@@ -173,17 +180,7 @@ public class Ball extends GameModel {
                     }       
                     
                 }
-            if(hit.size()>0){    
-                double low=hit.get(0);          
-                for(int i=0; i<=hit.size()-1; i++){
-                    if(hit.get(i)<low){
-                        low=hit.get(i);
-                        lowIndex=i;
-                    }
-                }
-                lowIndex=hit.size()-1;
-            System.out.println(VectorCalculation.abs(gX.get(lowIndex), gY.get(lowIndex))+"bumm");
-            }                        
+                calculateHitTime();                        
             punch=false;
         }        
         
@@ -202,6 +199,22 @@ public class Ball extends GameModel {
         }
         if(t==0){
             zeroCounter=zeroCounter+1;
+        }
+        
+        }
+    }
+
+    private void calculateHitTime() {
+        if(hit.size()>0){
+            double low=hit.get(0);
+            for(int i=0; i<hit.size(); i++){
+                if(hit.get(i)<low){
+                    low=hit.get(i);
+                    lowIndex=i;
+                }
+            }
+            lowIndex=hit.size()-1;
+            System.out.println(VectorCalculation.abs(gX.get(lowIndex), gY.get(lowIndex))+"bumm");
         }
     }
             

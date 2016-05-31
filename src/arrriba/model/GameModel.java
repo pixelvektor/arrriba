@@ -127,7 +127,7 @@ public class GameModel extends Observable {
         }
     }
     
-    private boolean isCircle() {
+    protected boolean isCircle() {
         return this.getShape().toString().contains("Circle");
     }
 }

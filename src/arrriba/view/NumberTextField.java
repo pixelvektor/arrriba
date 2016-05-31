@@ -34,9 +34,8 @@ public class NumberTextField extends TextField {
         
         this.setTextFormatter(textFormatter);
         
-        textFormatter.valueProperty().addListener((obs, oldValue, newValue) -> {
-            System.out.println("new double vlaue: " + newValue);
-        });
+//        textFormatter.valueProperty().addListener((obs, oldValue, newValue) -> {
+//        });
     }
     
     public double getValue() {
