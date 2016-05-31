@@ -27,12 +27,19 @@ public class Ball extends GameModel {
     private double velocity;
     private double startX;
     private double startY;
-    private static final double FRICTION= 0.0;
     private static final double ONE_HALF = 0.5;
     private double cos;
     private double sin;
     private double vX;
     private double vY;
+    private double factor;
+    private double volume;
+    private double mass;
+    private double gravitation = 9.81;
+    private double weightforce;
+    private double friction;
+    private Ground ground;
+ 
     private ArrayList<Double> gX=new ArrayList<Double>();
     private ArrayList<Double> gY=new ArrayList<Double>();
     private ArrayList<Double> ngX=new ArrayList<Double>();
@@ -40,16 +47,18 @@ public class Ball extends GameModel {
     private ArrayList<Double> hit=new ArrayList<Double>();
     private Material material;
     
+
+    
     private final ExecutorService service = Executors.newCachedThreadPool();
 
     
     public Ball(final int size, final double posX, final double posY,
             final double velocity, final double rotation) {
-        this(size, posX, posY, velocity, rotation, new Wood());
+        this(size, posX, posY, velocity, rotation, new Wood(), new Ground());
     }
     
     public Ball(final int size, final double posX, final double posY,
-            final double velocity, final double rotation, final Material material) {
+            final double velocity, final double rotation, final Material material, final Ground ground) {
         // Erstellt das Shape
         Circle shape = new Circle(posX, posY, size / 2);
         shape.setFill(Paint.valueOf("RED"));
@@ -62,11 +71,19 @@ public class Ball extends GameModel {
         this.setRotation(rotation);
         this.setStartX(posX);
         this.setStartY(posY);
-        this.material = material;
+        this.ground = ground;
+        this.setMaterial(material);
         cos= Math.cos(Math.toRadians(getRotation()));
         sin= Math.sin(Math.toRadians(getRotation()));
+        //double acceleration = ONE_HALF*(FRICTION*factor)*elapsedTime*elapsedTime;
+        //vX += acceleration - FRICTION*velocity;
+        //vY += acceleration - FRICTION*velocity;
         vX=getVelocity()*cos;
         vY=getVelocity()*sin;
+        factor = vX/vY;
+        volume = (getSize()*getSize()*Math.PI)/4;
+
+             
     }
 
     public double getVelocity() {
@@ -107,6 +124,11 @@ public class Ball extends GameModel {
 
     public void setMaterial(Material material) {
         this.material = material;
+        double density = material.getDensity();
+        mass = density*volume;
+        weightforce = mass*gravitation;
+        double frictionCoefficient = this.ground.getFrictionCoefficient();
+        friction = frictionCoefficient*weightforce;
     }
     
     public void setVX(double vX){
@@ -175,8 +197,11 @@ public class Ball extends GameModel {
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
      */
     public void rollin(final double elapsedTime) {
-        double x = ONE_HALF*FRICTION*elapsedTime*elapsedTime+(elapsedTime)*vX+this.getPosX();
-        double y = ONE_HALF*FRICTION*elapsedTime*elapsedTime+(elapsedTime)*vY+this.getPosY();
+        //System.out.println("weightforce ="+weightforce);
+        //System.out.println(material.getDensity());
+        double x = ONE_HALF*(friction*factor)*elapsedTime*elapsedTime+(elapsedTime)*vX+this.getPosX();
+        double y = ONE_HALF*friction*elapsedTime*elapsedTime+(elapsedTime)*vY+this.getPosY();
+        //System.out.println("factor: "+factor+"vx: "+vX+"vY: "+vY);
         setPosX(x);
         setPosY(y);
         callListener();

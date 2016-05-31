@@ -11,4 +11,9 @@ package arrriba.model;
  */
 public class Ground {
     
+       private double frictionCoefficient = 0.5;
+       
+       public double getFrictionCoefficient(){
+        return frictionCoefficient;
+    }
 }

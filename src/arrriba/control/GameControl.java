@@ -9,6 +9,7 @@ import arrriba.model.Ball;
 import arrriba.model.Barrel;
 import arrriba.model.Box;
 import arrriba.model.GameModel;
+import arrriba.model.Ground;
 import arrriba.model.Puffer;
 import arrriba.model.Spring;
 import arrriba.model.material.Plastic;
@@ -131,6 +132,7 @@ public class GameControl implements Initializable, Observer {
     
     /** Letzter Bildaufruf. */
     private long lastFrame = 0;
+    Ground ground = new Ground();
     
 
     public GameControl() {
@@ -423,7 +425,7 @@ public class GameControl implements Initializable, Observer {
             Ball b = new Ball(100,
                     200 + offset * i,
                     200 + (offset * i) / 2,
-                    50, 15, materials.get(i));
+                    50, 15, materials.get(i), ground);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
             b.addObserver(this);
