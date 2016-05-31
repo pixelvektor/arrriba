@@ -129,10 +129,10 @@ public class Ball extends GameModel {
     public void checkCollision(GameModel obstacle, double time) {
                 
         double t=time-lastHit;
-        if(punch){                     
+                             
                 double[] cornerPoints;
                 cornerPoints=obstacle.getCornerPoints();
-                
+                //System.out.println(obstacle.getSize());
                 for(int c=0;c<=cornerPoints.length-3;c=c+2){
                     double a=cornerPoints[c]-cornerPoints[c+2];
                     double b=cornerPoints[c+1]-cornerPoints[c+3];
@@ -140,12 +140,12 @@ public class Ball extends GameModel {
                     gY.add(b);                   
                     ngX.add(-gY.get(gY.size()-1));
                     ngY.add(gX.get(gX.size()-1));
-                    double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getStartX()-cornerPoints[c], getStartY()-cornerPoints[c+1]);
+                    double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
                     double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
                     
                     RealMatrix coefficients =
-                    new Array2DRowRealMatrix(new double[][] { { (getVX()+200)-getStartX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
-                        { (getVY()+200)-getStartY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
+                    new Array2DRowRealMatrix(new double[][] { { (getVX()+getStartX())-getStartX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
+                        { (getVY()+getStartY())-getStartY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
                        false);
                     DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
                     
@@ -159,59 +159,30 @@ public class Ball extends GameModel {
                     //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
                                       
                     if(collX>=cornerPoints[c+2] && collX<=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-                       hit.add(d/Math.abs(getVX())); 
-                       hitIndex.add(c);
-                       System.out.println(hit.get(hit.size()-1));
+                        System.out.println(d+"distance");
+                        
+                        if(d<=getSize()/2){
+                            setLastHit(t); 
+                            //punch=true;
+                            System.out.println(vX+"vor");
+                            double gamma = Math.toDegrees(Math.atan(getVY()/getVX()))-(2*Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1))));
+                            setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(gamma));
+                            setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma)));
+                            System.out.println(vX+"nach");
+                            setStartX(getPosX());
+                            setStartY(getPosY());
+                        }
                     }       
                     
-                }
-            if(hit.size()>0){    
-                double low=hit.get(0);          
-                for(int i=0; i<=hit.size()-1; i++){
-                    if(hit.get(i)<=low){
-                        low=hit.get(i);
-                        if(hitIndex.get(i)==0){
-                           lowIndex=0; 
-                        }else if(hitIndex.get(i)==2){
-                           lowIndex=1; 
-                        }else if(hitIndex.get(i)==4){
-                           lowIndex=2; 
-                        }else if(hitIndex.get(i)==6){
-                           lowIndex=3; 
-                        }
-                        
-                        
-                    }
-                }
-                 
-                System.out.println(hit.size());
-                System.out.println(lowIndex);
-            System.out.println(VectorCalculation.abs(gX.get(lowIndex), gY.get(lowIndex))+"bumm");
-            }                        
+                }                          
             punch=false;
-        }        
-        
-        if(zeroCounter>=1 && hit.size()>0){
-            if(t>=hit.get(0)){
-                setLastHit(t);
-                //punch=true;
-                double gamma = Math.toDegrees(Math.atan(getVY()/getVX()))-(2*Math.toDegrees(Math.atan(ngY.get(lowIndex)/ngX.get(lowIndex))));
-                setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(gamma));
-                setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma)));
                 
-                setStartX(getPosX());
-                setStartY(getPosY());
-                
-            }
-        }
-        if(t==0){
-            zeroCounter=zeroCounter+1;
-        }
     }
             
     
     // TODO Runnable austauschen?
-    public void rollin(double t) {                            
+    public void rollin(double t) {
+        System.out.println(vX);
                     double x = NUMBER*FRICTION*t*t+(t-lastHit)*vX+startX;
                     double y = NUMBER*FRICTION*t*t+(t-lastHit)*vY+startY;
                     setPosX(x);
