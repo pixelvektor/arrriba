@@ -118,6 +118,7 @@ public class Ball extends GameModel {
             equalizer = 0;
         } else {
             equalizer = vX/vY;
+          
         }
     }
     
@@ -135,7 +136,7 @@ public class Ball extends GameModel {
         mass = density*volume;
         weightforce = mass*gravitation;
         double frictionCoefficient = this.ground.getFrictionCoefficient();
-        friction = frictionCoefficient*weightforce*0.00001;
+        friction = frictionCoefficient*weightforce*0.00005;
     }
     
     public void setVX(double vX){
@@ -204,26 +205,51 @@ public class Ball extends GameModel {
                 double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
                  
+                if(c<=c+2 && c+1<=c+3){
+                    if(collX>=c && collX<=c+2 && collY>c+1 && collY<=c+3){
+                        System.out.println(d+"distance");
+                        collide(d);
+                    }
+                }
                 
+                if(c>=c+2 && c+1<=c+3){
+                    if(collX<=c && collX>=c+2 && collY>=c+1 && collY<=c+3){
+                        System.out.println(d+"distance");
+                        collide(d);                 
+                    }
+                }
                 
+                if(c>=c+2 && c+1>=c+3){
+                    if(collX<=c && collX>=c+2 && collY<=c+1 && collY>=c+3){
+                        System.out.println(d+"distance");
+                        collide(d);
+                    }
+                }
                 
-                if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-                    //System.out.println(d+"distance");
-
-                    if(d<=getSize()/2){
-                        //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");                                               
-                        System.out.println(VectorCalculation.abs(vX,vY)+"vor");
-                        double alpha= Math.toDegrees(Math.atan(getVY()/getVX()));
-                        double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
-                        double gamma = alpha-(2*beta);
-                        double delta= 180-2*gamma;
-                        System.out.println(gamma);
-                        setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(Math.toRadians(gamma+delta)));
-                        setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma+delta)));
-                        System.out.println(VectorCalculation.abs(vX,vY)+"nach");
+                if(c<=c+2 && c+1>=c+3){
+                    if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
+                        System.out.println(d+"distance");
+                    
+                        collide(d);
                     }
                 }
             }
+        }
+        
+    }
+
+    private void collide(double d) {
+        if(d<=getSize()/2){
+            //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println(VectorCalculation.abs(vX,vY)+"vor");
+            double alpha= Math.toDegrees(Math.atan(getVY()/getVX()));
+            double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
+            double gamma = alpha-(2*beta);
+            double delta= 180-2*gamma;
+            System.out.println(gamma);
+            setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(Math.toRadians(gamma+delta)));
+            setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma+delta)));
+            System.out.println(VectorCalculation.abs(vX,vY)+"nach");
         }
     }
     
@@ -282,11 +308,26 @@ public class Ball extends GameModel {
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
         if (!isFinished()) {
-            double x = ONE_HALF*(friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
-            double y = ONE_HALF*friction*timeline*timeline+elapsedTime*vY+this.getPosY();
-            setPosX(x);
-            setPosY(y);
+            //double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
+            double x = ONE_HALF*(-friction * (vX/vY))*timeline*timeline+elapsedTime*vX+this.getPosX();
+            double y = ONE_HALF*-friction*timeline*timeline+elapsedTime*vY+this.getPosY();
+        
+        if ((elapsedTime*vX+this.getPosX())-(ONE_HALF*(-friction * (vX/vY))*timeline*timeline) <=0.5 && (elapsedTime*vY+this.getPosY())-(ONE_HALF*(-friction)*timeline*timeline) <= 0.5 && timeline != 0){ 
+        //System.out.println("WIR DÜRFEN HIER GAR NICHT STEHEN!!!!     X   ="+(x-this.getPosX()));
+        //System.out.println("WIR DÜRFEN HIER GAR NICHT STEHEN!!!!     y   ="+(y-this.getPosY())); 
+        
+        System.out.println("X     ="+((elapsedTime*vX+this.getPosX())-(ONE_HALF*(-friction * (vX/vY))*timeline*timeline)));
+        System.out.println("Y     ="+(((elapsedTime*vY+this.getPosY())-(ONE_HALF*(-friction)*timeline*timeline))));
+        
+        setPosX(getPosX());
+        setPosY(getPosY());
         }
+        
+        else {
+        setPosX(x);
+        setPosY(y);
         callListener();
+            }
+        }
     }
 }
