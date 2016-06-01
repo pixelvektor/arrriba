@@ -118,6 +118,7 @@ public class Ball extends GameModel {
             equalizer = 0;
         } else {
             equalizer = vX/vY;
+          
         }
     }
     
@@ -135,7 +136,7 @@ public class Ball extends GameModel {
         mass = density*volume;
         weightforce = mass*gravitation;
         double frictionCoefficient = this.ground.getFrictionCoefficient();
-        friction = frictionCoefficient*weightforce*0.00001;
+        friction = frictionCoefficient*weightforce*0.00005;
     }
     
     public void setVX(double vX){
@@ -307,11 +308,26 @@ public class Ball extends GameModel {
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
         if (!isFinished()) {
-            double x = ONE_HALF*(friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
-            double y = ONE_HALF*friction*timeline*timeline+elapsedTime*vY+this.getPosY();
-            setPosX(x);
-            setPosY(y);
+            //double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
+            double x = ONE_HALF*(-friction * (vX/vY))*timeline*timeline+elapsedTime*vX+this.getPosX();
+            double y = ONE_HALF*-friction*timeline*timeline+elapsedTime*vY+this.getPosY();
+        
+        if ((elapsedTime*vX+this.getPosX())-(ONE_HALF*(-friction * (vX/vY))*timeline*timeline) <=0.5 && (elapsedTime*vY+this.getPosY())-(ONE_HALF*(-friction)*timeline*timeline) <= 0.5 && timeline != 0){ 
+        //System.out.println("WIR DÜRFEN HIER GAR NICHT STEHEN!!!!     X   ="+(x-this.getPosX()));
+        //System.out.println("WIR DÜRFEN HIER GAR NICHT STEHEN!!!!     y   ="+(y-this.getPosY())); 
+        
+        System.out.println("X     ="+((elapsedTime*vX+this.getPosX())-(ONE_HALF*(-friction * (vX/vY))*timeline*timeline)));
+        System.out.println("Y     ="+(((elapsedTime*vY+this.getPosY())-(ONE_HALF*(-friction)*timeline*timeline))));
+        
+        setPosX(getPosX());
+        setPosY(getPosY());
         }
+        
+        else {
+        setPosX(x);
+        setPosY(y);
         callListener();
+            }
+        }
     }
 }
