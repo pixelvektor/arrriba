@@ -205,28 +205,29 @@ public class Ball extends GameModel {
                 double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
                  
-                if(c<=c+2 && c+1<=c+3){
-                    if(collX>=c && collX<=c+2 && collY>c+1 && collY<=c+3){
+                if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                    if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
                         System.out.println(d+"distance");
                         collide(d);
                     }
                 }
                 
-                if(c>=c+2 && c+1<=c+3){
-                    if(collX<=c && collX>=c+2 && collY>=c+1 && collY<=c+3){
+                if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                    if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY>=cornerPoints[c+1] && collY<=cornerPoints[c+3]){
                         System.out.println(d+"distance");
                         collide(d);                 
                     }
                 }
                 
-                if(c>=c+2 && c+1>=c+3){
-                    if(collX<=c && collX>=c+2 && collY<=c+1 && collY>=c+3){
+                if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                    if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY<=cornerPoints[c+1] && collY>=cornerPoints[c+3]){
                         System.out.println(d+"distance");
                         collide(d);
                     }
                 }
                 
-                if(c<=c+2 && c+1>=c+3){
+                if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                    System.out.println("AHHH");
                     if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
                         System.out.println(d+"distance");
                     
