@@ -114,13 +114,10 @@ public class Ball extends GameModel {
     
     public void setVelocity(final double velocity) {
         this.velocity = velocity;
-        System.out.println(velocity);
         if(velocity<=0){
-            System.out.println(velocity + "if");
             vX=0;
             vY=0;
         }else{
-            System.out.println(velocity + "else");
         cos= Math.cos(Math.toRadians(getRotation()));
         sin= Math.sin(Math.toRadians(getRotation()));
         vX=velocity*cos;
@@ -318,8 +315,6 @@ public class Ball extends GameModel {
         timeline += elapsedTime;
         if (!isFinished()) {
             //setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
-            //double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
-            System.out.println("arrriba.model.Ball.move()");
             double x = elapsedTime*vX+this.getPosX();
             double y = elapsedTime*vY+this.getPosY();
         
