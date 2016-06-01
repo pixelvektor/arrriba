@@ -114,16 +114,19 @@ public class Ball extends GameModel {
     
     public void setVelocity(final double velocity) {
         this.velocity = velocity;
+        System.out.println(velocity);
+        if(velocity<=0){
+            System.out.println(velocity + "if");
+            vX=0;
+            vY=0;
+        }else{
+            System.out.println(velocity + "else");
         cos= Math.cos(Math.toRadians(getRotation()));
         sin= Math.sin(Math.toRadians(getRotation()));
         vX=velocity*cos;
         vY=velocity*sin;
-        if (vY == 0) {
-            equalizer = 0;
-        } else {
-            equalizer = vX/vY;
-          
         }
+        
     }
     
     public void setStartX(final double startX) {
@@ -210,28 +213,29 @@ public class Ball extends GameModel {
                 double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
                  
-                if(c<=c+2 && c+1<=c+3){
-                    if(collX>=c && collX<=c+2 && collY>c+1 && collY<=c+3){
+                if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                    if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
                         System.out.println(d+"distance");
                         collide(d);
                     }
                 }
                 
-                if(c>=c+2 && c+1<=c+3){
-                    if(collX<=c && collX>=c+2 && collY>=c+1 && collY<=c+3){
+                if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                    if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY>=cornerPoints[c+1] && collY<=cornerPoints[c+3]){
                         System.out.println(d+"distance");
                         collide(d);                 
                     }
                 }
                 
-                if(c>=c+2 && c+1>=c+3){
-                    if(collX<=c && collX>=c+2 && collY<=c+1 && collY>=c+3){
+                if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                    if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY<=cornerPoints[c+1] && collY>=cornerPoints[c+3]){
                         System.out.println(d+"distance");
                         collide(d);
                     }
                 }
                 
-                if(c<=c+2 && c+1>=c+3){
+                if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                    System.out.println("AHHH");
                     if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
                         System.out.println(d+"distance");
                     
@@ -313,26 +317,16 @@ public class Ball extends GameModel {
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
         if (!isFinished()) {
+            //setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
             //double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
-            double x = ONE_HALF*(-friction * (vX/vY))*timeline*timeline+elapsedTime*vX+this.getPosX();
-            double y = ONE_HALF*-friction*timeline*timeline+elapsedTime*vY+this.getPosY();
+            System.out.println("arrriba.model.Ball.move()");
+            double x = elapsedTime*vX+this.getPosX();
+            double y = elapsedTime*vY+this.getPosY();
         
-        if ((elapsedTime*vX+this.getPosX())-(ONE_HALF*(-friction * (vX/vY))*timeline*timeline) <=0.5 && (elapsedTime*vY+this.getPosY())-(ONE_HALF*(-friction)*timeline*timeline) <= 0.5 && timeline != 0){ 
-        //System.out.println("WIR DÜRFEN HIER GAR NICHT STEHEN!!!!     X   ="+(x-this.getPosX()));
-        //System.out.println("WIR DÜRFEN HIER GAR NICHT STEHEN!!!!     y   ="+(y-this.getPosY())); 
-        
-        System.out.println("X     ="+((elapsedTime*vX+this.getPosX())-(ONE_HALF*(-friction * (vX/vY))*timeline*timeline)));
-        System.out.println("Y     ="+(((elapsedTime*vY+this.getPosY())-(ONE_HALF*(-friction)*timeline*timeline))));
-        
-        setPosX(getPosX());
-        setPosY(getPosY());
-        }
-        
-        else {
         setPosX(x);
         setPosY(y);
         callListener();
-            }
+            
         }
     }
     
