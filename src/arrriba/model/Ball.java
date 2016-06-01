@@ -135,7 +135,7 @@ public class Ball extends GameModel {
         mass = density*volume;
         weightforce = mass*gravitation;
         double frictionCoefficient = this.ground.getFrictionCoefficient();
-        friction = frictionCoefficient*weightforce;
+        friction = frictionCoefficient*weightforce*0.00001;
     }
     
     public void setVX(double vX){
