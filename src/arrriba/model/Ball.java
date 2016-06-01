@@ -31,6 +31,7 @@ public class Ball extends GameModel {
     private double sin;
     private double vX;
     private double vY;
+    private double equalizer;
     private double timeline;
     private boolean finish = false;
     private ArrayList<Double> gX=new ArrayList<Double>();
@@ -60,10 +61,6 @@ public class Ball extends GameModel {
         this.setStartX(posX);
         this.setStartY(posY);
         this.material = material;
-        cos= Math.cos(Math.toRadians(getRotation()));
-        sin= Math.sin(Math.toRadians(getRotation()));
-        vX=getVelocity()*cos;
-        vY=getVelocity()*sin;
     }
 
     public double getVelocity() {
@@ -90,8 +87,21 @@ public class Ball extends GameModel {
         return material;
     }
     
+    public boolean isFinished() {
+        return finish;
+    }
+    
     public void setVelocity(final double velocity) {
         this.velocity = velocity;
+        cos= Math.cos(Math.toRadians(getRotation()));
+        sin= Math.sin(Math.toRadians(getRotation()));
+        vX=velocity*cos;
+        vY=velocity*sin;
+        if (vY == 0) {
+            equalizer = 0;
+        } else {
+            equalizer = vX/vY;
+        }
     }
     
     public void setStartX(final double startX) {
@@ -114,18 +124,24 @@ public class Ball extends GameModel {
     this.vY=vY;
     }
     
-    private void setFinish() {
+    private void setFinished() {
         finish = true;
+        this.setSize(120); // Zur Anschauung
+        this.setVelocity(0);
+        this.setChanged();
+        this.notifyObservers();
     }
     
     public void checkCollision(final GameModel that, final double time) {
-        if (that.isCircle()) {
+        if (that.isCircle() && !isFinished()) {
             double distance = Math.sqrt(
                     Math.pow(that.getPosX() - this.getPosX(), 2)
                             + Math.pow(that.getPosY() - this.getPosY(), 2));
             if (distance < ((this.getSize() + that.getSize())/2)) {
                 if (that.toString().contains("Hole")) {
-                    this.setFinish();
+                    this.setPosX(that.getPosX());
+                    this.setPosY(that.getPosY());
+                    this.setFinished();
                 }
                 double[][] intersectPoints = intersectCircles(that);
                 if (intersectPoints == null) {
@@ -135,7 +151,7 @@ public class Ball extends GameModel {
 //                    System.out.println(intersectPoints[0][0] + " " + intersectPoints[0][1] + " " + intersectPoints[1][0] + " " + intersectPoints[1][1]);
 //                }
             }
-        } else {
+        } else if (!isFinished()) {
             
             double[] cornerPoints;
             cornerPoints=that.getCornerPoints();
@@ -205,6 +221,10 @@ public class Ball extends GameModel {
         }
     }
     
+    /** Schneidet zwei Kreise miteinander und gibt die Schnittpunkte zurueck.
+     * @param that Kreis mit dem this geschnitten werden soll.
+     * @return Die Schnittpunkte ([Ax, Ay],[Bx, By]).
+     */
     private double[][] intersectCircles(final GameModel that) {
         double lineX = that.getPosX() - this.getPosX();
         double lineY = that.getPosY() - this.getPosY();
@@ -219,6 +239,8 @@ public class Ball extends GameModel {
         double x = (Math.pow(thisRadius, 2) + Math.pow(distanceCenter, 2) - Math.pow(thatRadius, 2)) / (2 * distanceCenter);
         double y = thisRadius * thisRadius - x * x;
         if (y < 0) {
+//            System.out.println("thisradius: " + thisRadius);
+//            System.out.println("x: " + x);
 //            System.err.println("no intersection");
             return null;
         }
@@ -252,10 +274,12 @@ public class Ball extends GameModel {
      */
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
-        double x = ONE_HALF*(FRICTION * (vX/vY))*timeline*timeline+elapsedTime*vX+this.getPosX();
-        double y = ONE_HALF*FRICTION*timeline*timeline+elapsedTime*vY+this.getPosY();
-        setPosX(x);
-        setPosY(y);
+        if (!isFinished()) {
+            double x = ONE_HALF*(FRICTION * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
+            double y = ONE_HALF*FRICTION*timeline*timeline+elapsedTime*vY+this.getPosY();
+            setPosX(x);
+            setPosY(y);
+        }
         callListener();
     }
 }

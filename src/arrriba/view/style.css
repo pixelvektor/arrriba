@@ -16,6 +16,14 @@
     -fx-stroke: black;
 }
 
+.hole {
+    -fx-fill: #33cc00;
+}
+
+.finish {
+    -fx-fill: #ff00ff;
+}
+
 .collision {
     -fx-stroke: #00ffff;
 }

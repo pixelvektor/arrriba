@@ -9,6 +9,7 @@ import arrriba.model.Ball;
 import arrriba.model.Barrel;
 import arrriba.model.Box;
 import arrriba.model.GameModel;
+import arrriba.model.Hole;
 import arrriba.model.Puffer;
 import arrriba.model.Spring;
 import arrriba.model.material.Plastic;
@@ -120,6 +121,8 @@ public class GameControl implements Initializable, Observer {
     /** Alle Baelle, die sich im Spiel befinden. */
     private final ArrayList<Ball> balls = new ArrayList<>();
     
+    private final ArrayList<Hole> holes = new ArrayList<>();
+    
     private final ArrayList<Rectangle> wallElements = new ArrayList<>();
     
     private final EventHandler<MouseEvent> shapeOnMousePressedEH;
@@ -212,11 +215,15 @@ public class GameControl implements Initializable, Observer {
         timer = new Timer(true);
         timer.schedule(timerTask, 0, FRAME_RATE);
     }
-
-    
     
     @Override
     public void update(Observable o, Object arg) {
+        for (Ball b : balls) {
+            if (b.isFinished()) {
+//                b.getShape().toFront();
+                b.getShape().getStyleClass().add("finish");
+            }
+        }
     }
     
     /** Schliesst das Fenster und beendet das Programm.
@@ -424,10 +431,26 @@ public class GameControl implements Initializable, Observer {
                     200 + offset * i,
                     200 + (offset * i) / 2,
                     500, 15, materials.get(i));
+            b.addObserver(this);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
             b.addObserver(this);
             gameArea.getChildren().add(b.getShape());
+        }
+        createHoles();
+    }
+    
+    private void createHoles() {
+        // Holes erstellen
+        // Temp Offset
+        int offset = 50;
+        for (int i = 0; i < BALL_COUNT; i++) {
+            Hole h = new Hole(300 + offset * i,
+                    220 + (offset * i) / 2,
+                    balls.get(i).getSize());
+            holes.add(h);
+            h.addObserver(this);
+            gameArea.getChildren().add(h.getShape());
         }
     }
     
@@ -443,8 +466,11 @@ public class GameControl implements Initializable, Observer {
             lastFrame = actualTime;
             
             for (Ball b : balls) {
-                for(GameModel obstacle : obstacles){                   
+                for(GameModel obstacle : obstacles){
                     b.checkCollision(obstacle, deltaTime);
+                }
+                for(GameModel h : holes){
+                    b.checkCollision(h, deltaTime);
                 }
                 b.move(deltaTime);
             }
