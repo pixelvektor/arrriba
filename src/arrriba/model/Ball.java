@@ -64,8 +64,8 @@ public class Ball extends GameModel {
         this.setSize(size);
         this.setPosX(posX);
         this.setPosY(posY);
-        this.setVelocity(velocity);
         this.setRotation(rotation);
+        this.setVelocity(velocity);
         this.setStartX(posX);
         this.setStartY(posY);
         this.ground = ground;
@@ -245,9 +245,9 @@ public class Ball extends GameModel {
         double x = (Math.pow(thisRadius, 2) + Math.pow(distanceCenter, 2) - Math.pow(thatRadius, 2)) / (2 * distanceCenter);
         double y = thisRadius * thisRadius - x * x;
         if (y < 0) {
-//            System.out.println("thisradius: " + thisRadius);
-//            System.out.println("x: " + x);
-//            System.err.println("no intersection");
+            System.out.println("thisradius: " + thisRadius);
+            System.out.println("x: " + x);
+            System.err.println("no intersection");
             return null;
         }
         
