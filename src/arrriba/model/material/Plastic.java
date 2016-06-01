@@ -11,9 +11,15 @@ package arrriba.model.material;
  */
 public class Plastic extends Material {
     private static final String NAME = "Kunststoff";
+    private double density = 1.14;
     
     @Override
     public String toString() {
         return NAME;
+    }
+    
+     @Override
+    public double getDensity() {
+        return density;
     }
 }

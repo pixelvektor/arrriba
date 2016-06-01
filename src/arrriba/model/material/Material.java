@@ -9,8 +9,9 @@ package arrriba.model.material;
  *
  * @author fabian
  */
-public class Material {
+public abstract class Material {
     private final String type;
+    private double density = 0.8;
     
     public Material() {
         this.type = "Wood";
@@ -20,4 +21,8 @@ public class Material {
         return type;
     }
     
+    public abstract double getDensity();
+    
+    //public abstract void setDensity();
+
 }

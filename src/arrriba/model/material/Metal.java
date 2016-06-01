@@ -11,10 +11,17 @@ package arrriba.model.material;
  */
 public class Metal extends Material {
     private static final String NAME = "Metall";
+    private double density = 7.8;
+    
 
     @Override
     public String toString() {
         return NAME;
+    }
+
+    @Override
+    public double getDensity() {
+        return density;
     }
     
 }

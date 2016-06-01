@@ -10,11 +10,16 @@ package arrriba.model.material;
  * @author fabian
  */
 public class Sponge extends Material {
-    private static final String NAME = "Schwamm";
+    private static final String NAME = "Kork";
+    private double density = 0.5;
 
     @Override
     public String toString() {
         return NAME;
     }
     
+     @Override
+    public double getDensity() {
+        return density;
+    }
 }

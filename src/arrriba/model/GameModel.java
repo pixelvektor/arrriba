@@ -51,25 +51,22 @@ public class GameModel extends Observable {
     public double[] getCornerPoints(){
         
         if (isCircle()) {
-            //double[] cornerPoints={getPosX(),getPosY(),getPosX()+r.getWidth(),getPosY(),getPosX()+r.getWidth(),getPosY()+r.getHeight(),getPosX()+r.getHeight()};
+           
         } else {
             Rectangle r = (Rectangle) this.shape;
             double mX=getPosX()+getSize()/2;
-            //System.out.println(mX+"X");
             double mY=getPosY()+getSize()/2;
-            //System.out.println(mY+"Y");
-            double radius=Math.sqrt((getSize()/2)*(getSize()/2)+(getSize()/2)*(getSize()/2));
-            //System.out.println(radius+"rad");
-            double[] cornerPoints={mX-Math.cos(Math.toRadians(getRotation()-45))*radius
-                ,mY+Math.sin(Math.toRadians(getRotation()-45))*radius
-                ,mX-Math.cos(Math.toRadians(getRotation()-135))*radius
-                ,mY+Math.sin(Math.toRadians(getRotation()-135))*radius
-                ,mX+Math.cos(Math.toRadians(getRotation()-45))*radius
-                ,mY-Math.sin(Math.toRadians(getRotation()-45))*radius
-                ,mX+Math.cos(Math.toRadians(getRotation()-135))*radius
-                ,mY-Math.sin(Math.toRadians(getRotation()-135))*radius
-                ,mX-Math.cos(Math.toRadians(getRotation()-45))*radius
-                ,mY+Math.sin(Math.toRadians(getRotation()-45))*radius};
+            
+            double[] cornerPoints={mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+((-(getPosX())-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()+getSize()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()+getSize()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()+getSize()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+getSize()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()+getSize()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+getSize()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+getSize()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+getSize()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))};
             //for(int i=0;i<cornerPoints.length;i++ ){
               //  System.out.println(cornerPoints[i] + " " + i);
             //}

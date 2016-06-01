@@ -25,15 +25,23 @@ public class Ball extends GameModel {
     private double velocity;
     private double startX;
     private double startY;
-    private static final double FRICTION= -0.01;
+
     private static final double ONE_HALF = 0.5;
     private double cos;
     private double sin;
     private double vX;
     private double vY;
     private double equalizer;
+
+    private double volume;
+    private double mass;
+    private double gravitation = 9.81;
+    private double weightforce;
+    private double friction;
+    private Ground ground;
     private double timeline;
     private boolean finish = false;
+
     private ArrayList<Double> gX=new ArrayList<Double>();
     private ArrayList<Double> gY=new ArrayList<Double>();
     private ArrayList<Double> ngX=new ArrayList<Double>();
@@ -43,11 +51,11 @@ public class Ball extends GameModel {
     
     public Ball(final int size, final double posX, final double posY,
             final double velocity, final double rotation) {
-        this(size, posX, posY, velocity, rotation, new Wood());
+        this(size, posX, posY, velocity, rotation, new Wood(), new Ground());
     }
     
     public Ball(final int size, final double posX, final double posY,
-            final double velocity, final double rotation, final Material material) {
+            final double velocity, final double rotation, final Material material, final Ground ground) {
         // Erstellt das Shape
         Circle shape = new Circle(posX, posY, size / 2);
         shape.setFill(Paint.valueOf("RED"));
@@ -60,7 +68,16 @@ public class Ball extends GameModel {
         this.setRotation(rotation);
         this.setStartX(posX);
         this.setStartY(posY);
-        this.material = material;
+        this.ground = ground;
+        this.setMaterial(material);
+        cos= Math.cos(Math.toRadians(getRotation()));
+        sin= Math.sin(Math.toRadians(getRotation()));
+        //double acceleration = ONE_HALF*(FRICTION*factor)*elapsedTime*elapsedTime;
+        //vX += acceleration - FRICTION*velocity;
+        //vY += acceleration - FRICTION*velocity;
+        vX=getVelocity()*cos;
+        vY=getVelocity()*sin;
+        volume = (getSize()*getSize()*Math.PI)/4;
     }
 
     public double getVelocity() {
@@ -114,6 +131,11 @@ public class Ball extends GameModel {
 
     public void setMaterial(Material material) {
         this.material = material;
+        double density = material.getDensity();
+        mass = density*volume;
+        weightforce = mass*gravitation;
+        double frictionCoefficient = this.ground.getFrictionCoefficient();
+        friction = frictionCoefficient*weightforce;
     }
     
     public void setVX(double vX){
@@ -181,31 +203,15 @@ public class Ball extends GameModel {
 
                 double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
-
-                if(c==6){
-                    System.out.println(collX+"colx");
-                    System.out.println(collY+"collY");
-                    System.out.println(cornerPoints[c+2]+"kleiner als colX");
-                    System.out.println(cornerPoints[c]+"größer als colX");
-                    System.out.println(cornerPoints[c+3]+"kleiner als colY");
-                    System.out.println(cornerPoints[c+1]+"größer als colY");
-                    if(getPosX()<=collX){
-                        System.out.println(getPosX()+ " " + c+ "posx!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        //System.out.println(getPosY()+ " " + c+ "posy!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    }
-                     if(getPosY()<=collY){
-                        //System.out.println(getPosX()+ " " + c+ "posx!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        System.out.println(getPosY()+ " " + c+ "posy!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                    }
-                }
+                 
                 
                 
-                if(collX>=cornerPoints[c+2] && collX<=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-                    System.out.println(d+"distance");
+                
+                if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
+                    //System.out.println(d+"distance");
 
                     if(d<=getSize()/2){
-                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        //punch=true;
+                        //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");                                               
                         System.out.println(VectorCalculation.abs(vX,vY)+"vor");
                         double alpha= Math.toDegrees(Math.atan(getVY()/getVX()));
                         double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
@@ -272,11 +278,12 @@ public class Ball extends GameModel {
     /** Bewegt die Kugel.
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
      */
+
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
         if (!isFinished()) {
-            double x = ONE_HALF*(FRICTION * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
-            double y = ONE_HALF*FRICTION*timeline*timeline+elapsedTime*vY+this.getPosY();
+            double x = ONE_HALF*(friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
+            double y = ONE_HALF*friction*timeline*timeline+elapsedTime*vY+this.getPosY();
             setPosX(x);
             setPosY(y);
         }

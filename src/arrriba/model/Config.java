@@ -27,8 +27,6 @@ public class Config {
         {1140,760},
         {1230,690},
         {1298,595}};
-    
-    private final double[] mast = {425, 500, 44};
 
     /** Gibt die Abgrenzung der oberen Bordwand zurueck.
      * @return Die Abgrenzung der oberen Bordwand in x und y Koordinaten.
@@ -43,12 +41,4 @@ public class Config {
     public double[][] getLowerBoundary() {
         return lowerBoundary;
     }
-
-    /** Gibt die Daten des Mastes zurueck.
-     * @return Der Mast mit x und y Koordinate und Radius.
-     */
-    public double[] getMast() {
-        return mast;
-    }
-    
 }

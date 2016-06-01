@@ -11,6 +11,7 @@ package arrriba.model.material;
  */
 public class Wood extends Material {
     private static final String NAME = "Holz";
+    private double density = 0.8;
     
     public Wood() {
         
@@ -19,5 +20,10 @@ public class Wood extends Material {
     @Override
     public String toString() {
         return NAME;
+    }
+    
+    @Override
+    public double getDensity() {
+        return density;
     }
 }
