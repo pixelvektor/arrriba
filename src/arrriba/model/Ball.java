@@ -99,6 +99,10 @@ public class Ball extends GameModel {
     public double getVY(){
     return vY;
     }
+    
+    protected double getMass() {
+        return mass;
+    }
 
     public Material getMaterial() {
         return material;
@@ -157,23 +161,24 @@ public class Ball extends GameModel {
     
     public void checkCollision(final GameModel that, final double time) {
         if (that.isCircle() && !isFinished()) {
-            double distance = Math.sqrt(
-                    Math.pow(that.getPosX() - this.getPosX(), 2)
-                            + Math.pow(that.getPosY() - this.getPosY(), 2));
-            if (distance < ((this.getSize() + that.getSize())/2)) {
-                if (that.toString().contains("Hole")) {
-                    this.setPosX(that.getPosX());
-                    this.setPosY(that.getPosY());
-                    this.setFinished();
-                }
-                double[][] intersectPoints = intersectCircles(that);
-                if (intersectPoints == null) {
-                    System.err.println("Keine Intersection");
-                }
+            collideBalls2(that);
+//            double distance = Math.sqrt(
+//                    Math.pow(that.getPosX() - this.getPosX(), 2)
+//                            + Math.pow(that.getPosY() - this.getPosY(), 2));
+//            if (distance < ((this.getSize() + that.getSize())/2)) {
+//                if (that.toString().contains("Hole")) {
+//                    this.setPosX(that.getPosX());
+//                    this.setPosY(that.getPosY());
+//                    this.setFinished();
+//                }
+//                double[][] intersectPoints = intersectCircles(that);
+//                if (intersectPoints == null) {
+//                    System.err.println("Keine Intersection");
+//                }
 //                else {
 //                    System.out.println(intersectPoints[0][0] + " " + intersectPoints[0][1] + " " + intersectPoints[1][0] + " " + intersectPoints[1][1]);
 //                }
-            }
+//            }
         } else if (!isFinished()) {
             
             double[] cornerPoints;
@@ -327,6 +332,26 @@ public class Ball extends GameModel {
         setPosX(x);
         setPosY(y);
         callListener();
+            }
+        }
+    }
+    
+    private void collideBalls2(final GameModel that) {
+        if (this.getPosX() + (this.getSize()/2) + (that.getSize()/2) > that.getPosX()
+                && this.getPosX() < that.getPosX() + (this.getSize()/2) + (that.getSize()/2)
+                && this.getPosY() + (this.getSize()/2) + (that.getSize()/2) > that.getPosY()
+                && this.getPosY() < that.getPosY() + (this.getSize()/2) + (that.getSize()/2)) {
+            double distance = Math.sqrt(
+                    Math.pow(this.getPosX() - that.getPosX(), 2)
+                            + Math.pow(this.getPosY() - that.getPosY(), 2));
+            if (distance < this.getSize()/2 + that.getSize()/2) {
+                // Massen und Geschwindigkeiten in GameModel bereit stellen
+                double thisNewVX = (this.getVX() * (this.getMass() - 1) + (2 * 1 * 0)) / (this.getMass() - 1);
+                double thisNewVY = (this.getVY() * (this.getMass() - 1) + (2 * 1 * 0)) / (this.getMass() - 1);
+                double thatNewVX = (0 * (1 - this.getMass()) + (2 * this.getMass() * this.getVX())) / (1 - this.getMass());
+                double thatNewVY = (0 * (1 - this.getMass()) + (2 * this.getMass() * this.getVY())) / (1 - this.getMass());
+                this.setVX(thisNewVX);
+                this.setVY(thisNewVY);
             }
         }
     }
