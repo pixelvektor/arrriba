@@ -29,12 +29,9 @@ public class Ball extends GameModel {
     private static final double ONE_HALF = 0.5;
     private double cos;
     private double sin;
-    private double vX;
-    private double vY;
     private double equalizer;
 
     private double volume;
-    private double mass;
     private double gravitation = 9.81;
     private double weightforce;
     private double friction;
@@ -70,14 +67,13 @@ public class Ball extends GameModel {
         this.setStartY(posY);
         this.ground = ground;
         this.setMaterial(material);
-        cos= Math.cos(Math.toRadians(getRotation()));
-        sin= Math.sin(Math.toRadians(getRotation()));
+//        cos= Math.cos(Math.toRadians(getRotation()));
+//        sin= Math.sin(Math.toRadians(getRotation()));
         //double acceleration = ONE_HALF*(FRICTION*factor)*elapsedTime*elapsedTime;
         //vX += acceleration - FRICTION*velocity;
         //vY += acceleration - FRICTION*velocity;
-        vX=getVelocity()*cos;
-        vY=getVelocity()*sin;
-        volume = (getSize()*getSize()*Math.PI)/4;
+//        setvX(getVelocity()*cos);
+//        setvY(getVelocity()*sin);
     }
 
     public double getVelocity() {
@@ -91,18 +87,6 @@ public class Ball extends GameModel {
     public double getStartY(){
         return startY;
     }
-    
-    public double getVX(){
-    return vX;
-    }
-    
-    public double getVY(){
-    return vY;
-    }
-    
-    protected double getMass() {
-        return mass;
-    }
 
     public Material getMaterial() {
         return material;
@@ -112,19 +96,25 @@ public class Ball extends GameModel {
         return finish;
     }
     
+    @Override
+    public void setSize(final double size) {
+        super.setSize(size);
+        volume = (getSize()*getSize()*Math.PI)/4;
+    }
+    
     public void setVelocity(final double velocity) {
         this.velocity = velocity;
-        System.out.println(velocity);
+        //System.out.println(velocity);
         if(velocity<=0){
-            System.out.println(velocity + "if");
-            vX=0;
-            vY=0;
+          //  System.out.println(velocity + "if");
+            setvX(0);
+            setvY(0);
         }else{
-            System.out.println(velocity + "else");
+            //System.out.println(velocity + "else");
         cos= Math.cos(Math.toRadians(getRotation()));
         sin= Math.sin(Math.toRadians(getRotation()));
-        vX=velocity*cos;
-        vY=velocity*sin;
+        setvX(velocity*cos);
+        setvY(velocity*sin);
         }
         
     }
@@ -140,18 +130,11 @@ public class Ball extends GameModel {
     public void setMaterial(Material material) {
         this.material = material;
         double density = material.getDensity();
-        mass = density*volume;
-        weightforce = mass*gravitation;
+        setMass(density*volume);
+        weightforce = getMass()*gravitation;
         double frictionCoefficient = this.ground.getFrictionCoefficient();
         friction = frictionCoefficient*weightforce*0.00005;
-    }
-    
-    public void setVX(double vX){
-    this.vX=vX;
-    }
-    
-    public void setVY(double vY){
-    this.vY=vY;
+        System.out.println(getMass());
     }
     
     private void setFinished() {
@@ -183,7 +166,6 @@ public class Ball extends GameModel {
 //                }
 //            }
         } else if (!isFinished()) {
-            
             double[] cornerPoints;
             cornerPoints=that.getCornerPoints();
             //System.out.println(obstacle.getSize());
@@ -191,15 +173,15 @@ public class Ball extends GameModel {
                 double a=cornerPoints[c]-cornerPoints[c+2];
                 double b=cornerPoints[c+1]-cornerPoints[c+3];
                 gX.add(a);
-                gY.add(b);                   
+                gY.add(b);
                 ngX.add(-gY.get(gY.size()-1));
                 ngY.add(gX.get(gX.size()-1));
                 double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
                 double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
 
                 RealMatrix coefficients =
-                new Array2DRowRealMatrix(new double[][] { { (getVX()+getPosX())-getPosX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
-                    { (getVY()+getPosY())-getPosY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
+                new Array2DRowRealMatrix(new double[][] { { (getvX()+getPosX())-getPosX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
+                    { (getvY()+getPosY())-getPosY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
                    false);
                 DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
 
@@ -215,29 +197,29 @@ public class Ball extends GameModel {
                  
                 if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
                     if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-                        System.out.println(d+"distance");
+//                        System.out.println(d+"distance");
                         collide(d);
                     }
                 }
                 
                 if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
                     if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY>=cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-                        System.out.println(d+"distance");
+//                        System.out.println(d+"distance");
                         collide(d);                 
                     }
                 }
                 
                 if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
                     if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY<=cornerPoints[c+1] && collY>=cornerPoints[c+3]){
-                        System.out.println(d+"distance");
+//                        System.out.println(d+"distance");
                         collide(d);
                     }
                 }
                 
                 if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
-                    System.out.println("AHHH");
+//                    System.out.println("AHHH");
                     if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-                        System.out.println(d+"distance");
+//                        System.out.println(d+"distance");
                     
                         collide(d);
                     }
@@ -249,16 +231,13 @@ public class Ball extends GameModel {
 
     private void collide(double d) {
         if(d<=getSize()/2){
-            //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            System.out.println(VectorCalculation.abs(vX,vY)+"vor");
-            double alpha= Math.toDegrees(Math.atan(getVY()/getVX()));
+            double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
             double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
             double gamma = alpha-(2*beta);
-            double delta= 180-2*gamma;
-            System.out.println(gamma);
-            setVX(VectorCalculation.abs(getVX(),getVY())*Math.cos(Math.toRadians(gamma+delta)));
-            setVY(VectorCalculation.abs(getVX(),getVY())*Math.sin(Math.toRadians(gamma+delta)));
-            System.out.println(VectorCalculation.abs(vX,vY)+"nach");
+            double delta= 180-getRotation()-gamma;
+            setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
+            setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
+            System.out.println("gamma: " + gamma + " delta: " + delta);
         }
     }
     
@@ -266,49 +245,49 @@ public class Ball extends GameModel {
      * @param that Kreis mit dem this geschnitten werden soll.
      * @return Die Schnittpunkte ([Ax, Ay],[Bx, By]).
      */
-    private double[][] intersectCircles(final GameModel that) {
-        double lineX = that.getPosX() - this.getPosX();
-        double lineY = that.getPosY() - this.getPosY();
-        double distanceCenter = Math.sqrt(lineX * lineX + lineY * lineY);
-        if (distanceCenter == 0) {
-//            System.err.println("on center");
-            return null;
-        }
-        
-        double thisRadius = this.getSize() / 2;
-        double thatRadius = that.getSize() / 2;
-        double x = (Math.pow(thisRadius, 2) + Math.pow(distanceCenter, 2) - Math.pow(thatRadius, 2)) / (2 * distanceCenter);
-        double y = thisRadius * thisRadius - x * x;
-        if (y < 0) {
-            System.out.println("thisradius: " + thisRadius);
-            System.out.println("x: " + x);
-            System.err.println("no intersection");
-            return null;
-        }
-        
-        if (y > 0) {
-            y = Math.sqrt(y);
-        }
-        
-        double ex0 = lineX / distanceCenter;
-        double ex1 = lineY / distanceCenter;
-        double ey0 = -ex1;
-        double ey1 = ex0;
-        
-        double intersect0X = this.getPosX() + x * ex0;
-        double intersect0Y = this.getPosY() + x * ex1;
-        // Bei einem Shcnittpunkt (evtl rauswerfen, da wir nur zwei haben beim Aufruf)
-        if (y == 0) {
-            double[][] intersect0 = {{intersect0X, intersect0Y}};
-            return intersect0;
-        }
-        
-        // Zwei Schnittpunkte
-        double intersect1X = intersect0X - y * ey0;
-        double intersect1Y = intersect0Y - y * ey1;
-        double[][] intersections = {{intersect0X, intersect0Y}, {intersect1X, intersect1Y}};
-        return intersections;
-    }
+//    private double[][] intersectCircles(final GameModel that) {
+//        double lineX = that.getPosX() - this.getPosX();
+//        double lineY = that.getPosY() - this.getPosY();
+//        double distanceCenter = Math.sqrt(lineX * lineX + lineY * lineY);
+//        if (distanceCenter == 0) {
+////            System.err.println("on center");
+//            return null;
+//        }
+//        
+//        double thisRadius = this.getSize() / 2;
+//        double thatRadius = that.getSize() / 2;
+//        double x = (Math.pow(thisRadius, 2) + Math.pow(distanceCenter, 2) - Math.pow(thatRadius, 2)) / (2 * distanceCenter);
+//        double y = thisRadius * thisRadius - x * x;
+//        if (y < 0) {
+////            System.out.println("thisradius: " + thisRadius);
+////            System.out.println("x: " + x);
+//            System.err.println("no intersection");
+//            return null;
+//        }
+//        
+//        if (y > 0) {
+//            y = Math.sqrt(y);
+//        }
+//        
+//        double ex0 = lineX / distanceCenter;
+//        double ex1 = lineY / distanceCenter;
+//        double ey0 = -ex1;
+//        double ey1 = ex0;
+//        
+//        double intersect0X = this.getPosX() + x * ex0;
+//        double intersect0Y = this.getPosY() + x * ex1;
+//        // Bei einem Shcnittpunkt (evtl rauswerfen, da wir nur zwei haben beim Aufruf)
+//        if (y == 0) {
+//            double[][] intersect0 = {{intersect0X, intersect0Y}};
+//            return intersect0;
+//        }
+//        
+//        // Zwei Schnittpunkte
+//        double intersect1X = intersect0X - y * ey0;
+//        double intersect1Y = intersect0Y - y * ey1;
+//        double[][] intersections = {{intersect0X, intersect0Y}, {intersect1X, intersect1Y}};
+//        return intersections;
+//    }
     
     /** Bewegt die Kugel.
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
@@ -319,9 +298,9 @@ public class Ball extends GameModel {
         if (!isFinished()) {
             //setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
             //double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
-            System.out.println("arrriba.model.Ball.move()");
-            double x = elapsedTime*vX+this.getPosX();
-            double y = elapsedTime*vY+this.getPosY();
+//            System.out.println("arrriba.model.Ball.move()");
+            double x = elapsedTime*getvX()+this.getPosX();
+            double y = elapsedTime*getvY()+this.getPosY();
         
         setPosX(x);
         setPosY(y);
@@ -331,22 +310,31 @@ public class Ball extends GameModel {
     }
     
     private void collideBalls2(final GameModel that) {
-        if (this.getPosX() + (this.getSize()/2) + (that.getSize()/2) > that.getPosX()
-                && this.getPosX() < that.getPosX() + (this.getSize()/2) + (that.getSize()/2)
-                && this.getPosY() + (this.getSize()/2) + (that.getSize()/2) > that.getPosY()
-                && this.getPosY() < that.getPosY() + (this.getSize()/2) + (that.getSize()/2)) {
-            double distance = Math.sqrt(
-                    Math.pow(this.getPosX() - that.getPosX(), 2)
-                            + Math.pow(this.getPosY() - that.getPosY(), 2));
-            if (distance < this.getSize()/2 + that.getSize()/2) {
-                // Massen und Geschwindigkeiten in GameModel bereit stellen
-                double thisNewVX = (this.getVX() * (this.getMass() - 1) + (2 * 1 * 0)) / (this.getMass() - 1);
-                double thisNewVY = (this.getVY() * (this.getMass() - 1) + (2 * 1 * 0)) / (this.getMass() - 1);
-                double thatNewVX = (0 * (1 - this.getMass()) + (2 * this.getMass() * this.getVX())) / (1 - this.getMass());
-                double thatNewVY = (0 * (1 - this.getMass()) + (2 * this.getMass() * this.getVY())) / (1 - this.getMass());
-                this.setVX(thisNewVX);
-                this.setVY(thisNewVY);
-            }
+        double distance = Math.sqrt(
+                Math.pow(this.getPosX() - that.getPosX(), 2)
+                        + Math.pow(this.getPosY() - that.getPosY(), 2));
+        if (distance <= this.getSize()/2 + that.getSize()/2) {
+            System.out.println("### Kollision");
+            System.out.println("thisVX: " + this.getvX());
+            System.out.println("thisVY: " + this.getvY());
+            System.out.println("thisMass: " + this.getMass());
+            System.out.println("thatVX: " + that.getvX());
+            System.out.println("thatVY: " + that.getvY());
+            System.out.println("thatMass: " + that.getMass());
+            System.out.println("thisVelocity: " + this.getVelocity());
+            double thisNewVX = (this.getvX() * (this.getMass() - that.getMass()) + (2 * that.getMass() * that.getvX())) / (this.getMass() + that.getMass());
+            double thisNewVY = (this.getvY() * (this.getMass() - that.getMass()) + (2 * that.getMass() * that.getvY())) / (this.getMass() + that.getMass());
+            double thatNewVX = (that.getvX() * (that.getMass() - this.getMass()) + (2 * this.getMass() * this.getvX())) / (that.getMass() + this.getMass());
+            double thatNewVY = (that.getvY() * (that.getMass() - this.getMass()) + (2 * this.getMass() * this.getvY())) / (that.getMass() + this.getMass());
+            this.setvX(thisNewVX);
+            this.setvY(thisNewVY);
+            that.setvX(thatNewVX);
+            that.setvY(thatNewVY);
+//            this.setPosX(this.getPosX() + thisNewVX);
+//            this.setPosY(this.getPosY() + thisNewVY);
+//            that.setPosX(that.getPosX() + thatNewVX);
+//            that.setPosY(that.getPosY() + thatNewVY);
+            System.out.println(thisNewVX + " " + thisNewVY + " " + thatNewVX + " " + thatNewVY);
         }
     }
 }

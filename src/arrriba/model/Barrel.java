@@ -25,5 +25,8 @@ public class Barrel extends GameModel {
         this.setPosX(posX);
         this.setPosY(posY);
         this.setSize(size);
+        this.setvX(0);
+        this.setvY(0);
+        this.setMass(10000000);
     }
 }

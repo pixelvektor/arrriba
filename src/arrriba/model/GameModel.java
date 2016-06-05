@@ -20,6 +20,9 @@ public class GameModel extends Observable {
     private double posY;
     private double rotation;
     private double size;
+    private double vX;
+    private double vY;
+    private double mass;
     private Shape shape;
     private ArrayList<ModelListener> listener = new ArrayList<ModelListener>();
     private double[] cornerPoints;
@@ -42,6 +45,18 @@ public class GameModel extends Observable {
      */
     public double getSize() {
         return size;
+    }
+
+    public double getvX() {
+        return vX;
+    }
+
+    public double getvY() {
+        return vY;
+    }
+
+    public double getMass() {
+        return mass;
     }
 
     public Shape getShape() {
@@ -121,6 +136,19 @@ public class GameModel extends Observable {
         }
         this.setChanged();
         this.notifyObservers();
+    }
+
+    public void setvX(double vX) {
+        this.vX = vX;
+    }
+
+    public void setvY(double vY) {
+        this.vY = vY;
+    }
+
+    public void setMass(final double mass) {
+        System.out.println("arrriba.model.GameModel.setMass(): " + mass);
+        this.mass = mass;
     }
 
     protected void setShape(final Shape shape) {
