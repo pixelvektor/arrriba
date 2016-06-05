@@ -12,6 +12,7 @@ package arrriba.model.material;
 public class Plastic extends Material {
     private static final String NAME = "Kunststoff";
     private double density = 1.14;
+    private String texturePath = "/arrriba/view/plastikkugel.png";
     
     @Override
     public String toString() {
@@ -21,5 +22,10 @@ public class Plastic extends Material {
      @Override
     public double getDensity() {
         return density;
+    }
+    
+    @Override
+    public String getTexturePath() {
+        return texturePath;
     }
 }

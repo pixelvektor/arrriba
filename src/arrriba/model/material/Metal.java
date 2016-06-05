@@ -12,6 +12,7 @@ package arrriba.model.material;
 public class Metal extends Material {
     private static final String NAME = "Metall";
     private double density = 7.8;
+    private String texturePath = "/arrriba/view/metallkugel.png";
     
 
     @Override
@@ -24,4 +25,8 @@ public class Metal extends Material {
         return density;
     }
     
+    @Override
+    public String getTexturePath() {
+        return texturePath;
+    }
 }

@@ -8,6 +8,8 @@ package arrriba.model;
 import arrriba.model.material.Wood;
 import arrriba.model.material.Material;
 import java.util.ArrayList;
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -56,6 +58,8 @@ public class Ball extends GameModel {
         // Erstellt das Shape
         Circle shape = new Circle(posX, posY, size / 2);
         shape.setFill(Paint.valueOf("RED"));
+        double density = material.getDensity();
+        
         this.setShape(shape);
         
         this.setSize(size);
@@ -111,10 +115,10 @@ public class Ball extends GameModel {
             setvY(0);
         }else{
             //System.out.println(velocity + "else");
-        cos= Math.cos(Math.toRadians(getRotation()));
-        sin= Math.sin(Math.toRadians(getRotation()));
-        setvX(velocity*cos);
-        setvY(velocity*sin);
+            cos= Math.cos(Math.toRadians(getRotation()));
+            sin= Math.sin(Math.toRadians(getRotation()));
+            setvX(velocity*cos);
+            setvY(velocity*sin);
         }
         
     }
@@ -134,7 +138,9 @@ public class Ball extends GameModel {
         weightforce = getMass()*gravitation;
         double frictionCoefficient = this.ground.getFrictionCoefficient();
         friction = frictionCoefficient*weightforce*0.00005;
-        System.out.println(getMass());
+        String texturePath = material.getTexturePath();
+        Image texture = new Image(texturePath);
+        getShape().setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
     }
     
     private void setFinished() {
@@ -296,16 +302,14 @@ public class Ball extends GameModel {
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
         if (!isFinished()) {
-            //setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
-            //double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
+//            setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
+//            double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
 //            System.out.println("arrriba.model.Ball.move()");
             double x = elapsedTime*getvX()+this.getPosX();
             double y = elapsedTime*getvY()+this.getPosY();
-        
-        setPosX(x);
-        setPosY(y);
-        callListener();
-            
+            setPosX(x);
+            setPosY(y);
+            callListener();
         }
     }
     

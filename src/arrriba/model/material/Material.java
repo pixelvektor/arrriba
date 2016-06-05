@@ -11,18 +11,23 @@ package arrriba.model.material;
  */
 public abstract class Material {
     private final String type;
+    private String texturePath;
     private double density = 0.8;
     
     public Material() {
         this.type = "Wood";
     }
 
+    /*public String getTexturePath(){
+        return texturePath;
+    }*/
+    
     public String getType() {
         return type;
     }
     
     public abstract double getDensity();
     
-    //public abstract void setDensity();
+    public abstract String getTexturePath();
 
 }
