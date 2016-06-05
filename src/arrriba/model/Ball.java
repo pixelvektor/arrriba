@@ -314,7 +314,7 @@ public class Ball extends GameModel {
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
         if (!isFinished()) {
-            //setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
+            setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
             double x = elapsedTime*vX+this.getPosX();
             double y = elapsedTime*vY+this.getPosY();
         
