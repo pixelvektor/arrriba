@@ -9,9 +9,10 @@ package arrriba.model.material;
  *
  * @author fabian
  */
-public class Sponge extends Material {
+public class Cork extends Material {
     private static final String NAME = "Kork";
     private double density = 0.5;
+    private String texturePath = "/arrriba/view/korkkugel.png";
 
     @Override
     public String toString() {
@@ -21,5 +22,10 @@ public class Sponge extends Material {
      @Override
     public double getDensity() {
         return density;
+    }
+    
+    @Override
+    public String getTexturePath() {
+        return texturePath;
     }
 }

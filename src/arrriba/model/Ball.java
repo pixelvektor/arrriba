@@ -8,6 +8,8 @@ package arrriba.model;
 import arrriba.model.material.Wood;
 import arrriba.model.material.Material;
 import java.util.ArrayList;
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -59,6 +61,8 @@ public class Ball extends GameModel {
         // Erstellt das Shape
         Circle shape = new Circle(posX, posY, size / 2);
         shape.setFill(Paint.valueOf("RED"));
+        double density = material.getDensity();
+        
         this.setShape(shape);
         
         this.setSize(size);
@@ -141,6 +145,9 @@ public class Ball extends GameModel {
         weightforce = mass*gravitation;
         double frictionCoefficient = this.ground.getFrictionCoefficient();
         friction = frictionCoefficient*weightforce*0.00005;
+        String texturePath = material.getTexturePath();
+        Image texture = new Image(texturePath);
+        shape.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
     }
     
     public void setVX(double vX){

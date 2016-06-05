@@ -20,7 +20,7 @@ public class GameModel extends Observable {
     private double posY;
     private double rotation;
     private double size;
-    private Shape shape;
+    Shape shape;
     private ArrayList<ModelListener> listener = new ArrayList<ModelListener>();
     private double[] cornerPoints;
     

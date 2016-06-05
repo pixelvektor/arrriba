@@ -16,7 +16,7 @@ import arrriba.model.Spring;
 import arrriba.model.material.Plastic;
 import arrriba.model.material.Material;
 import arrriba.model.material.Metal;
-import arrriba.model.material.Sponge;
+import arrriba.model.material.Cork;
 import arrriba.model.material.Wood;
 import arrriba.view.NumberTextField;
 import java.net.URL;
@@ -191,7 +191,7 @@ public class GameControl implements Initializable, Observer {
         materials.add(new Wood());
         materials.add(new Metal());
         materials.add(new Plastic());
-        materials.add(new Sponge());
+        materials.add(new Cork());
         
         // Materialmenue
         materialMenu.setItems(FXCollections.observableArrayList(materials));

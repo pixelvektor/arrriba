@@ -12,6 +12,7 @@ package arrriba.model.material;
 public class Wood extends Material {
     private static final String NAME = "Holz";
     private double density = 0.8;
+    private String texturePath = "/arrriba/view/holzkugel.png";
     
     public Wood() {
         
@@ -25,5 +26,10 @@ public class Wood extends Material {
     @Override
     public double getDensity() {
         return density;
+    }
+    
+    @Override
+    public String getTexturePath() {
+        return texturePath;
     }
 }
