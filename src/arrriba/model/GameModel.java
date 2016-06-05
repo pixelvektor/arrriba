@@ -113,7 +113,12 @@ public class GameModel extends Observable {
             Circle c = (Circle) this.shape;
             c.setRadius(size / 2);
             this.size = size;
-        } else {
+        }else if(isPuffer()){
+            Rectangle r = (Rectangle) this.shape;
+            r.setWidth(size);
+            r.setHeight(size/2);
+            this.size = size;
+        }else {
             Rectangle r = (Rectangle) this.shape;
             r.setWidth(size);
             r.setHeight(size);
@@ -122,7 +127,7 @@ public class GameModel extends Observable {
         this.setChanged();
         this.notifyObservers();
     }
-
+    
     protected void setShape(final Shape shape) {
         this.shape = shape;
         this.shape.setUserData(this);
@@ -144,5 +149,9 @@ public class GameModel extends Observable {
     
     protected boolean isCircle() {
         return this.getShape().toString().contains("Circle");
+    }
+    
+    protected boolean isPuffer() {
+        return this.getClass().toString().contains("Puffer");
     }
 }

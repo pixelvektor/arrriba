@@ -7,7 +7,7 @@ package arrriba.model;
 
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 
 /**
  *
@@ -15,7 +15,9 @@ import javafx.scene.shape.Circle;
  */
 public class Puffer extends GameModel {
     public Puffer (final double posX, final double posY, final double size) {
-        Circle shape = new Circle(posX, posY, size / 2);
+        Rectangle shape = new Rectangle(posX, posY, size, size/2);
+        System.out.println(shape.getHeight());
+        System.out.println(shape.getWidth());
         Image texture = new Image("/arrriba/view/Kugelfisch.png");
         shape.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
         shape.getStyleClass().add("puffer");
