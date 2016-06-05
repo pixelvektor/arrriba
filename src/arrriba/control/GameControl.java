@@ -11,6 +11,7 @@ import arrriba.model.Box;
 import arrriba.model.GameModel;
 import arrriba.model.Hole;
 import arrriba.model.Ground;
+import arrriba.model.Level;
 import arrriba.model.Puffer;
 import arrriba.model.Spring;
 import arrriba.model.material.Plastic;
@@ -137,6 +138,10 @@ public class GameControl implements Initializable, Observer {
     private long lastFrame = 0;
     Ground ground = new Ground();
     
+    private double startPosX;
+    private double startPosY;
+    Level level = new Level();
+    
 
     public GameControl() {
         this.shapeOnMousePressedEH = (MouseEvent e) -> {
@@ -201,10 +206,7 @@ public class GameControl implements Initializable, Observer {
                 ((Ball) activeShape.getUserData()).setMaterial(materials.get(newValue.intValue()));
             }
         });
-        
-        
-        
-        createBalls();
+        levelStart();
         
         // Erstellen des Timers fuer den Spielablauf
         TimerTask timerTask = new TimerTask() {
@@ -216,6 +218,11 @@ public class GameControl implements Initializable, Observer {
         
         timer = new Timer(true);
         timer.schedule(timerTask, 0, FRAME_RATE);
+    }
+
+    private void levelStart() {
+        level.loadOberdeck();
+        loadLevel();
     }
     
     @Override
@@ -290,17 +297,20 @@ public class GameControl implements Initializable, Observer {
     
     @FXML
     public void onOberdeckMI() {
-        System.out.println("arrriba.control.GameControl.onOberdeckMI()");
+        level.loadOberdeck();
+         loadLevel();
     }
     
     @FXML
     public void onZwischendeckMI() {
-        System.out.println("arrriba.control.GameControl.onZwischendeckMI()");
+         level.loadZwischendeck();
+         loadLevel();
     }
     
     @FXML
     public void onUnterdeckMI() {
-        System.out.println("arrriba.control.GameControl.onUnterdeckMI()");
+         level.loadUnterdeck();
+        loadLevel();
     }
     
     /** Ruft das Hilfefenster auf.
@@ -339,7 +349,7 @@ public class GameControl implements Initializable, Observer {
         balls.removeAll(balls);
         lastFrame = 0;
         
-        createBalls();
+        createBalls(startPosX,startPosY);
     }
     
     @FXML
@@ -351,7 +361,7 @@ public class GameControl implements Initializable, Observer {
         obstacles.removeAll(obstacles);
         lastFrame = 0;
         
-        createBalls();
+        createBalls(startPosX,startPosY);
     }
     
     
@@ -448,14 +458,14 @@ public class GameControl implements Initializable, Observer {
     
     /** Erstellt die Baelle auf dem Spielfeld.
      */
-    private void createBalls() {
+    private void createBalls(double x, double y) {
         // Baelle erstellen
         // Temp Offset
         int offset = 50;
         for (int i = 0; i < BALL_COUNT; i++) {
             Ball b = new Ball(100,
-                    200 + offset * i,
-                    200 + (offset * i) / 2,
+                    x + offset * i,
+                    y + (offset * i) / 2,
                     500, 15, materials.get(i), ground);
             b.addObserver(this);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
@@ -463,16 +473,15 @@ public class GameControl implements Initializable, Observer {
             b.addObserver(this);
             gameArea.getChildren().add(b.getShape());
         }
-        createHoles();
     }
     
-    private void createHoles() {
+    private void createHoles(double x, double y) {
         // Holes erstellen
         // Temp Offset
         int offset = 50;
         for (int i = 0; i < BALL_COUNT; i++) {
-            Hole h = new Hole(300 + offset * i,
-                    420 + (offset * i) / 2,
+            Hole h = new Hole(x + offset * i,
+                    y + (offset * i) / 2,
                     balls.get(i).getSize());
             holes.add(h);
             h.addObserver(this);
@@ -511,5 +520,23 @@ public class GameControl implements Initializable, Observer {
      */
     private double round(final double unround) {
         return (double) Math.round(unround * 10) / 10;
+    }
+    
+    private void loadLevel() {
+        play = false;     
+        gameArea.getChildren().remove(0, gameArea.getChildren().size());
+        balls.removeAll(balls);
+        obstacles.removeAll(obstacles);
+        lastFrame = 0;
+        
+        ArrayList<GameModel> obs=level.getObstacles();
+        for( GameModel obstacle : obs){
+            obstacles.add(obstacle);
+            gameArea.getChildren().add(obstacle.getShape());
+        }     
+        startPosX=level.getStartPosX();
+        startPosY=level.getStartPosY();
+        createBalls(startPosX, startPosY);
+        createHoles(level.getHoleX(),level.getHoleY());
     }
 }
