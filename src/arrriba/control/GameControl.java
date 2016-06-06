@@ -206,7 +206,9 @@ public class GameControl implements Initializable, Observer {
                 ((Ball) activeShape.getUserData()).setMaterial(materials.get(newValue.intValue()));
             }
         });
-        levelStart();
+        //levelStart();
+        
+        createBalls(200,200);
         
         // Erstellen des Timers fuer den Spielablauf
         TimerTask timerTask = new TimerTask() {
@@ -349,7 +351,8 @@ public class GameControl implements Initializable, Observer {
         balls.removeAll(balls);
         lastFrame = 0;
         
-        createBalls(startPosX,startPosY);
+        createBalls(200,200);
+        //createBalls(startPosX,startPosY);
     }
     
     @FXML

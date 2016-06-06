@@ -203,29 +203,23 @@ public class Ball extends GameModel {
                  
                 if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
                     if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-//                        System.out.println(d+"distance");
+                        System.out.println(d+"distanceA");
                         collide(d);
                     }
-                }
-                
-                if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                }else if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
                     if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY>=cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-//                        System.out.println(d+"distance");
+                        System.out.println(d+"distanceB");
                         collide(d);                 
                     }
-                }
-                
-                if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                }else if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
                     if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY<=cornerPoints[c+1] && collY>=cornerPoints[c+3]){
-//                        System.out.println(d+"distance");
+                        System.out.println(d+"distanceC");
                         collide(d);
                     }
-                }
-                
-                if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                } else if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
 //                    System.out.println("AHHH");
                     if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-//                        System.out.println(d+"distance");
+                       System.out.println(d+"distanceD");
                     
                         collide(d);
                     }
@@ -237,6 +231,7 @@ public class Ball extends GameModel {
 
     private void collide(double d) {
         if(d<=getSize()/2){
+            System.out.println(d);
             double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
             double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
             double gamma = alpha-(2*beta);
