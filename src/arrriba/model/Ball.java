@@ -176,6 +176,7 @@ public class Ball extends GameModel {
             cornerPoints=that.getCornerPoints();
             //System.out.println(obstacle.getSize());
             for(int c=0;c<=cornerPoints.length-3;c=c+2){
+                //System.out.println(c);
                 double a=cornerPoints[c]-cornerPoints[c+2];
                 double b=cornerPoints[c+1]-cornerPoints[c+3];
                 gX.add(a);
@@ -184,6 +185,8 @@ public class Ball extends GameModel {
                 ngY.add(gX.get(gX.size()-1));
                 double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
                 double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
+                //System.out.println(getvX()+" vx");
+                //System.out.println(getvY()+" vy");
                 RealMatrix coefficients =
                 new Array2DRowRealMatrix(new double[][] { { (time*getvX()+this.getPosX())-getPosX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
                     { (time*getvY()+this.getPosY())-getPosY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
@@ -191,12 +194,18 @@ public class Ball extends GameModel {
                 DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
 
                 RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getPosX(),cornerPoints[c+1]-getPosY()}, false);
+                //System.out.println(getPosX());
+                //System.out.println(getPosY());
+                //System.out.println(constants.getEntry(0)+" "+constants.getEntry(1)+" cons");
                 RealVector solution = solver.solve(constants); 
+                //System.out.println(solution.getEntry(1));
                 double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
+                //System.out.println(collX+"collx");
                 //double collX=getStartX()+solution.getEntry(0)*((getVX()+200)-getStartX());
 
                 double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
+                 //System.out.println(collY+"colly");
                 if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
                     if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
                         System.out.println(d+"distanceA");
