@@ -30,6 +30,11 @@ public class Hole extends GameModel {
     }
     
     @Override
+    public String toString() {
+        return "Hole";
+    }
+    
+    @Override
     public void setSize(final double size) {
         Circle c = (Circle) this.getShape();
         c.setRadius(size / 2);

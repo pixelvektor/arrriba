@@ -26,4 +26,9 @@ public class Spring extends GameModel {
         this.setPosY(posY);
         this.setSize(size);
     }
+    
+    @Override
+    public String toString() {
+        return "Spring";
+    }
 }
