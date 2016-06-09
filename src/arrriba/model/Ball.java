@@ -180,7 +180,7 @@ public class Ball extends GameModel {
                 default: collidePuffer();
                 
             }
-            if (that.isCircle()) {
+//            if (that.isCircle()) {
 //                collideBarrel(that);
 //                double distance = Math.sqrt(
 //                        Math.pow(that.getPosX() - this.getPosX(), 2)
@@ -199,64 +199,63 @@ public class Ball extends GameModel {
 //                        System.out.println(intersectPoints[0][0] + " " + intersectPoints[0][1] + " " + intersectPoints[1][0] + " " + intersectPoints[1][1]);
 //                    }
 //                }
-            } else if (!isFinished()) {
-                double[] cornerPoints;
-                cornerPoints=that.getCornerPoints();
-                //System.out.println(obstacle.getSize());
-                for(int c=0;c<=cornerPoints.length-3;c=c+2){
-                    double a=cornerPoints[c]-cornerPoints[c+2];
-                    double b=cornerPoints[c+1]-cornerPoints[c+3];
-                    gX.add(a);
-                    gY.add(b);
-                    ngX.add(-gY.get(gY.size()-1));
-                    ngY.add(gX.get(gX.size()-1));
-                    double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
-                    double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
+//            }
+        } else if (!isFinished()) {
+            double[] cornerPoints;
+            cornerPoints=that.getCornerPoints();
+            //System.out.println(obstacle.getSize());
+            for(int c=0;c<=cornerPoints.length-3;c=c+2){
+                //System.out.println(c);
+                double a=cornerPoints[c]-cornerPoints[c+2];
+                double b=cornerPoints[c+1]-cornerPoints[c+3];
+                gX.add(a);
+                gY.add(b);
+                ngX.add(-gY.get(gY.size()-1));
+                ngY.add(gX.get(gX.size()-1));
+                double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
+                double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
+                //System.out.println(getvX()+" vx");
+                //System.out.println(getvY()+" vy");
+                RealMatrix coefficients =
+                new Array2DRowRealMatrix(new double[][] { { (time*getvX()+this.getPosX())-getPosX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
+                    { (time*getvY()+this.getPosY())-getPosY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
+                   false);
+                DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
 
-                    RealMatrix coefficients =
-                    new Array2DRowRealMatrix(new double[][] { { (getvX()+getPosX())-getPosX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
-                        { (getvY()+getPosY())-getPosY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
-                       false);
-                    DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
+                RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getPosX(),cornerPoints[c+1]-getPosY()}, false);
+                //System.out.println(getPosX());
+                //System.out.println(getPosY());
+                //System.out.println(constants.getEntry(0)+" "+constants.getEntry(1)+" cons");
+                RealVector solution = solver.solve(constants); 
+                //System.out.println(solution.getEntry(1));
+                double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
+                //System.out.println(collX+"collx");
+                //double collX=getStartX()+solution.getEntry(0)*((getVX()+200)-getStartX());
 
-                    RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getPosX(),cornerPoints[c+1]-getPosY()}, false);
-                    RealVector solution = solver.solve(constants); 
-
-                    double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
-
-                    //double collX=getStartX()+solution.getEntry(0)*((getVX()+200)-getStartX());
-
-                    double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
-                    //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
-
-                    if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
-                        if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-    //                        System.out.println(d+"distance");
-                            collide(d);
-                        }
+                double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
+                //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
+                 //System.out.println(collY+"colly");
+                if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                    if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
+                        System.out.println(d+"distanceA");
+                        collide(d);
                     }
-
-                    if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
-                        if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY>=cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-    //                        System.out.println(d+"distance");
-                            collide(d);                 
-                        }
+                }else if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                    if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY>=cornerPoints[c+1] && collY<=cornerPoints[c+3]){
+                        System.out.println(d+"distanceB");
+                        collide(d);                 
                     }
-
-                    if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
-                        if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY<=cornerPoints[c+1] && collY>=cornerPoints[c+3]){
-    //                        System.out.println(d+"distance");
-                            collide(d);
-                        }
+                }else if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                    if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY<=cornerPoints[c+1] && collY>=cornerPoints[c+3]){
+                        System.out.println(d+"distanceC");
+                        collide(d);
                     }
-
-                    if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
-    //                    System.out.println("AHHH");
-                        if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-    //                        System.out.println(d+"distance");
-
-                            collide(d);
-                        }
+                } else if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+//                    System.out.println("AHHH");
+                    if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
+                       System.out.println(d+"distanceD");
+                    
+                        collide(d);
                     }
                 }
             }
@@ -267,13 +266,17 @@ public class Ball extends GameModel {
 
     private void collide(double d) {
         if(d<=getSize()/2){
+            System.out.println(d);
             double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
             double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
             double gamma = alpha-(2*beta);
             double delta= 180-getRotation()-gamma;
-            setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
-            setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
-            System.out.println("gamma: " + gamma + " delta: " + delta);
+            //System.out.println(VectorCalculation.abs(getvX(),getvY()));
+            setRotation(delta);
+            //setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
+            //setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
+            //System.out.println(VectorCalculation.abs(getvX(),getvY()));
+            //System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
     }
     
@@ -283,7 +286,7 @@ public class Ball extends GameModel {
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
         if (!isFinished()) {
-//            setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
+            setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
 //            double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
 //            System.out.println("arrriba.model.Ball.move()");
             double x = elapsedTime*getvX()+this.getPosX();
@@ -338,11 +341,7 @@ public class Ball extends GameModel {
         double distanceX = second.getPosX() - first.getPosX();
         double distanceY = second.getPosY() - first.getPosY();
         
-        // Berechnen des Rotationswinkels zwischen x-Achse und dem Distanzvektors
-        double scalar = VectorCalculation.times(xX, xY, distanceX, distanceY);
-        double xAbs = VectorCalculation.abs(xX, xY);
-        double distanceAbs = VectorCalculation.abs(distanceX, distanceY);
-        double phi = Math.acos(scalar / (xAbs * distanceAbs));
+        double phi = vectorAngle(xX, xY, distanceX, distanceY);
         
         // Rotation
         double rotVeloX = Math.cos(phi) * first.getvX() - Math.sin(phi) * first.getvY();
@@ -352,8 +351,26 @@ public class Ball extends GameModel {
         rotVeloX = -rotVeloX;
         
         // Rueckrotation des Geschwindigkeitsvektors
-        first.setvX(Math.cos(-phi) * rotVeloX - Math.sin(-phi) * rotVeloY);
-        first.setvY(Math.sin(-phi) * rotVeloX + Math.cos(-phi) + rotVeloY);
+        double newVeloX = Math.cos(-phi) * rotVeloX - Math.sin(-phi) * rotVeloY;
+        double newVeloY = Math.sin(-phi) * rotVeloX + Math.cos(-phi) + rotVeloY;
+        
+        // Setzen des neuen Richtungswinkels
+        first.setRotation(Math.toDegrees(vectorAngle(xX, xY, newVeloX, newVeloY)));
+    }
+
+    /** Berechnen des Rotationswinkels zwischen x-Achse und dem Distanzvektors.
+     * @param aX x-Koordinate des ersten Vektors
+     * @param aY y-Koordinate des ersten Vektors
+     * @param bX x-Koordinate des zweiten Vektors
+     * @param bY y-Koordinate des zweiten Vektors
+     * @return Winkel zwischen den beiden Vektoren als Radiant
+     */
+    private double vectorAngle(final double aX, final double aY, final double bX, final double bY) {
+        double scalar = VectorCalculation.times(aX, aY, bX, bY);
+        double xAbs = VectorCalculation.abs(aX, aY);
+        double distanceAbs = VectorCalculation.abs(bX, bY);
+        double phi = Math.acos(scalar / (xAbs * distanceAbs));
+        return phi;
     }
     
     private void collideBox() {

@@ -47,15 +47,15 @@ public class GameModel extends Observable {
         return size;
     }
 
-    public double getvX() {
+    protected double getvX() {
         return vX;
     }
 
-    public double getvY() {
+    protected double getvY() {
         return vY;
     }
 
-    public double getMass() {
+    protected double getMass() {
         return mass;
     }
 
@@ -63,7 +63,7 @@ public class GameModel extends Observable {
         return shape;
     }
     
-    public double[] getCornerPoints(){
+    protected double[] getCornerPoints(){
         
         if (isCircle()) {
            
@@ -73,7 +73,7 @@ public class GameModel extends Observable {
             double mY=getPosY()+getSize()/2;
             
             double[] cornerPoints={mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+((-(getPosX())-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
                 ,mX+((getPosX()+getSize()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
                 ,mY+(-(getPosX()+getSize()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
                 ,mX+((getPosX()+getSize()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+getSize()-mY)*Math.sin(Math.toRadians(-getRotation())))
@@ -83,7 +83,7 @@ public class GameModel extends Observable {
                 ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
                 ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))};
             //for(int i=0;i<cornerPoints.length;i++ ){
-              //  System.out.println(cornerPoints[i] + " " + i);
+            //   System.out.println(cornerPoints[i] + " " + i);
             //}
             return cornerPoints;
         }      
