@@ -241,9 +241,12 @@ public class Ball extends GameModel {
             double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
             double gamma = alpha-(2*beta);
             double delta= 180-getRotation()-gamma;
-            setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
-            setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
-            System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            //System.out.println(VectorCalculation.abs(getvX(),getvY()));
+            setRotation(delta);
+            //setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
+            //setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
+            //System.out.println(VectorCalculation.abs(getvX(),getvY()));
+            //System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
     }
     
@@ -302,7 +305,7 @@ public class Ball extends GameModel {
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
         if (!isFinished()) {
-//            setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
+            setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
 //            double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
 //            System.out.println("arrriba.model.Ball.move()");
             double x = elapsedTime*getvX()+this.getPosX();
