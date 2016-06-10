@@ -29,4 +29,9 @@ public class Barrel extends GameModel {
         this.setvY(0);
         this.setMass(10000000);
     }
+    
+    @Override
+    public String toString() {
+        return "Barrel";
+    }
 }
