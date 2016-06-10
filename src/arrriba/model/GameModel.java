@@ -130,8 +130,8 @@ public class GameModel extends Observable {
             this.size = size;
         }else if(isPuffer()){
             Rectangle r = (Rectangle) this.shape;
-            r.setWidth(size);
-            r.setHeight(size/2);
+            r.setWidth(size*2);
+            r.setHeight(size);
             this.size = size;
         }else {
             Rectangle r = (Rectangle) this.shape;
