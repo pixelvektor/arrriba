@@ -12,6 +12,7 @@ package arrriba.model.material;
 public class Wood extends Material {
     private static final String NAME = "Holz";
     private double density = 0.8;
+    private double frictionCoefficient = 0.4;
     private String texturePath = "/arrriba/view/holzkugel.png";
     
     public Wood() {
@@ -31,5 +32,10 @@ public class Wood extends Material {
     @Override
     public String getTexturePath() {
         return texturePath;
+    }
+    
+    @Override
+    public double getFrictionCoefficient() {
+        return density;
     }
 }

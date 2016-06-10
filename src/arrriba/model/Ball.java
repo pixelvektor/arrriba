@@ -35,11 +35,13 @@ public class Ball extends GameModel {
 
     private double volume;
     private double gravitation = 9.81;
-    private double weightforce;
+    private double weightForce;
     private double friction;
     private Ground ground;
     private double timeline;
     private boolean finish = false;
+    private double aX;
+    private double aY;
 
     private ArrayList<Double> gX=new ArrayList<Double>();
     private ArrayList<Double> gY=new ArrayList<Double>();
@@ -106,19 +108,26 @@ public class Ball extends GameModel {
         volume = (getSize()*getSize()*Math.PI)/4;
     }
     
-    public void setVelocity(final double velocity) {
-        this.velocity = velocity;
-        //System.out.println(velocity);
-        if(velocity<=0){
+    public void setVelocity(double velocity){
+        this.velocity=velocity;
+    }
+    
+    public void setVelocityVector(final double elapsedTime) {
+        if (timeline==0+elapsedTime){
+             cos= Math.cos(Math.toRadians(getRotation()));
+            sin= Math.sin(Math.toRadians(getRotation()));
+            setvX(getVelocity()*cos);
+            setvY(getVelocity()*sin);
+            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+        }else if(VectorCalculation.abs(getvX(), getvY())<=0){
           //  System.out.println(velocity + "if");
             setvX(0);
             setvY(0);
         }else{
-            //System.out.println(velocity + "else");
-            cos= Math.cos(Math.toRadians(getRotation()));
-            sin= Math.sin(Math.toRadians(getRotation()));
-            setvX(velocity*cos);
-            setvY(velocity*sin);
+            setvX(getvX()+aX*elapsedTime);
+            setvY(getvY()+aY*elapsedTime);
+            System.out.println(VectorCalculation.abs(getvX(), getvY()));
         }
         
     }
@@ -132,12 +141,19 @@ public class Ball extends GameModel {
     }
 
     public void setMaterial(Material material) {
-        this.material = material;
+        this.material=material;
+        double frictionCoefficient = this.ground.getFrictionCoefficient();
+        
+         
+        
+        /* Brauchen wir (ertmal) doch nicht
+         this.material = material;
         double density = material.getDensity();
         setMass(density*volume);
-        weightforce = getMass()*gravitation;
-        double frictionCoefficient = this.ground.getFrictionCoefficient();
-        friction = frictionCoefficient*weightforce*0.00005;
+        weightForce = getMass()*gravitation; 
+        double frictionForce = frictionCoefficient*weightForce;
+        friction = frictionForce/getMass();*/
+         
         String texturePath = material.getTexturePath();
         Image texture = new Image(texturePath);
         getShape().setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
@@ -146,7 +162,7 @@ public class Ball extends GameModel {
     private void setFinished() {
         finish = true;
         this.setSize(120); // Zur Anschauung
-        this.setVelocity(0);
+        this.setVelocityVector(0);
         this.setChanged();
         this.notifyObservers();
     }
@@ -296,12 +312,13 @@ public class Ball extends GameModel {
 
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
-        if (!isFinished()) {
-//            setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
-//            double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
-//            System.out.println("arrriba.model.Ball.move()");
-            double x = elapsedTime*getvX()+this.getPosX();
-            double y = elapsedTime*getvY()+this.getPosY();
+        if (!isFinished()) {            
+            setVelocityVector(elapsedTime); //<- auskommentieren wenn kollision
+            //double x = ONE_HALF*(aY * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
+            //System.out.println(getvX() +"      "+ getvY());
+            double x = elapsedTime*getvX()+this.getPosX()+ONE_HALF*aX*timeline*timeline;
+            double y = elapsedTime*getvY()+this.getPosY()+ONE_HALF*aY*timeline*timeline;
+          // System.out.println(Math.abs(ONE_HALF*aX*timeline*timeline)+ "      " +(elapsedTime*getvX()+this.getPosX()));
             setPosX(x);
             setPosY(y);
             callListener();

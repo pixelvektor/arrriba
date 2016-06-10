@@ -29,5 +29,7 @@ public abstract class Material {
     public abstract double getDensity();
     
     public abstract String getTexturePath();
+    
+    public abstract double getFrictionCoefficient();
 
 }

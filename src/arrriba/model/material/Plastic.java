@@ -12,6 +12,7 @@ package arrriba.model.material;
 public class Plastic extends Material {
     private static final String NAME = "Kunststoff";
     private double density = 1.14;
+    private double frictionCoefficient = 0.2;
     private String texturePath = "/arrriba/view/plastikkugel.png";
     
     @Override
@@ -27,5 +28,10 @@ public class Plastic extends Material {
     @Override
     public String getTexturePath() {
         return texturePath;
+    }
+    
+    @Override
+    public double getFrictionCoefficient() {
+        return density;
     }
 }
