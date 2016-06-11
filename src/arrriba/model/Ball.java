@@ -122,8 +122,7 @@ public class Ball extends GameModel {
     
     public void setVelocityVector(final double elapsedTime) {
         timeline += elapsedTime;
-        if (timeline==0+elapsedTime){
-            System.out.println("bud");
+        if (timeline==0+elapsedTime){           
             cos= Math.cos(Math.toRadians(getRotation()));
             sin= Math.sin(Math.toRadians(getRotation()));
             setvX(getVelocity()*cos);
@@ -137,7 +136,7 @@ public class Ball extends GameModel {
         }else{
             setvX(getvX()+aX*elapsedTime);
             setvY(getvY()+aY*elapsedTime);
-            System.out.println(VectorCalculation.abs(getvX(), getvY()));
+            //System.out.println(VectorCalculation.abs(getvX(), getvY()));
         }
         
     }
@@ -222,20 +221,36 @@ public class Ball extends GameModel {
 
     private void collideBoxShapes(GameModel that,String name,double d) {
         if(name.equals("Puffer")){
-            System.out.println(d);
-            if(d<=getSize()/2){
-               cos= Math.cos(Math.toRadians(that.getRotation()+0.000001));
-                sin= Math.sin(Math.toRadians(that.getRotation()+0.000001));
-                double a=50;
-                double vel=a*timeline+VectorCalculation.abs(getvX(),getvY());
-                setvX(vel*cos);
-                setvY(vel*sin);
+            //System.out.println(d);
+            double[] cornerPoints=that.getCornerPoints();
+            ArrayList<Double> distance=new ArrayList();
+            for(int c=0;c<=cornerPoints.length-3;c=c+2){
+            double a=cornerPoints[c]-cornerPoints[c+2];
+                double b=cornerPoints[c+1]-cornerPoints[c+3];
+                gX.add(a);
+                gY.add(b);
+                double nX=-b;
+                 double nY=a;
+                double e= VectorCalculation.times(nX, nY, getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
+                distance.add(Math.round(Math.abs(e)/VectorCalculation.abs(nX, nY)*1000)/1000.0);
+            }
+            //System.out.println(distance.get(0)+" "+distance.get(2)+" " +distance.get(1)+" "+distance.get(3));
+            //System.out.println((distance.get(0)+distance.get(2))+" " +(distance.get(1)+distance.get(3)));
+            
+            if(distance.get(0)+distance.get(2)==that.getSize() && distance.get(1)+distance.get(3)==(that.getSize()*2)){
+                double cosPuf= Math.cos(Math.toRadians(that.getRotation()+0.000001));
+                double sinPuf= Math.sin(Math.toRadians(that.getRotation()+0.000001));
+                double a=20;
+                double vel=0.5*a*timeline*timeline;
+                setvX(getvX()+vel*cosPuf);
+                setvY(getvY()+vel*sinPuf);
                 System.out.println(vel+" puf");                
             //System.out.println("HitPuf");                
             }
+            distance.clear();
         }else{
             if(d<=getSize()/2){
-                System.out.println(d);
+                //System.out.println(d);
                 double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
                 double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
                 double gamma = alpha-(2*beta);
