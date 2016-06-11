@@ -121,8 +121,10 @@ public class Ball extends GameModel {
     }
     
     public void setVelocityVector(final double elapsedTime) {
+        timeline += elapsedTime;
         if (timeline==0+elapsedTime){
-             cos= Math.cos(Math.toRadians(getRotation()));
+            System.out.println("bud");
+            cos= Math.cos(Math.toRadians(getRotation()));
             sin= Math.sin(Math.toRadians(getRotation()));
             setvX(getVelocity()*cos);
             setvY(getVelocity()*sin);
@@ -177,6 +179,7 @@ public class Ball extends GameModel {
     
     public void checkCollision(final GameModel that, final double time) {
         if (!isFinished()) {
+            setVelocityVector(time);
             // Je nach Objekt welches ueber that uebergeben wird
             String name = that.toString();
             switch (name) {
@@ -217,12 +220,18 @@ public class Ball extends GameModel {
         }                
     }
 
-    private void collideBoxShapes(String name,double d) {
+    private void collideBoxShapes(GameModel that,String name,double d) {
         if(name.equals("Puffer")){
             System.out.println(d);
             if(d<=getSize()/2){
-                setVelocity(getVelocity()+20);
-            System.out.println("HitPuf");                
+               cos= Math.cos(Math.toRadians(that.getRotation()+0.000001));
+                sin= Math.sin(Math.toRadians(that.getRotation()+0.000001));
+                double a=50;
+                double vel=a*timeline+VectorCalculation.abs(getvX(),getvY());
+                setvX(vel*cos);
+                setvY(vel*sin);
+                System.out.println(vel+" puf");                
+            //System.out.println("HitPuf");                
             }
         }else{
             if(d<=getSize()/2){
@@ -233,6 +242,10 @@ public class Ball extends GameModel {
                 double delta= 180-getRotation()-gamma;
                 //System.out.println(VectorCalculation.abs(getvX(),getvY()));
                 setRotation(delta);
+                cos= Math.cos(Math.toRadians(getRotation()));
+                sin= Math.sin(Math.toRadians(getRotation()));
+                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
                 //setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
                 //setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
                 //System.out.println(VectorCalculation.abs(getvX(),getvY()));
@@ -245,9 +258,9 @@ public class Ball extends GameModel {
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
      */
     public void move(final double elapsedTime) {
-        timeline += elapsedTime;
+        
         if (!isFinished()) {
-            setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
+            setVelocityVector(elapsedTime); //<- auskommentieren wenn kollision
 //            double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
 //            System.out.println("arrriba.model.Ball.move()");
             double x = elapsedTime*getvX()+this.getPosX();
@@ -377,24 +390,24 @@ public class Ball extends GameModel {
                 if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
                     if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
                         //System.out.println(d+"distanceA");
-                        collideBoxShapes(that.toString(),d);
+                        collideBoxShapes(that,that.toString(),d);
                     }
                 }else if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
                     if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY>=cornerPoints[c+1] && collY<=cornerPoints[c+3]){
                         //System.out.println(d+"distanceB");
-                        collideBoxShapes(that.toString(),d);                 
+                        collideBoxShapes(that,that.toString(),d);                 
                     }
                 }else if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
                     if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY<=cornerPoints[c+1] && collY>=cornerPoints[c+3]){
                         //System.out.println(d+"distanceC");
-                        collideBoxShapes(that.toString(),d);
+                        collideBoxShapes(that,that.toString(),d);
                     }
                 } else if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
 //                    System.out.println("AHHH");
                     if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
                        //System.out.println(d+"distanceD");
                     
-                        collideBoxShapes(that.toString(),d);
+                        collideBoxShapes(that,that.toString(),d);
                     }
                 }
             }
