@@ -122,7 +122,7 @@ public class Ball extends GameModel {
     
     public void setVelocityVector(final double elapsedTime) {
         if (timeline==0+elapsedTime){
-             cos= Math.cos(Math.toRadians(getRotation()));
+            cos= Math.cos(Math.toRadians(getRotation()));
             sin= Math.sin(Math.toRadians(getRotation()));
             setvX(getVelocity()*cos);
             setvY(getVelocity()*sin);
@@ -135,7 +135,7 @@ public class Ball extends GameModel {
         }else{
             setvX(getvX()+aX*elapsedTime);
             setvY(getvY()+aY*elapsedTime);
-            System.out.println(VectorCalculation.abs(getvX(), getvY()));
+            //System.out.println(VectorCalculation.abs(getvX(), getvY()));
         }
         
     }
@@ -155,7 +155,7 @@ public class Ball extends GameModel {
          
         
         /* Brauchen wir (ertmal) doch nicht
-         this.material = material;
+        this.material = material;
         double density = material.getDensity();
         setMass(density*volume);
         weightForce = getMass()*gravitation; 
@@ -219,14 +219,14 @@ public class Ball extends GameModel {
 
     private void collideBoxShapes(String name,double d) {
         if(name.equals("Puffer")){
-            System.out.println(d);
+            //System.out.println(d);
             if(d<=getSize()/2){
                 setVelocity(getVelocity()+20);
-            System.out.println("HitPuf");                
+//            System.out.println("HitPuf");                
             }
         }else{
             if(d<=getSize()/2){
-                System.out.println(d);
+                //System.out.println(d);
                 double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
                 double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
                 double gamma = alpha-(2*beta);
@@ -247,13 +247,19 @@ public class Ball extends GameModel {
     public void move(final double elapsedTime) {
         timeline += elapsedTime;
         if (!isFinished()) {
-            setVelocity(velocity+ONE_HALF*-friction*timeline*timeline); //<- auskommentieren wenn kollision
+            setVelocityVector(elapsedTime); //<- auskommentieren wenn kollision
 //            double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
 //            System.out.println("arrriba.model.Ball.move()");
-            double x = elapsedTime*getvX()+this.getPosX();
-            double y = elapsedTime*getvY()+this.getPosY();
+//            double x = elapsedTime*getvX()+this.getPosX();
+           
+            double x = ONE_HALF*aX*timeline*timeline+elapsedTime*getvX()+this.getPosX();
+            double y = ONE_HALF*aY*timeline*timeline+elapsedTime*getvY()+this.getPosY();
+           System.out.println("X:"+aX+"         y;"+aY);
+            if(this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
+            else{
             setPosX(x);
             setPosY(y);
+            }
             callListener();
         }
     }

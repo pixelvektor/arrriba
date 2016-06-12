@@ -32,6 +32,6 @@ public class Plastic extends Material {
     
     @Override
     public double getFrictionCoefficient() {
-        return density;
+        return frictionCoefficient;
     }
 }

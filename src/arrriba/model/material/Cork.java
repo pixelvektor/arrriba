@@ -12,7 +12,7 @@ package arrriba.model.material;
 public class Cork extends Material {
     private static final String NAME = "Kork";
     private double density = 0.5;
-    private double frictionCoefficient = 0.4;
+    private double frictionCoefficient = 0.9;
     private String texturePath = "/arrriba/view/korkkugel.png";
 
     @Override
@@ -32,6 +32,6 @@ public class Cork extends Material {
     
     @Override
     public double getFrictionCoefficient() {
-        return density;
+        return frictionCoefficient;
     }
 }

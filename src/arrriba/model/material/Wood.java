@@ -36,6 +36,6 @@ public class Wood extends Material {
     
     @Override
     public double getFrictionCoefficient() {
-        return density;
+        return frictionCoefficient;
     }
 }
