@@ -42,6 +42,10 @@ public class Ball extends GameModel {
     private boolean finish = false;
     private double aX;
     private double aY;
+    
+    private double springHitTime=0;
+    private double springVel=0;
+    private double s=0;
 
     private ArrayList<Double> gX=new ArrayList<Double>();
     private ArrayList<Double> gY=new ArrayList<Double>();
@@ -152,7 +156,8 @@ public class Ball extends GameModel {
     public void setMaterial(Material material) {
         this.material=material;
         double frictionCoefficient = this.ground.getFrictionCoefficient();
-        
+        double density = material.getDensity();
+        setMass(density*volume);
          
         
         /* Brauchen wir (ertmal) doch nicht
@@ -181,6 +186,9 @@ public class Ball extends GameModel {
             setVelocityVector(time);
             // Je nach Objekt welches ueber that uebergeben wird
             String name = that.toString();
+            if(VectorCalculation.abs(getvX(), getvY())*time<=s && springHitTime > 0 && (s/VectorCalculation.abs(getvX(), getvY()))-(timeline-springHitTime)>0){
+                collideSpring(that);
+            }
             switch (name) {
                 case "Hole": 
                     this.setPosX(that.getPosX());
@@ -190,9 +198,7 @@ public class Ball extends GameModel {
                 case "Barrel": collideBarrel(that);
                 break;
                 case "Ball": collideBall(that);
-                break;                
-                case "Spring": collideSpring();
-                break;
+                break;                               
                 default: collideBox(that, time);
                 
             }
@@ -259,8 +265,16 @@ public class Ball extends GameModel {
                 setRotation(delta);
                 cos= Math.cos(Math.toRadians(getRotation()));
                 sin= Math.sin(Math.toRadians(getRotation()));
-                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
-                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+                if(name.equals("Spring")){
+                    springHitTime=timeline;
+                    s = that.getSize()/2;
+                    double D = 50000;
+                    springVel=Math.sqrt((D*s*s/getMass()));
+                    collideSpring(that);
+                }else{
+                    setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+                    setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+                }
                 //setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
                 //setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
                 //System.out.println(VectorCalculation.abs(getvX(),getvY()));
@@ -364,7 +378,7 @@ public class Ball extends GameModel {
     
     private void collideBox(final GameModel that, double time) {
         double[] cornerPoints;
-            if(that.getRotation()==getRotation()){
+            if(that.getRotation()==getRotation()||that.getRotation()== getRotation()+180){
                 that.setRotation(that.getRotation()+0.0000001);
             }
             cornerPoints=that.getCornerPoints();
@@ -434,7 +448,9 @@ public class Ball extends GameModel {
         
     }
     
-    private void collideSpring() {
-        
+    private void collideSpring(GameModel that) {                 
+                    System.out.println(springVel + "sp");
+                    setvX((VectorCalculation.abs(getvX(),getvY())+springVel)*cos);
+                    setvY((VectorCalculation.abs(getvX(),getvY())+springVel)*sin);
     }
 }
