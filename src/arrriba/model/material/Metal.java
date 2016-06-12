@@ -12,7 +12,7 @@ package arrriba.model.material;
 public class Metal extends Material {
     private static final String NAME = "Metall";
     private double density = 7.8;
-    private double frictionCoefficient = 20.9; // wert bezieht sich auf Stein, evtl ändern
+    private double frictionCoefficient = 0.9; // wert bezieht sich auf Stein, evtl ändern
     private String texturePath = "/arrriba/view/metallkugel.png";
     
 
