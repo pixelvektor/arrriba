@@ -229,7 +229,7 @@ public class Ball extends GameModel {
         }                
     }
 
-    private void collideBoxShapes(GameModel that,String name,double d) {
+    private void collideBoxShapes(GameModel that,String name,double d, double time) {
         if(name.equals("Puffer")){
             //System.out.println(d);
             double[] cornerPoints=that.getCornerPoints();
@@ -250,7 +250,7 @@ public class Ball extends GameModel {
             if(distance.get(0)+distance.get(2)==that.getSize() && distance.get(1)+distance.get(3)==(that.getSize()*2)){
                 double cosPuf= Math.cos(Math.toRadians(that.getRotation()+0.000001));
                 double sinPuf= Math.sin(Math.toRadians(that.getRotation()+0.000001));
-                double a=0.2;
+                double a=0.1;
                 double vel=0.5*a*timeline*timeline;
                 setvX(getvX()+vel*cosPuf);
                 setvY(getvY()+vel*sinPuf);
@@ -420,27 +420,98 @@ public class Ball extends GameModel {
                 double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
                  //System.out.println(collY+"colly");
-                if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                String col="None";
+                if(c==0){
+                    if(that.getRotation()<=89&&that.getRotation()>=0){
+                        col="A";
+                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
+                        col="B";
+                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
+                        col="C";
+                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
+                        col="D";
+                    } 
+                }else if(c==2){
+                    if(that.getRotation()<=89&&that.getRotation()>=0){
+                        col="B";
+                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
+                        col="C";
+                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
+                        col="D";
+                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
+                        col="A";
+                    } 
+                }else if(c==4){
+                    if(that.getRotation()<=89&&that.getRotation()>=0){
+                        col="C";
+                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
+                        col="D";
+                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
+                        col="A";
+                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
+                        col="B";
+                    } 
+                }else if(c==6){
+                    if(that.getRotation()<=89&&that.getRotation()>=0){
+                        col="D";
+                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
+                        col="A";
+                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
+                        col="B";
+                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
+                        col="C";
+                    } 
+                }
+                
+                 
+                if(col.equals("A")){
                     if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-                        //System.out.println(d+"distanceA");
-                        collideBoxShapes(that,that.toString(),d);
+                        System.out.println(d+"distanceA");
+                        System.out.println(c);
+                        System.out.println(collX);
+                        System.out.println(cornerPoints[c]);
+                        System.out.println(cornerPoints[c+2]);
+                        System.out.println(collY);
+                        System.out.println(cornerPoints[c+1]);
+                        System.out.println(cornerPoints[c+3]);
+                        collideBoxShapes(that,that.toString(),d, time);
                     }
-                }else if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                }else if(col.equals("B")){
                     if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY>=cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-                        //System.out.println(d+"distanceB");
-                        collideBoxShapes(that,that.toString(),d);                 
+                        System.out.println(d+"distanceB");
+                        System.out.println(c);
+                        System.out.println(collX);
+                        System.out.println(cornerPoints[c]);
+                        System.out.println(cornerPoints[c+2]);
+                        System.out.println(collY);
+                        System.out.println(cornerPoints[c+1]);
+                        System.out.println(cornerPoints[c+3]);
+                        collideBoxShapes(that,that.toString(),d, time);                 
                     }
-                }else if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                }else if(col.equals("C")){
                     if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY<=cornerPoints[c+1] && collY>=cornerPoints[c+3]){
-                        //System.out.println(d+"distanceC");
-                        collideBoxShapes(that,that.toString(),d);
+                        System.out.println(d+"distanceC");
+                        System.out.println(c);
+                        System.out.println(collX);
+                        System.out.println(cornerPoints[c]);
+                        System.out.println(cornerPoints[c+2]);
+                        System.out.println(collY);
+                        System.out.println(cornerPoints[c+1]);
+                        System.out.println(cornerPoints[c+3]);
+                        collideBoxShapes(that,that.toString(),d, time);
                     }
-                } else if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                } else if(col.equals("D")){
 //                    System.out.println("AHHH");
                     if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-                       //System.out.println(d+"distanceD");
-                    
-                        collideBoxShapes(that,that.toString(),d);
+                       System.out.println(d+"distanceD");
+                    System.out.println(c);
+                    System.out.println(collX);
+                        System.out.println(cornerPoints[c]);
+                        System.out.println(cornerPoints[c+2]);
+                        System.out.println(collY);
+                        System.out.println(cornerPoints[c+1]);
+                        System.out.println(cornerPoints[c+3]);
+                        collideBoxShapes(that,that.toString(),d, time);
                     }
                 }
             }
