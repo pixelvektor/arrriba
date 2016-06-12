@@ -69,17 +69,17 @@ public class GameModel extends Observable {
            
         } else {
             Rectangle r = (Rectangle) this.shape;
-            double mX=getPosX()+r.getWidth()/2;
-            double mY=getPosY()+r.getHeight()/2;
+            double mX=getPosX()+r.getWidth()/1000/2;
+            double mY=getPosY()+r.getHeight()/1000/2;
             
             double[] cornerPoints={mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
                 ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()+r.getWidth()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()+r.getWidth()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()+r.getWidth()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()+r.getWidth()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()+r.getWidth()/1000-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()+r.getWidth()/1000-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()+r.getWidth()/1000-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/1000-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()+r.getWidth()/1000-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/1000-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/1000-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/1000-mY)*Math.cos(Math.toRadians(-getRotation())))
                 ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
                 ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))};
             //for(int i=0;i<cornerPoints.length;i++ ){
@@ -94,10 +94,10 @@ public class GameModel extends Observable {
         this.posX = posX;
         if (isCircle()) {
             Circle c = (Circle) this.shape;
-            c.setCenterX(posX);
+            c.setCenterX(posX*1000);
         } else {
             Rectangle r = (Rectangle) this.shape;
-            r.setX(posX);
+            r.setX(posX*1000);
         }
         //this.setChanged();
         //this.notifyObservers();
@@ -107,10 +107,10 @@ public class GameModel extends Observable {
         this.posY = posY;
         if (isCircle()) {
             Circle c = (Circle) this.shape;
-            c.setCenterY(posY);
+            c.setCenterY(posY*1000);
         } else {
             Rectangle r = (Rectangle) this.shape;
-            r.setY(posY);
+            r.setY(posY*1000);
         }
         //this.hasChanged();
         //this.notifyObservers();
@@ -126,17 +126,17 @@ public class GameModel extends Observable {
     public void setSize(final double size) {
         if (isCircle()) {
             Circle c = (Circle) this.shape;
-            c.setRadius(size / 2);
+            c.setRadius(size*1000 / 2);
             this.size = size;
         }else if(isPuffer()){
             Rectangle r = (Rectangle) this.shape;
-            r.setWidth(size*2);
-            r.setHeight(size);
+            r.setWidth(size*1000*2);
+            r.setHeight(size*1000);
             this.size = size;
         }else {
             Rectangle r = (Rectangle) this.shape;
-            r.setWidth(size);
-            r.setHeight(size);
+            r.setWidth(size*1000);
+            r.setHeight(size*1000);
             this.size = size;
         }
         this.setChanged();

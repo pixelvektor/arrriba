@@ -147,8 +147,8 @@ public class GameControl implements Initializable, Observer {
         this.shapeOnMousePressedEH = (MouseEvent e) -> {
             origSceneX = e.getSceneX();
             origSceneY = e.getSceneY();
-            origTranslateX = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosX();
-            origTranslateY = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosY();
+            origTranslateX = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosX()*1000;
+            origTranslateY = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosY()*1000;
             
             // Setzen des aktuellen Shapes als ausgewaehlt
             if (activeShape != null) {
@@ -159,12 +159,12 @@ public class GameControl implements Initializable, Observer {
             activeShape.toFront();
             
             // Laden der aktuellen Werte des Objektes in die Einstellungen
-            sizeSlider.setValue(((GameModel) activeShape.getUserData()).getSize());
-            sizeNTF.setValue(((GameModel) activeShape.getUserData()).getSize());
+            sizeSlider.setValue(((GameModel) activeShape.getUserData()).getSize()*1000);
+            sizeNTF.setValue(((GameModel) activeShape.getUserData()).getSize()*1000);
             rotationSlider.setValue(((GameModel) activeShape.getUserData()).getRotation());
             rotationNTF.setValue(((GameModel) activeShape.getUserData()).getRotation());
-            posXNTF.setValue(((GameModel) activeShape.getUserData()).getPosX());
-            posYNTF.setValue(((GameModel) activeShape.getUserData()).getPosY());
+            posXNTF.setValue(((GameModel) activeShape.getUserData()).getPosX()*1000);
+            posYNTF.setValue(((GameModel) activeShape.getUserData()).getPosY()*1000);
             
             // Materialmenue bei Baellen
             if (activeShape.getUserData().toString().contains("Ball")) {
@@ -185,8 +185,8 @@ public class GameControl implements Initializable, Observer {
             double newTranslateX = origTranslateX + e.getSceneX() - origSceneX;
             double newTranslateY = origTranslateY + e.getSceneY() - origSceneY;
             
-            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosX(newTranslateX);
-            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosY(newTranslateY);
+            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosX(newTranslateX/1000);
+            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosY(newTranslateY/1000);
         };
     }
     
@@ -363,8 +363,8 @@ public class GameControl implements Initializable, Observer {
         balls.removeAll(balls);
         obstacles.removeAll(obstacles);
         lastFrame = 0;
-        
-        createBalls(startPosX,startPosY);
+        createBalls(200,200);
+        //createBalls(startPosX,startPosY);
     }
     
     
@@ -372,7 +372,7 @@ public class GameControl implements Initializable, Observer {
     public void onSizeSlider() {
         final double size = round(sizeSlider.getValue());
         if (activeShape != null) {
-            ((GameModel) activeShape.getUserData()).setSize(size);
+            ((GameModel) activeShape.getUserData()).setSize(size/1000);
         }
         sizeNTF.setValue(size);
     }
@@ -392,7 +392,7 @@ public class GameControl implements Initializable, Observer {
         
         sizeNTF.setText(Double.toString(size));
         if (activeShape != null) {
-            ((GameModel) activeShape.getUserData()).setSize(size);
+            ((GameModel) activeShape.getUserData()).setSize(size/1000);
         }
         sizeSlider.setValue(size);
     }

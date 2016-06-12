@@ -22,9 +22,9 @@ public class Spring extends GameModel {
         shape.getStyleClass().add("spring");
         this.setShape(shape);
         
-        this.setPosX(posX);
-        this.setPosY(posY);
-        this.setSize(size);
+        this.setPosX(posX/1000);
+        this.setPosY(posY/1000);
+        this.setSize(size/1000);
     }
     
     @Override

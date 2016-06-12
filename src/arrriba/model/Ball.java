@@ -40,8 +40,8 @@ public class Ball extends GameModel {
     private Ground ground;
     private double timeline;
     private boolean finish = false;
-    private double aX;
-    private double aY;
+    private double aX=0;
+    private double aY=0;
     
     private double springHitTime=0;
     private double springVel=0;
@@ -65,16 +65,15 @@ public class Ball extends GameModel {
         Circle shape = new Circle(posX, posY, size / 2);
         shape.setFill(Paint.valueOf("RED"));
         double density = material.getDensity();
-        
+        double sizeD=size;
         this.setShape(shape);
-        
-        this.setSize(size);
-        this.setPosX(posX);
-        this.setPosY(posY);
+        this.setSize(sizeD/1000);
+        this.setPosX(posX/1000);
+        this.setPosY(posY/1000);
         this.setRotation(rotation);
-        this.setVelocity(velocity);
-        this.setStartX(posX);
-        this.setStartY(posY);
+        this.setVelocity(velocity/1000);
+        this.setStartX(posX/1000);
+        this.setStartY(posY/1000);
         this.ground = ground;
         this.setMaterial(material);
 //        cos= Math.cos(Math.toRadians(getRotation()));
@@ -131,15 +130,20 @@ public class Ball extends GameModel {
             sin= Math.sin(Math.toRadians(getRotation()));
             setvX(getVelocity()*cos);
             setvY(getVelocity()*sin);
-            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            System.out.println(getVelocity());
+            System.out.println(getvX()+"vx");
+            System.out.println(VectorCalculation.abs(getvX(), getvY())+"vel");
+            System.out.println(material.getFrictionCoefficient()+" material.getFrictionCoefficient()");
+            //aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            System.out.println(aX+"ax");
+            //aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
         }else if(VectorCalculation.abs(getvX(), getvY())<=0){
           //  System.out.println(velocity + "if");
             setvX(0);
             setvY(0);
         }else{
-            setvX(getvX()+aX*elapsedTime);
-            setvY(getvY()+aY*elapsedTime);
+            setvX(getvX()+aX*timeline);
+            setvY(getvY()+aY*timeline);
             //System.out.println(VectorCalculation.abs(getvX(), getvY()));
         }
         
@@ -246,7 +250,7 @@ public class Ball extends GameModel {
             if(distance.get(0)+distance.get(2)==that.getSize() && distance.get(1)+distance.get(3)==(that.getSize()*2)){
                 double cosPuf= Math.cos(Math.toRadians(that.getRotation()+0.000001));
                 double sinPuf= Math.sin(Math.toRadians(that.getRotation()+0.000001));
-                double a=20;
+                double a=0.2;
                 double vel=0.5*a*timeline*timeline;
                 setvX(getvX()+vel*cosPuf);
                 setvY(getvY()+vel*sinPuf);
@@ -268,7 +272,7 @@ public class Ball extends GameModel {
                 if(name.equals("Spring")){
                     springHitTime=timeline;
                     s = that.getSize()/2;
-                    double D = 50000;
+                    double D = 2;
                     springVel=Math.sqrt((D*s*s/getMass()));
                     collideSpring(that);
                 }else{
@@ -289,7 +293,7 @@ public class Ball extends GameModel {
     public void move(final double elapsedTime) {
         
         if (!isFinished()) {
-            setVelocityVector(elapsedTime); //<- auskommentieren wenn kollision
+            setVelocityVector(elapsedTime);
 //            double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
 //            System.out.println("arrriba.model.Ball.move()");
             double x = elapsedTime*getvX()+this.getPosX();
