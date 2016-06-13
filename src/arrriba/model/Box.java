@@ -22,9 +22,10 @@ public class Box extends GameModel {
         shape.getStyleClass().add("obstacle");
         this.setShape(shape);
         
-        this.setPosX(posX);
-        this.setPosY(posY);
-        this.setSize(size);
+        this.setPosX(posX/1000);
+        this.setPosY(posY/1000);
+        this.setSize(size/1000);
+        System.out.println(shape.getHeight());
     }
     
     @Override

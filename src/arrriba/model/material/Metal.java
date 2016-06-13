@@ -33,6 +33,6 @@ public class Metal extends Material {
     
     @Override
     public double getFrictionCoefficient() {
-        return density;
+        return frictionCoefficient;
     }
 }

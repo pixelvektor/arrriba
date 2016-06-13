@@ -40,8 +40,12 @@ public class Ball extends GameModel {
     private Ground ground;
     private double timeline;
     private boolean finish = false;
-    private double aX;
-    private double aY;
+    private double aX=0;
+    private double aY=0;
+    
+    private double springHitTime=0;
+    private double springVel=0;
+    private double s=0;
 
     private ArrayList<Double> gX=new ArrayList<Double>();
     private ArrayList<Double> gY=new ArrayList<Double>();
@@ -62,16 +66,15 @@ public class Ball extends GameModel {
         Circle shape = new Circle(posX, posY, size / 2);
         shape.setFill(Paint.valueOf("RED"));
         double density = material.getDensity();
-        
+        double sizeD=size;
         this.setShape(shape);
-        
-        this.setSize(size);
-        this.setPosX(posX);
-        this.setPosY(posY);
+        this.setSize(sizeD/1000);
+        this.setPosX(posX/1000);
+        this.setPosY(posY/1000);
         this.setRotation(rotation);
-        this.setVelocity(velocity);
-        this.setStartX(posX);
-        this.setStartY(posY);
+        this.setVelocity(velocity/1000);
+        this.setStartX(posX/1000);
+        this.setStartY(posY/1000);
         this.ground = ground;
         this.setMaterial(material);
 //        cos= Math.cos(Math.toRadians(getRotation()));
@@ -122,21 +125,28 @@ public class Ball extends GameModel {
     }
     
     public void setVelocityVector(final double elapsedTime) {
+
         timeline += elapsedTime;
         if (timeline==0+elapsedTime){           
+
             cos= Math.cos(Math.toRadians(getRotation()));
             sin= Math.sin(Math.toRadians(getRotation()));
             setvX(getVelocity()*cos);
             setvY(getVelocity()*sin);
-            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            System.out.println(getVelocity());
+            System.out.println(getvX()+"vx");
+            System.out.println(VectorCalculation.abs(getvX(), getvY())+"vel");
+            System.out.println(material.getFrictionCoefficient()+" material.getFrictionCoefficient()");
+            //aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            System.out.println(aX+"ax");
+            //aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
         }else if(VectorCalculation.abs(getvX(), getvY())<=0){
           //  System.out.println(velocity + "if");
             setvX(0);
             setvY(0);
         }else{
-            setvX(getvX()+aX*elapsedTime);
-            setvY(getvY()+aY*elapsedTime);
+            setvX(getvX()+aX*timeline);
+            setvY(getvY()+aY*timeline);
             //System.out.println(VectorCalculation.abs(getvX(), getvY()));
         }
         
@@ -153,11 +163,12 @@ public class Ball extends GameModel {
     public void setMaterial(Material material) {
         this.material=material;
         double frictionCoefficient = this.ground.getFrictionCoefficient();
-        
+        double density = material.getDensity();
+        setMass(density*volume);
          
         
         /* Brauchen wir (ertmal) doch nicht
-         this.material = material;
+        this.material = material;
         double density = material.getDensity();
         setMass(density*volume);
         weightForce = getMass()*gravitation; 
@@ -182,6 +193,9 @@ public class Ball extends GameModel {
             setVelocityVector(time);
             // Je nach Objekt welches ueber that uebergeben wird
             String name = that.toString();
+            if(VectorCalculation.abs(getvX(), getvY())*time<=s && springHitTime > 0 && (s/VectorCalculation.abs(getvX(), getvY()))-(timeline-springHitTime)>0){
+                collideSpring(that);
+            }
             switch (name) {
                 case "Hole": 
                     this.setPosX(that.getPosX());
@@ -191,9 +205,7 @@ public class Ball extends GameModel {
                 case "Barrel": collideBarrel(that);
                 break;
                 case "Ball": collideBall(that);
-                break;                
-                case "Spring": collideSpring();
-                break;
+                break;                               
                 default: collideBox(that, time);
                 
             }
@@ -220,9 +232,10 @@ public class Ball extends GameModel {
         }                
     }
 
-    private void collideBoxShapes(GameModel that,String name,double d) {
+    private void collideBoxShapes(GameModel that,String name,double d, double time) {
         if(name.equals("Puffer")){
-            //System.out.println(d);
+            //System.out.println(d);         
+
             double[] cornerPoints=that.getCornerPoints();
             ArrayList<Double> distance=new ArrayList();
             for(int c=0;c<=cornerPoints.length-3;c=c+2){
@@ -241,12 +254,13 @@ public class Ball extends GameModel {
             if(distance.get(0)+distance.get(2)==that.getSize() && distance.get(1)+distance.get(3)==(that.getSize()*2)){
                 double cosPuf= Math.cos(Math.toRadians(that.getRotation()+0.000001));
                 double sinPuf= Math.sin(Math.toRadians(that.getRotation()+0.000001));
-                double a=20;
+                double a=0.1;
                 double vel=0.5*a*timeline*timeline;
                 setvX(getvX()+vel*cosPuf);
                 setvY(getvY()+vel*sinPuf);
                 System.out.println(vel+" puf");                
             //System.out.println("HitPuf");                
+
             }
             distance.clear();
         }else{
@@ -260,8 +274,16 @@ public class Ball extends GameModel {
                 setRotation(delta);
                 cos= Math.cos(Math.toRadians(getRotation()));
                 sin= Math.sin(Math.toRadians(getRotation()));
-                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
-                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+                if(name.equals("Spring")){
+                    springHitTime=timeline;
+                    s = that.getSize()/2;
+                    double D = 2;
+                    springVel=Math.sqrt((D*s*s/getMass()));
+                    collideSpring(that);
+                }else{
+                    setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+                    setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+                }
                 //setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
                 //setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
                 //System.out.println(VectorCalculation.abs(getvX(),getvY()));
@@ -270,19 +292,26 @@ public class Ball extends GameModel {
         }
     }
     
+    
     /** Bewegt die Kugel pro Zeitabschnitt weiter.
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
      */
     public void move(final double elapsedTime) {
         
         if (!isFinished()) {
-            setVelocityVector(elapsedTime); //<- auskommentieren wenn kollision
+            setVelocityVector(elapsedTime);
 //            double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
 //            System.out.println("arrriba.model.Ball.move()");
+//            double x = elapsedTime*getvX()+this.getPosX();
+           
             double x = elapsedTime*getvX()+this.getPosX();
             double y = elapsedTime*getvY()+this.getPosY();
+           //System.out.println("X:"+aX+"         y;"+aY);
+            //if(this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
+            //else{
             setPosX(x);
             setPosY(y);
+            //}
             callListener();
         }
     }
@@ -366,7 +395,7 @@ public class Ball extends GameModel {
     
     private void collideBox(final GameModel that, double time) {
         double[] cornerPoints;
-            if(that.getRotation()==getRotation()){
+            if(that.getRotation()==getRotation()||that.getRotation()== getRotation()+180){
                 that.setRotation(that.getRotation()+0.0000001);
             }
             cornerPoints=that.getCornerPoints();
@@ -404,27 +433,98 @@ public class Ball extends GameModel {
                 double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
                  //System.out.println(collY+"colly");
-                if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                String col="None";
+                if(c==0){
+                    if(that.getRotation()<=89&&that.getRotation()>=0){
+                        col="A";
+                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
+                        col="B";
+                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
+                        col="C";
+                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
+                        col="D";
+                    } 
+                }else if(c==2){
+                    if(that.getRotation()<=89&&that.getRotation()>=0){
+                        col="B";
+                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
+                        col="C";
+                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
+                        col="D";
+                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
+                        col="A";
+                    } 
+                }else if(c==4){
+                    if(that.getRotation()<=89&&that.getRotation()>=0){
+                        col="C";
+                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
+                        col="D";
+                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
+                        col="A";
+                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
+                        col="B";
+                    } 
+                }else if(c==6){
+                    if(that.getRotation()<=89&&that.getRotation()>=0){
+                        col="D";
+                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
+                        col="A";
+                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
+                        col="B";
+                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
+                        col="C";
+                    } 
+                }
+                
+                 
+                if(col.equals("A")){
                     if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-                        //System.out.println(d+"distanceA");
-                        collideBoxShapes(that,that.toString(),d);
+                        System.out.println(d+"distanceA");
+                        System.out.println(c);
+                        System.out.println(collX);
+                        System.out.println(cornerPoints[c]);
+                        System.out.println(cornerPoints[c+2]);
+                        System.out.println(collY);
+                        System.out.println(cornerPoints[c+1]);
+                        System.out.println(cornerPoints[c+3]);
+                        collideBoxShapes(that,that.toString(),d, time);
                     }
-                }else if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]<=cornerPoints[c+3]){
+                }else if(col.equals("B")){
                     if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY>=cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-                        //System.out.println(d+"distanceB");
-                        collideBoxShapes(that,that.toString(),d);                 
+                        System.out.println(d+"distanceB");
+                        System.out.println(c);
+                        System.out.println(collX);
+                        System.out.println(cornerPoints[c]);
+                        System.out.println(cornerPoints[c+2]);
+                        System.out.println(collY);
+                        System.out.println(cornerPoints[c+1]);
+                        System.out.println(cornerPoints[c+3]);
+                        collideBoxShapes(that,that.toString(),d, time);                 
                     }
-                }else if(cornerPoints[c]>=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                }else if(col.equals("C")){
                     if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY<=cornerPoints[c+1] && collY>=cornerPoints[c+3]){
-                        //System.out.println(d+"distanceC");
-                        collideBoxShapes(that,that.toString(),d);
+                        System.out.println(d+"distanceC");
+                        System.out.println(c);
+                        System.out.println(collX);
+                        System.out.println(cornerPoints[c]);
+                        System.out.println(cornerPoints[c+2]);
+                        System.out.println(collY);
+                        System.out.println(cornerPoints[c+1]);
+                        System.out.println(cornerPoints[c+3]);
+                        collideBoxShapes(that,that.toString(),d, time);
                     }
-                } else if(cornerPoints[c]<=cornerPoints[c+2] && cornerPoints[c+1]>=cornerPoints[c+3]){
+                } else if(col.equals("D")){
 //                    System.out.println("AHHH");
                     if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-                       //System.out.println(d+"distanceD");
-                    
-                        collideBoxShapes(that,that.toString(),d);
+                       System.out.println(d+"distanceD");
+                    System.out.println(c);
+                    System.out.println(collX);
+                        System.out.println(cornerPoints[c]);
+                        System.out.println(cornerPoints[c+2]);
+                        System.out.println(collY);
+                        System.out.println(cornerPoints[c+1]);
+                        System.out.println(cornerPoints[c+3]);
+                        collideBoxShapes(that,that.toString(),d, time);
                     }
                 }
             }
@@ -436,7 +536,9 @@ public class Ball extends GameModel {
         
     }
     
-    private void collideSpring() {
-        
+    private void collideSpring(GameModel that) {                 
+                    System.out.println(springVel + "sp");
+                    setvX((VectorCalculation.abs(getvX(),getvY())+springVel)*cos);
+                    setvY((VectorCalculation.abs(getvX(),getvY())+springVel)*sin);
     }
 }
