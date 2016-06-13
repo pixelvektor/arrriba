@@ -281,8 +281,11 @@ public class Ball extends GameModel {
                     springVel=Math.sqrt((D*s*s/getMass()));
                     collideSpring(that);
                 }else{
+                    //System.out.println("setVx");
                     setvX(VectorCalculation.abs(getvX(),getvY())*cos);
                     setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+//                    System.out.println(getPosX());
+//                    System.out.println(getPosY());
                 }
                 //setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
                 //setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
@@ -307,9 +310,12 @@ public class Ball extends GameModel {
             double x = ONE_HALF*aX*elapsedTime*elapsedTime+elapsedTime*getvX()+this.getPosX();
             double y = ONE_HALF*aY*elapsedTime*elapsedTime+elapsedTime*getvY()+this.getPosY();
            //System.out.println("X:"+aX+"         y;"+aY);
-           System.out.println(VectorCalculation.abs(aX, aY));
+           //System.out.println(VectorCalculation.abs(aX, aY));
+            //if(this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
+            //else{
             setPosX(x);
             setPosY(y);
+            //}
             callListener();
         }
     }
