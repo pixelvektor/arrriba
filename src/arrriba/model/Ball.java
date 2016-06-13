@@ -264,7 +264,7 @@ public class Ball extends GameModel {
             }
             distance.clear();
         }else{
-            if(d<=getSize()/2){
+            
                 //System.out.println(d);
                 double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
                 double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
@@ -288,7 +288,7 @@ public class Ball extends GameModel {
                 //setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
                 //System.out.println(VectorCalculation.abs(getvX(),getvY()));
                 System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            }
+            
         }
     }
     
@@ -411,27 +411,29 @@ public class Ball extends GameModel {
                 ngY.add(gX.get(gX.size()-1));
                 double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
                 double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
-                //System.out.println(getvX()+" vx");
-                //System.out.println(getvY()+" vy");
-                RealMatrix coefficients =
-                new Array2DRowRealMatrix(new double[][] { { (time*getvX()+this.getPosX())-getPosX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
-                    { (time*getvY()+this.getPosY())-getPosY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
-                   false);
-                DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
-
-                RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getPosX(),cornerPoints[c+1]-getPosY()}, false);
-                //System.out.println(getPosX());
-                //System.out.println(getPosY());
-                System.out.println(coefficients.getEntry(0, 0) + " " + coefficients.getEntry(0, 1));
-                System.out.println(coefficients.getEntry(1, 0) + " " + coefficients.getEntry(1, 1));
-                System.out.println(constants.getEntry(0)+" "+constants.getEntry(1)+" cons");
-                RealVector solution = solver.solve(constants); 
-                //System.out.println(solution.getEntry(1));
-                double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
-                //System.out.println(collX+"collx");
-                //double collX=getStartX()+solution.getEntry(0)*((getVX()+200)-getStartX());
-
-                double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
+//                System.out.println(getvX()+" vx");
+//                System.out.println(getvY()+" vy");
+//                System.out.println(ONE_HALF*aX*time*time+time*getvX()+this.getPosX());
+//                System.out.println(ONE_HALF*aY*time*time+time*getvY()+this.getPosY());
+//                RealMatrix coefficients =
+//                new Array2DRowRealMatrix(new double[][] { { (ONE_HALF*aX*time*time+time*getvX()+this.getPosX())-getPosX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
+//                    { (ONE_HALF*aY*time*time+time*getvY()+this.getPosY())-getPosY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
+//                   false);
+//                DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
+//
+//                RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getPosX(),cornerPoints[c+1]-getPosY()}, false);
+//                System.out.println(getPosX()+" PosX");
+//                System.out.println(getPosY()+" PosY");
+//                System.out.println(coefficients.getEntry(0, 0) + " " + coefficients.getEntry(0, 1));
+//                System.out.println(coefficients.getEntry(1, 0) + " " + coefficients.getEntry(1, 1));
+//                System.out.println(constants.getEntry(0)+" "+constants.getEntry(1)+" cons");
+//                RealVector solution = solver.solve(constants); 
+//                //System.out.println(solution.getEntry(1));
+//                double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
+//                //System.out.println(collX+"collx");
+//                //double collX=getStartX()+solution.getEntry(0)*((getVX()+200)-getStartX());
+//
+//                double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
                  //System.out.println(collY+"colly");
                 String col="None";
@@ -486,52 +488,29 @@ public class Ball extends GameModel {
                 
                  
                 if(col.equals("A")){
-                    if(collX>=c && collX<=cornerPoints[c+2] && collY>cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-                        /*System.out.println(d+"distanceA");
+                    if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
+                        System.out.println(d+"distanceA");
                         System.out.println(c);
-                        System.out.println(collX);
-                        System.out.println(cornerPoints[c]);
-                        System.out.println(cornerPoints[c+2]);
-                        System.out.println(collY);
-                        System.out.println(cornerPoints[c+1]);
-                        System.out.println(cornerPoints[c+3]);*/
+                        
                         collideBoxShapes(that,that.toString(),d, time);
                     }
                 }else if(col.equals("B")){
-                    if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY>=cornerPoints[c+1] && collY<=cornerPoints[c+3]){
-                        /*System.out.println(d+"distanceB");
-                        System.out.println(c);
-                        System.out.println(collX);
-                        System.out.println(cornerPoints[c]);
-                        System.out.println(cornerPoints[c+2]);
-                        System.out.println(collY);
-                        System.out.println(cornerPoints[c+1]);
-                        System.out.println(cornerPoints[c+3]);*/
+                    if(d<=getSize()/2&&getPosY()>cornerPoints[c+1]&&getPosY()<cornerPoints[c+3]){
+                        System.out.println(d+"distanceB");
+                        
                         collideBoxShapes(that,that.toString(),d, time);                 
                     }
                 }else if(col.equals("C")){
-                    if(collX<=cornerPoints[c] && collX>=cornerPoints[c+2] && collY<=cornerPoints[c+1] && collY>=cornerPoints[c+3]){
-                        /*System.out.println(d+"distanceC");
-                        System.out.println(c);
-                        System.out.println(collX);
-                        System.out.println(cornerPoints[c]);
-                        System.out.println(cornerPoints[c+2]);
-                        System.out.println(collY);
-                        System.out.println(cornerPoints[c+1]);
-                        System.out.println(cornerPoints[c+3]);*/
+                    if(d<=getSize()/2&&getPosX()<cornerPoints[c]&&getPosX()>cornerPoints[c+2]){
+                        System.out.println(d+"distanceC");
+                        
                         collideBoxShapes(that,that.toString(),d, time);
                     }
                 } else if(col.equals("D")){
 //                    System.out.println("AHHH");
-                    if(collX<=cornerPoints[c+2] && collX>=cornerPoints[c] && collY>=cornerPoints[c+3] && collY<=cornerPoints[c+1]){
-                       /*System.out.println(d+"distanceD");
-                    System.out.println(c);
-                    System.out.println(collX);
-                        System.out.println(cornerPoints[c]);
-                        System.out.println(cornerPoints[c+2]);
-                        System.out.println(collY);
-                        System.out.println(cornerPoints[c+1]);
-                        System.out.println(cornerPoints[c+3]);*/
+                    if(d<=getSize()/2&&getPosY()<cornerPoints[c+1]&&getPosY()>cornerPoints[c+3]){
+                       System.out.println(d+"distanceD");
+                    
                         collideBoxShapes(that,that.toString(),d, time);
                     }
                 }
