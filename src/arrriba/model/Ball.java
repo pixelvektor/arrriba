@@ -303,16 +303,13 @@ public class Ball extends GameModel {
 //            double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
 //            System.out.println("arrriba.model.Ball.move()");
 //            double x = elapsedTime*getvX()+this.getPosX();
-           
+            
             double x = ONE_HALF*aX*elapsedTime*elapsedTime+elapsedTime*getvX()+this.getPosX();
             double y = ONE_HALF*aY*elapsedTime*elapsedTime+elapsedTime*getvY()+this.getPosY();
            //System.out.println("X:"+aX+"         y;"+aY);
            System.out.println(VectorCalculation.abs(aX, aY));
-            if(this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
-            else{
             setPosX(x);
             setPosY(y);
-            }
             callListener();
         }
     }
