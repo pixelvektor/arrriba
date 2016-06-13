@@ -69,17 +69,17 @@ public class GameModel extends Observable {
            
         } else {
             Rectangle r = (Rectangle) this.shape;
-            double mX=getPosX()+getSize()/2;
-            double mY=getPosY()+getSize()/2;
+            double mX=getPosX()+r.getWidth()/2;
+            double mY=getPosY()+r.getHeight()/2;
             
             double[] cornerPoints={mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
                 ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()+getSize()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()+getSize()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()+getSize()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+getSize()-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()+getSize()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+getSize()-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+getSize()-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+getSize()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()+r.getWidth()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()+r.getWidth()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()+r.getWidth()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()+r.getWidth()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()-mY)*Math.cos(Math.toRadians(-getRotation())))
                 ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
                 ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))};
             //for(int i=0;i<cornerPoints.length;i++ ){

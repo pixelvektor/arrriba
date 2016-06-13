@@ -16,8 +16,6 @@ import javafx.scene.shape.Rectangle;
 public class Puffer extends GameModel {
     public Puffer (final double posX, final double posY, final double size) {
         Rectangle shape = new Rectangle(posX, posY, size*2, size);
-        System.out.println(shape.getHeight());
-        System.out.println(shape.getWidth());
         Image texture = new Image("/arrriba/view/Kugelfisch.png");
         shape.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
         shape.getStyleClass().add("puffer");
