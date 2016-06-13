@@ -48,6 +48,7 @@ public class Ball extends GameModel {
     private ArrayList<Double> ngX=new ArrayList<Double>();
     private ArrayList<Double> ngY=new ArrayList<Double>();
     private ArrayList<Double> hit=new ArrayList<Double>();
+    private ArrayList<GameModel> collided = new ArrayList<GameModel>();
     private Material material;
     
     public Ball(final int size, final double posX, final double posY,
@@ -288,6 +289,7 @@ public class Ball extends GameModel {
     
     /** Aufruf falls ein Barrel kollidiert werden soll.
      * @param that Das Barrel mit dem die Kollision berechnet werden soll.
+     * @param time Vergangene Zeit seit dem letzten Aufruf.
      */
     private void collideBarrel(final GameModel that) {
         double distance = Math.sqrt(
@@ -298,11 +300,15 @@ public class Ball extends GameModel {
         if (distance <= this.getSize()/2 + that.getSize()/2) {
             // Berechnung des neuen Bewegungsvektors der Kugel (this)
             collideCircle(this, that);
+        } else {
+            collided.remove(that);
+//            System.out.println("Removed Barrel: " + collided);
         }
     }
     
     /** Aufruf falls ein Ball kollidiert werden soll.
      * @param that Der Ball mit dem kollidiert werden soll.
+     * @param time Vergangene Zeit seit dem letzten Aufruf.
      */
     private void collideBall(final GameModel that) {
         double distance = Math.sqrt(
@@ -314,6 +320,9 @@ public class Ball extends GameModel {
             // Berechnung der neuen Bewegungsvektoren der Bälle
             collideCircle(this, that);
             collideCircle(that, this);
+        } else {
+            collided.remove(that);
+//            System.out.println("Removed Ball: " + collided);
         }
     }
 
@@ -323,43 +332,36 @@ public class Ball extends GameModel {
      * @param second Kreis mit dem kollidiert wird.
      */
     private void collideCircle(final GameModel first, final GameModel second) {
-        // x-Achse
-        double xX = 1;
-        double xY = 0;
-        // Vektor zwischen den Mittelpunkten der Kreise -> Distanzvektor
-        double distanceX = second.getPosX() - first.getPosX();
-        double distanceY = second.getPosY() - first.getPosY();
-        
-        double phi = vectorAngle(xX, xY, distanceX, distanceY);
-        
-        // Rotation
-        double rotVeloX = Math.cos(phi) * first.getvX() - Math.sin(phi) * first.getvY();
-        double rotVeloY = Math.sin(phi) * first.getvX() + Math.cos(phi) * first.getvY();
-        
-        // an der y-Achse spiegeln
-        rotVeloX = -rotVeloX;
-        
-        // Rueckrotation des Geschwindigkeitsvektors
-        double newVeloX = Math.cos(-phi) * rotVeloX - Math.sin(-phi) * rotVeloY;
-        double newVeloY = Math.sin(-phi) * rotVeloX + Math.cos(-phi) + rotVeloY;
-        
-        // Setzen des neuen Richtungswinkels
-        first.setRotation(Math.toDegrees(vectorAngle(xX, xY, newVeloX, newVeloY)));
-    }
+        if (!collided.contains(second)) {
+            // Vektor zwischen den Mittelpunkten der Kreise -> Distanzvektor
+            double distanceX = second.getPosX() - first.getPosX();
+            double distanceY = second.getPosY() - first.getPosY();
+            
+            double phi = Math.atan2(distanceY, distanceX);
+            System.out.println("RotDist: " + Math.toDegrees(phi));
 
-    /** Berechnen des Rotationswinkels zwischen x-Achse und dem Distanzvektors.
-     * @param aX x-Koordinate des ersten Vektors
-     * @param aY y-Koordinate des ersten Vektors
-     * @param bX x-Koordinate des zweiten Vektors
-     * @param bY y-Koordinate des zweiten Vektors
-     * @return Winkel zwischen den beiden Vektoren als Radiant
-     */
-    private double vectorAngle(final double aX, final double aY, final double bX, final double bY) {
-        double scalar = VectorCalculation.times(aX, aY, bX, bY);
-        double xAbs = VectorCalculation.abs(aX, aY);
-        double distanceAbs = VectorCalculation.abs(bX, bY);
-        double phi = Math.acos(scalar / (xAbs * distanceAbs));
-        return phi;
+            // Rotation
+            double rotVeloX = Math.cos(phi) * first.getvX() - Math.sin(phi) * first.getvY();
+            double rotVeloY = Math.sin(phi) * first.getvX() + Math.cos(phi) * first.getvY();
+
+            // an der y-Achse spiegeln
+            rotVeloX = -rotVeloX;
+
+            // Rueckrotation des Geschwindigkeitsvektors und anpassen des y-Vektors
+            double newVeloX = Math.cos(-phi) * rotVeloX - Math.sin(-phi) * rotVeloY;
+            double newVeloY = Math.sin(-phi) * rotVeloX + Math.cos(-phi) + rotVeloY;
+            newVeloY = -newVeloY;
+            
+            // Setzen des neuen Richtungswinkels
+            double newPhi = Math.atan2(newVeloY, newVeloX);
+            
+            first.setRotation(Math.toDegrees(newPhi));
+
+            // Setzen des neuen Geschwindkeikeitsvektors
+            setvX(VectorCalculation.abs(getvX(), getvY())*Math.cos(newPhi));
+            setvY(VectorCalculation.abs(getvX(), getvY())*Math.sin(newPhi));
+            collided.add(second);
+        }
     }
     
     private void collideBox(final GameModel that, double time) {
