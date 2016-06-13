@@ -258,6 +258,8 @@ public class Ball extends GameModel {
                 double vel=0.5*a*timeline*timeline;
                 setvX(getvX()+vel*cosPuf);
                 setvY(getvY()+vel*sinPuf);
+                aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+                aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
                 //System.out.println(vel+" puf");                
             //System.out.println("HitPuf");                
 
@@ -283,6 +285,8 @@ public class Ball extends GameModel {
                 }else{
                     setvX(VectorCalculation.abs(getvX(),getvY())*cos);
                     setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+                    aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+                    aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
                 }
                 //setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
                 //setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
@@ -306,9 +310,10 @@ public class Ball extends GameModel {
            
             double x = ONE_HALF*aX*elapsedTime*elapsedTime+elapsedTime*getvX()+this.getPosX();
             double y = ONE_HALF*aY*elapsedTime*elapsedTime+elapsedTime*getvY()+this.getPosY();
-           //System.out.println("X:"+aX+"         y;"+aY);
-           System.out.println(VectorCalculation.abs(aX, aY));
-            if(this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
+//            System.out.println("X:"+getvX()+"         y;"+getvY());
+           System.out.println("HIER:     "+((VectorCalculation.abs(getvX(), getvY()))-(VectorCalculation.abs(aX, aY)*timeline)));
+            if((VectorCalculation.abs(getvX(), getvY()))-(VectorCalculation.abs(aX, aY)*timeline)<=-0.3 && elapsedTime != 0);
+//            if (this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
             else{
             setPosX(x);
             setPosY(y);
@@ -390,6 +395,8 @@ public class Ball extends GameModel {
             // Setzen des neuen Geschwindkeikeitsvektors
             setvX(VectorCalculation.abs(getvX(), getvY())*Math.cos(newPhi));
             setvY(VectorCalculation.abs(getvX(), getvY())*Math.sin(newPhi));
+            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
             collided.add(second);
         }
     }
@@ -527,5 +534,7 @@ public class Ball extends GameModel {
                     //System.out.println(springVel + "sp");
                     setvX((VectorCalculation.abs(getvX(),getvY())+springVel)*cos);
                     setvY((VectorCalculation.abs(getvX(),getvY())+springVel)*sin);
+                    aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+                    aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
     }
 }
