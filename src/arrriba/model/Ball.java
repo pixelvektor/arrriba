@@ -287,7 +287,7 @@ public class Ball extends GameModel {
                 //setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
                 //setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
                 //System.out.println(VectorCalculation.abs(getvX(),getvY()));
-                //System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
         }
     }
@@ -422,9 +422,9 @@ public class Ball extends GameModel {
                 RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getPosX(),cornerPoints[c+1]-getPosY()}, false);
                 //System.out.println(getPosX());
                 //System.out.println(getPosY());
-                //System.out.println(coefficients.getEntry(0, 0) + " " + coefficients.getEntry(0, 1));
-                //System.out.println(coefficients.getEntry(1, 0) + " " + coefficients.getEntry(1, 1));
-                //System.out.println(constants.getEntry(0)+" "+constants.getEntry(1)+" cons");
+                System.out.println(coefficients.getEntry(0, 0) + " " + coefficients.getEntry(0, 1));
+                System.out.println(coefficients.getEntry(1, 0) + " " + coefficients.getEntry(1, 1));
+                System.out.println(constants.getEntry(0)+" "+constants.getEntry(1)+" cons");
                 RealVector solution = solver.solve(constants); 
                 //System.out.println(solution.getEntry(1));
                 double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
@@ -435,7 +435,8 @@ public class Ball extends GameModel {
                 //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
                  //System.out.println(collY+"colly");
                 String col="None";
-                if(c==0){
+            switch (c) {
+                case 0:
                     if(that.getRotation()<=89&&that.getRotation()>=0){
                         col="A";
                     }else if(that.getRotation()<=179&&that.getRotation()>=90){
@@ -444,8 +445,9 @@ public class Ball extends GameModel {
                         col="C";
                     }else if(that.getRotation()<=359&&that.getRotation()>=270){
                         col="D";
-                    } 
-                }else if(c==2){
+                    }
+                    break;
+                case 2:
                     if(that.getRotation()<=89&&that.getRotation()>=0){
                         col="B";
                     }else if(that.getRotation()<=179&&that.getRotation()>=90){
@@ -454,8 +456,9 @@ public class Ball extends GameModel {
                         col="D";
                     }else if(that.getRotation()<=359&&that.getRotation()>=270){
                         col="A";
-                    } 
-                }else if(c==4){
+                    }
+                    break;
+                case 4:
                     if(that.getRotation()<=89&&that.getRotation()>=0){
                         col="C";
                     }else if(that.getRotation()<=179&&that.getRotation()>=90){
@@ -464,8 +467,9 @@ public class Ball extends GameModel {
                         col="A";
                     }else if(that.getRotation()<=359&&that.getRotation()>=270){
                         col="B";
-                    } 
-                }else if(c==6){
+                    }
+                    break;
+                case 6:
                     if(that.getRotation()<=89&&that.getRotation()>=0){
                         col="D";
                     }else if(that.getRotation()<=179&&that.getRotation()>=90){
@@ -474,8 +478,11 @@ public class Ball extends GameModel {
                         col="B";
                     }else if(that.getRotation()<=359&&that.getRotation()>=270){
                         col="C";
-                    } 
-                }
+                    }
+                    break;
+                default:
+                    break;
+            }
                 
                  
                 if(col.equals("A")){
