@@ -55,6 +55,8 @@ public class Ball extends GameModel {
     private ArrayList<GameModel> collided = new ArrayList<GameModel>();
     private Material material;
     
+    
+    
     public Ball(final int size, final double posX, final double posY,
             final double velocity, final double rotation) {
         this(size, posX, posY, velocity, rotation, new Wood(), new Ground());
@@ -77,6 +79,7 @@ public class Ball extends GameModel {
         this.setStartY(posY/1000);
         this.ground = ground;
         this.setMaterial(material);
+        
 //        cos= Math.cos(Math.toRadians(getRotation()));
 //        sin= Math.sin(Math.toRadians(getRotation()));
         //double acceleration = ONE_HALF*(FRICTION*factor)*elapsedTime*elapsedTime;
@@ -530,5 +533,87 @@ public class Ball extends GameModel {
                     //System.out.println(springVel + "sp");
                     setvX((VectorCalculation.abs(getvX(),getvY())+springVel)*cos);
                     setvY((VectorCalculation.abs(getvX(),getvY())+springVel)*sin);
+    }
+
+    public void checkCollisionBoundary(Config config) {
+       double[][] upperBoundaries=config.getUpperBoundary();
+       double[][] lowerBoundaries=config.getLowerBoundary();
+       
+       for(int c=0;c<upperBoundaries.length-1;c++){
+            double a=upperBoundaries[c][0]-upperBoundaries[c+1][0];
+            double b=upperBoundaries[c][1]-upperBoundaries[c+1][1];
+                
+            double nX=(-b);
+            double nY=(a);
+            double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[c][0], getPosY()-upperBoundaries[c][1]);
+            double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
+            if(d<=getSize()/2 && getPosX()<upperBoundaries[c+1][0] && getPosX()>upperBoundaries[c][0]){
+                System.out.println(d);
+                double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
+                double beta= Math.toDegrees(Math.atan(nY/nX));
+                double gamma = alpha-(2*beta);
+                double delta= 180-getRotation()-gamma;
+                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                setRotation(delta);
+                cos= Math.cos(Math.toRadians(getRotation()));
+                sin= Math.sin(Math.toRadians(getRotation()));
+                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+                aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+                aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            }         
+       }
+       
+       for(int c=0;c<lowerBoundaries.length-1;c++){
+            double a=lowerBoundaries[c][0]-lowerBoundaries[c+1][0];
+            double b=lowerBoundaries[c][1]-lowerBoundaries[c+1][1];
+                
+            double nX=(-b);
+            double nY=(a);
+            double e= VectorCalculation.times(nX, nY, getPosX()-lowerBoundaries[c][0], getPosY()-lowerBoundaries[c][1]);
+            double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
+            if(d<=getSize()/2 && getPosX()<lowerBoundaries[c+1][0] && getPosX()>lowerBoundaries[c][0]){
+                System.out.println(d);
+                double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
+                double beta= Math.toDegrees(Math.atan(nY/nX));
+                double gamma = alpha-(2*beta);
+                double delta= 180-getRotation()-gamma;
+                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                setRotation(delta);
+                cos= Math.cos(Math.toRadians(getRotation()));
+                sin= Math.sin(Math.toRadians(getRotation()));
+                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+                aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+                aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            }         
+       }
+            
+            for(int i = 0;i<7;i=i+6){
+            double a=upperBoundaries[i][0]-lowerBoundaries[i][0];
+            double b=upperBoundaries[i][1]-lowerBoundaries[i][1];
+                
+            double nX=(-b);
+            double nY=(a);
+            double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[i][0], getPosY()-upperBoundaries[i][1]);
+            double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
+            if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
+                System.out.println(d);
+                double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
+                double beta= Math.toDegrees(Math.atan(nY/nX));
+                double gamma = alpha-(2*beta);
+                double delta= 180-getRotation()-gamma;
+                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                setRotation(delta);
+                cos= Math.cos(Math.toRadians(getRotation()));
+                sin= Math.sin(Math.toRadians(getRotation()));
+                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+                aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+                aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            }
+            }
+            
+        
     }
 }

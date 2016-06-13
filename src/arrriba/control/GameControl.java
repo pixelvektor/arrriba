@@ -8,6 +8,7 @@ package arrriba.control;
 import arrriba.model.Ball;
 import arrriba.model.Barrel;
 import arrriba.model.Box;
+import arrriba.model.Config;
 import arrriba.model.GameModel;
 import arrriba.model.Hole;
 import arrriba.model.Ground;
@@ -141,6 +142,7 @@ public class GameControl implements Initializable, Observer {
     private double startPosX;
     private double startPosY;
     Level level = new Level();
+    Config config = new Config();
     
 
     public GameControl() {
@@ -502,8 +504,8 @@ public class GameControl implements Initializable, Observer {
             long actualTime = System.currentTimeMillis();
             double deltaTime = (actualTime - lastFrame) / 1000.0;
             lastFrame = actualTime;
-            
             for (Ball b : balls) {
+                b.checkCollisionBoundary(config);
                 for(GameModel obstacle : obstacles){
                     b.checkCollision(obstacle, deltaTime);
                 }
