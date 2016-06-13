@@ -8,6 +8,7 @@ package arrriba.control;
 import arrriba.model.Ball;
 import arrriba.model.Barrel;
 import arrriba.model.Box;
+import arrriba.model.Config;
 import arrriba.model.GameModel;
 import arrriba.model.Hole;
 import arrriba.model.Ground;
@@ -141,6 +142,7 @@ public class GameControl implements Initializable, Observer {
     private double startPosX;
     private double startPosY;
     Level level = new Level();
+    Config config = new Config();
     
     public GameControl() {
         this.shapeOnMousePressedEH = (MouseEvent e) -> {
@@ -468,7 +470,7 @@ public class GameControl implements Initializable, Observer {
             Ball b = new Ball(100,
                     x + offset * i,
                     y + (offset * i) / 2,
-                    100, 90, materials.get(i), ground);
+                    500, 90, materials.get(i), ground);
             b.addObserver(this);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
@@ -501,8 +503,8 @@ public class GameControl implements Initializable, Observer {
             long actualTime = System.currentTimeMillis();
             double deltaTime = (actualTime - lastFrame) / 1000.0;
             lastFrame = actualTime;
-            
             for (Ball b : balls) {
+                b.checkCollisionBoundary(config);
                 for(GameModel obstacle : obstacles){
                     b.checkCollision(obstacle, deltaTime);
                 }
