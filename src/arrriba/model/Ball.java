@@ -52,6 +52,8 @@ public class Ball extends GameModel {
     private ArrayList<Double> ngX=new ArrayList<Double>();
     private ArrayList<Double> ngY=new ArrayList<Double>();
     private ArrayList<Double> hit=new ArrayList<Double>();
+    
+    /** Speichert aktuell kollidierte Objekte, solange diese in der Naehe sind. */
     private ArrayList<GameModel> collided = new ArrayList<GameModel>();
     private Material material;
     
@@ -180,12 +182,21 @@ public class Ball extends GameModel {
         getShape().setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
     }
     
+    /** Setzt diesen Ball als beendet und legt ihn still.
+     */
     private void setFinished() {
         finish = true;
         this.setSize(120); // Zur Anschauung
         this.setVelocityVector(0);
         this.setChanged();
         this.notifyObservers();
+    }
+    
+    /** Entfernt den uebergebenen Ball aus der Kollisionsliste.
+     * @param that Der zu entfernende Ball.
+     */
+    protected void removeCollided(final GameModel that) {
+        collided.remove(that);
     }
     
     public void checkCollision(final GameModel that, final double time) {
@@ -326,12 +337,12 @@ public class Ball extends GameModel {
                         + Math.pow(this.getPosY() - that.getPosY(), 2));
         
         // Wenn sich die Kreise beruehren (Distanz <= der Radien)
+        // Sonst entfernen aus der Kollisionsliste
         if (distance <= this.getSize()/2 + that.getSize()/2) {
             // Berechnung des neuen Bewegungsvektors der Kugel (this)
             collideCircle(this, that);
         } else {
             collided.remove(that);
-//            System.out.println("Removed Barrel: " + collided);
         }
     }
     
@@ -345,17 +356,17 @@ public class Ball extends GameModel {
                         + Math.pow(this.getPosY() - that.getPosY(), 2));
         
         // Wenn sich die Kreise beruehren (Distanz <= der Radien)
+        // Sonst entfernen aus der Kollisionsliste
         if (distance <= this.getSize()/2 + that.getSize()/2) {
             // Berechnung der neuen Bewegungsvektoren der Bälle
             collideCircle(this, that);
             collideCircle(that, this);
         } else {
             collided.remove(that);
-//            System.out.println("Removed Ball: " + collided);
+            ((Ball) that).removeCollided(this);
         }
     }
-
-    // ########## Muss da noch iwo -y rein?
+    
     /** Berechnet den aus der Kollision zweier Kreise resultierenden Geschwindigkeitsvektor.
      * @param first Kreis mit Bewegung.
      * @param second Kreis mit dem kollidiert wird.
@@ -366,8 +377,8 @@ public class Ball extends GameModel {
             double distanceX = second.getPosX() - first.getPosX();
             double distanceY = second.getPosY() - first.getPosY();
             
+            // Winkel zwischen Distanzvektor und x-Achse
             double phi = Math.atan2(distanceY, distanceX);
-            System.out.println("RotDist: " + Math.toDegrees(phi));
 
             // Rotation
             double rotVeloX = Math.cos(phi) * first.getvX() - Math.sin(phi) * first.getvY();
@@ -378,17 +389,22 @@ public class Ball extends GameModel {
 
             // Rueckrotation des Geschwindigkeitsvektors und anpassen des y-Vektors
             double newVeloX = Math.cos(-phi) * rotVeloX - Math.sin(-phi) * rotVeloY;
-            double newVeloY = Math.sin(-phi) * rotVeloX + Math.cos(-phi) + rotVeloY;
-            newVeloY = -newVeloY;
+            double newVeloY = Math.sin(-phi) * rotVeloX + Math.cos(-phi) * rotVeloY;
+            newVeloX = -newVeloX;
             
             // Setzen des neuen Richtungswinkels
             double newPhi = Math.atan2(newVeloY, newVeloX);
-            
             first.setRotation(Math.toDegrees(newPhi));
 
             // Setzen des neuen Geschwindkeikeitsvektors
-            setvX(VectorCalculation.abs(getvX(), getvY())*Math.cos(newPhi));
-            setvY(VectorCalculation.abs(getvX(), getvY())*Math.sin(newPhi));
+            setvX(VectorCalculation.abs(getvX(), getvY()) * Math.cos(newPhi));
+            setvY(VectorCalculation.abs(getvX(), getvY()) * Math.sin(newPhi));
+            
+            // Aktualisieren der Reibung
+//            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+//            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            
+            // Als bearbeitet listen
             collided.add(second);
         }
     }

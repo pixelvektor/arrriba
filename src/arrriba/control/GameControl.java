@@ -142,7 +142,6 @@ public class GameControl implements Initializable, Observer {
     private double startPosY;
     Level level = new Level();
     
-
     public GameControl() {
         this.shapeOnMousePressedEH = (MouseEvent e) -> {
             origSceneX = e.getSceneX();
@@ -461,7 +460,7 @@ public class GameControl implements Initializable, Observer {
     
     /** Erstellt die Baelle auf dem Spielfeld.
      */
-    private void createBalls(double x, double y) {
+    private void createBalls(final double x, final double y) {
         // Baelle erstellen
         // Temp Offset
         int offset = 50;
@@ -469,7 +468,7 @@ public class GameControl implements Initializable, Observer {
             Ball b = new Ball(100,
                     x + offset * i,
                     y + (offset * i) / 2,
-                    500, 15, materials.get(i), ground);
+                    100, 90, materials.get(i), ground);
             b.addObserver(this);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
@@ -478,7 +477,7 @@ public class GameControl implements Initializable, Observer {
         }
     }
     
-    private void createHoles(double x, double y) {
+    private void createHoles(final double x, final double y) {
         // Holes erstellen
         // Temp Offset
         int offset = 50;
