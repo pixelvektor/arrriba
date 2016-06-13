@@ -233,11 +233,7 @@ public class Ball extends GameModel {
 
     private void collideBoxShapes(GameModel that,String name,double d, double time) {
         if(name.equals("Puffer")){
-            //System.out.println(d);
-
-            if(d<=getSize()/2){
-                setVelocity(getVelocity()+20);
-//            System.out.println("HitPuf");                
+            //System.out.println(d);         
 
             double[] cornerPoints=that.getCornerPoints();
             ArrayList<Double> distance=new ArrayList();
@@ -294,7 +290,7 @@ public class Ball extends GameModel {
             }
         }
     }
-    }
+    
     
     /** Bewegt die Kugel pro Zeitabschnitt weiter.
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
@@ -307,14 +303,14 @@ public class Ball extends GameModel {
 //            System.out.println("arrriba.model.Ball.move()");
 //            double x = elapsedTime*getvX()+this.getPosX();
            
-            double x = ONE_HALF*aX*timeline*timeline+elapsedTime*getvX()+this.getPosX();
-            double y = ONE_HALF*aY*timeline*timeline+elapsedTime*getvY()+this.getPosY();
-           System.out.println("X:"+aX+"         y;"+aY);
-            if(this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
-            else{
+            double x = elapsedTime*getvX()+this.getPosX();
+            double y = elapsedTime*getvY()+this.getPosY();
+           //System.out.println("X:"+aX+"         y;"+aY);
+            //if(this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
+            //else{
             setPosX(x);
             setPosY(y);
-            }
+            //}
             callListener();
         }
     }
