@@ -480,7 +480,7 @@ public class GameControl implements Initializable, Observer {
             double deltaTime = (actualTime - lastFrame) / 1000.0;
             lastFrame = actualTime;
             for (Ball b : balls) {
-                b.checkCollisionBoundary(config);
+                b.checkCollisionBoundary(config, deltaTime);
                 for(GameModel obstacle : obstacles){
                     b.checkCollision(obstacle, deltaTime);
                 }

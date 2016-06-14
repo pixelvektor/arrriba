@@ -21,6 +21,9 @@ public class Ball extends GameModel {
     private double velocity;
     private double startX;
     private double startY;
+    
+    private Boolean justHit=false;
+    private double justHitTime=0;
 
     private static final double ONE_HALF = 0.5;
     private double cos;
@@ -174,46 +177,48 @@ public class Ball extends GameModel {
     
     public void checkCollision(final GameModel that, final double time) {
         if (!isFinished()) {
-            setVelocityVector(time);
-            // Je nach Objekt welches ueber that uebergeben wird
-            String name = that.toString();
-            if(VectorCalculation.abs(getvX(), getvY())*time<=s && springHitTime > 0 && (s/VectorCalculation.abs(getvX(), getvY()))-(timeline-springHitTime)>0){
-                collideSpring(that);
-            }
-            switch (name) {
-                case "Hole": 
-                    this.setPosX(that.getPosX());
-                    this.setPosX(that.getPosY());
-                    this.setFinished();
+            if(!justHit&&justHitTime<=timeline){
+                setVelocityVector(time);
+                // Je nach Objekt welches ueber that uebergeben wird
+                String name = that.toString();
+                if(VectorCalculation.abs(getvX(), getvY())*time<=s && springHitTime > 0 && (s/VectorCalculation.abs(getvX(), getvY()))-(timeline-springHitTime)>0){
+                    collideSpring(that);
+                }
+                switch (name) {
+                    case "Hole": 
+                        this.setPosX(that.getPosX());
+                        this.setPosX(that.getPosY());
+                        this.setFinished();
+                        break;
+                    case "Barrel": collideBarrel(that);
                     break;
-                case "Barrel": collideBarrel(that);
-                break;
-                case "Ball": collideBall(that);
-                break;                               
-                default: checkCollideBoxShapes(that, time);
-                
+                    case "Ball": collideBall(that);
+                    break;                               
+                    default: checkCollideBoxShapes(that, time);
+
+                }
+    //            if (that.isCircle()) {
+    //                collideBarrel(that);
+    //                double distance = Math.sqrt(
+    //                        Math.pow(that.getPosX() - this.getPosX(), 2)
+    //                                + Math.pow(that.getPosY() - this.getPosY(), 2));
+    //                if (distance < ((this.getSize() + that.getSize())/2)) {
+    //                    if (that.toString().contains("Hole")) {
+    //                        this.setPosX(that.getPosX());
+    //                        this.setPosY(that.getPosY());
+    //                        this.setFinished();
+    //                    }
+    //                    double[][] intersectPoints = intersectCircles(that);
+    //                    if (intersectPoints == null) {
+    //                        System.err.println("Keine Intersection");
+    //                    }
+    //                    else {
+    //                        System.out.println(intersectPoints[0][0] + " " + intersectPoints[0][1] + " " + intersectPoints[1][0] + " " + intersectPoints[1][1]);
+    //                    }
+    //                }
+    //            }
             }
-//            if (that.isCircle()) {
-//                collideBarrel(that);
-//                double distance = Math.sqrt(
-//                        Math.pow(that.getPosX() - this.getPosX(), 2)
-//                                + Math.pow(that.getPosY() - this.getPosY(), 2));
-//                if (distance < ((this.getSize() + that.getSize())/2)) {
-//                    if (that.toString().contains("Hole")) {
-//                        this.setPosX(that.getPosX());
-//                        this.setPosY(that.getPosY());
-//                        this.setFinished();
-//                    }
-//                    double[][] intersectPoints = intersectCircles(that);
-//                    if (intersectPoints == null) {
-//                        System.err.println("Keine Intersection");
-//                    }
-//                    else {
-//                        System.out.println(intersectPoints[0][0] + " " + intersectPoints[0][1] + " " + intersectPoints[1][0] + " " + intersectPoints[1][1]);
-//                    }
-//                }
-//            }
-        }                
+        }
     }
 
     private void collideBoxShapes(GameModel that,String name) {
@@ -371,7 +376,7 @@ public class Ball extends GameModel {
         }
     }
     
-    private void checkCollideBoxShapes(final GameModel that, double time) {
+    private void checkCollideBoxShapes(final GameModel that, double elapsedTime) {
         if(that.toString().equals("Puffer")){
             System.out.print("puff");
             collidePuffer(that);
@@ -386,21 +391,29 @@ public class Ball extends GameModel {
                 ngY.add(gX.get(gX.size()-1));
                 double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
                 double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
-                if(!checkCollisionCorner(cornerPoints, c)){                   
+                if(!checkCollisionCorner(cornerPoints, c, elapsedTime)){                   
                     if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
                         System.out.println(d+"distanceA");
+                        justHit=true;
+                        justHitTime=timeline+2*elapsedTime;
                         collideBoxShapes(that,that.toString());
                     }
                     if(d<=getSize()/2&&getPosY()>cornerPoints[c+1]&&getPosY()<cornerPoints[c+3]){
                         System.out.println(d+"distanceB");
+                        justHit=true;
+                        justHitTime=timeline+2*elapsedTime;
                         collideBoxShapes(that,that.toString());                 
                     }
                     if(d<=getSize()/2&&getPosX()<cornerPoints[c]&&getPosX()>cornerPoints[c+2]){
                         System.out.println(d+"distanceC");
+                        justHit=true;
+                        justHitTime=timeline+2*elapsedTime;
                         collideBoxShapes(that,that.toString());
                     }
                     if(d<=getSize()/2&&getPosY()<cornerPoints[c+1]&&getPosY()>cornerPoints[c+3]){
                         System.out.println(d+"distanceD");
+                        justHit=true;
+                        justHitTime=timeline+2*elapsedTime;
                         collideBoxShapes(that,that.toString());
                     }
                 }
@@ -408,11 +421,13 @@ public class Ball extends GameModel {
         }
     }
 
-    private Boolean checkCollisionCorner(double[] cornerPoints, int c) {
+    private Boolean checkCollisionCorner(double[] cornerPoints, int c,double elapsedTime) {
         double distance = Math.sqrt(
                 Math.pow(this.getPosX() - cornerPoints[c], 2)
                         + Math.pow(this.getPosY() - cornerPoints[c+1], 2));
-        if(distance<=getSize()/2){         
+        if(distance<=getSize()/2){
+            justHit=true;
+            justHitTime=timeline+2*elapsedTime;
             System.out.println(distance+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             setRotation(180+getRotation());
             cos= Math.cos(Math.toRadians(getRotation()));
@@ -434,47 +449,58 @@ public class Ball extends GameModel {
                     aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
     }
 
-    public void checkCollisionBoundary(Config config) {
-       double[][] upperBoundaries=config.getUpperBoundary();
-       double[][] lowerBoundaries=config.getLowerBoundary();
-       
-       for(int k=0;k<2;k++){
-            double[][] activeDouble;
-            if(k==0){
-               activeDouble=upperBoundaries;
-            }else{
-               activeDouble=lowerBoundaries;
-            }
-       
-            for(int c=0;c<activeDouble.length-1;c++){
-                double a=activeDouble[c][0]-activeDouble[c+1][0];
-                double b=activeDouble[c][1]-activeDouble[c+1][1];
+    public void checkCollisionBoundary(Config config , double elapsedTime) {
+        double[][] upperBoundaries=config.getUpperBoundary();
+        double[][] lowerBoundaries=config.getLowerBoundary();
+        if(justHitTime<=timeline){
+            justHit=false;
+        }
+        
+        if(!justHit&&justHitTime<=timeline){
+            for(int k=0;k<2;k++){
+                double[][] activeDouble;
+                if(k==0){
+                    activeDouble=upperBoundaries;
+                }else{
+                    activeDouble=lowerBoundaries;
+                }
+
+                for(int c=0;c<activeDouble.length-1;c++){
+                    double a=activeDouble[c][0]-activeDouble[c+1][0];
+                    double b=activeDouble[c][1]-activeDouble[c+1][1];
+
+                    double nX=(-b);
+                    double nY=(a);
+                    double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c][0], getPosY()-activeDouble[c][1]);
+                    double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
+                    if(k==0){
+                        if(d<=getSize()/2 && getPosX()<upperBoundaries[c+1][0] && getPosX()>upperBoundaries[c][0]){
+                            collisionBoundary(d, nY, nX);
+                            justHit=true;
+                            justHitTime=timeline+2*elapsedTime;
+                        }
+                    }else{
+                        if(d<=getSize()/2 && getPosX()<lowerBoundaries[c+1][0] && getPosX()>lowerBoundaries[c][0]){
+                            collisionBoundary(d, nY, nX);
+                            justHit=true;
+                            justHitTime=timeline+2*elapsedTime;
+                        }
+                    }
+                }
+            }          
+            for(int i = 0;i<7;i=i+6){
+                double a=upperBoundaries[i][0]-lowerBoundaries[i][0];
+                double b=upperBoundaries[i][1]-lowerBoundaries[i][1];
 
                 double nX=(-b);
                 double nY=(a);
-                double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[c][0], getPosY()-upperBoundaries[c][1]);
+                double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[i][0], getPosY()-upperBoundaries[i][1]);
                 double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
-                if(k==0){
-                    if(d<=getSize()/2 && getPosX()<upperBoundaries[c+1][0] && getPosX()>upperBoundaries[c][0]){
-                                collisionBoundary(d, nY, nX);
-                    }
-                }else{
-                     if(d<=getSize()/2 && getPosX()<lowerBoundaries[c+1][0] && getPosX()>lowerBoundaries[c][0]){
-                         collisionBoundary(d, nY, nX);
-                     }
+                if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
+                    collisionBoundary(d, nY, nX);
+                    justHit=true;
+                    justHitTime=timeline+2*elapsedTime;
                 }
-            }
-        }          
-        for(int i = 0;i<7;i=i+6){
-            double a=upperBoundaries[i][0]-lowerBoundaries[i][0];
-            double b=upperBoundaries[i][1]-lowerBoundaries[i][1];
-                
-            double nX=(-b);
-            double nY=(a);
-            double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[i][0], getPosY()-upperBoundaries[i][1]);
-            double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
-            if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
-                collisionBoundary(d, nY, nX);
             }
         }
     }
