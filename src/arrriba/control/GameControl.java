@@ -129,6 +129,8 @@ public class GameControl implements Initializable, Observer {
     /** Letzter Bildaufruf. */
     private long lastFrame = 0;
     
+    private double scaleFactor=1000;
+    
     private double startPosX;
     private double startPosY;
     Level level = new Level();
@@ -138,8 +140,8 @@ public class GameControl implements Initializable, Observer {
         this.shapeOnMousePressedEH = (MouseEvent e) -> {
             origSceneX = e.getSceneX();
             origSceneY = e.getSceneY();
-            origTranslateX = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosX()*1000;
-            origTranslateY = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosY()*1000;
+            origTranslateX = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosX()*scaleFactor;
+            origTranslateY = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosY()*scaleFactor;
             
             // Setzen des aktuellen Shapes als ausgewaehlt
             if (activeShape != null) {
@@ -150,12 +152,12 @@ public class GameControl implements Initializable, Observer {
             activeShape.toFront();
             
             // Laden der aktuellen Werte des Objektes in die Einstellungen
-            sizeSlider.setValue(((GameModel) activeShape.getUserData()).getSize()*1000);
-            sizeNTF.setValue(((GameModel) activeShape.getUserData()).getSize()*1000);
+            sizeSlider.setValue(((GameModel) activeShape.getUserData()).getSize()*scaleFactor);
+            sizeNTF.setValue(((GameModel) activeShape.getUserData()).getSize()*scaleFactor);
             rotationSlider.setValue(((GameModel) activeShape.getUserData()).getRotation());
             rotationNTF.setValue(((GameModel) activeShape.getUserData()).getRotation());
-            posXNTF.setValue(((GameModel) activeShape.getUserData()).getPosX()*1000);
-            posYNTF.setValue(((GameModel) activeShape.getUserData()).getPosY()*1000);
+            posXNTF.setValue(((GameModel) activeShape.getUserData()).getPosX()*scaleFactor);
+            posYNTF.setValue(((GameModel) activeShape.getUserData()).getPosY()*scaleFactor);
             
             // Materialmenue bei Baellen
             if (activeShape.getUserData().toString().contains("Ball")) {
@@ -176,8 +178,8 @@ public class GameControl implements Initializable, Observer {
             double newTranslateX = origTranslateX + e.getSceneX() - origSceneX;
             double newTranslateY = origTranslateY + e.getSceneY() - origSceneY;
             
-            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosX(newTranslateX/1000);
-            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosY(newTranslateY/1000);
+            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosX(newTranslateX/scaleFactor);
+            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosY(newTranslateY/scaleFactor);
         };
     }
     
@@ -363,7 +365,7 @@ public class GameControl implements Initializable, Observer {
     public void onSizeSlider() {
         final double size = round(sizeSlider.getValue());
         if (activeShape != null) {
-            ((GameModel) activeShape.getUserData()).setSize(size/1000);
+            ((GameModel) activeShape.getUserData()).setSize(size/scaleFactor);
         }
         sizeNTF.setValue(size);
     }
@@ -383,7 +385,7 @@ public class GameControl implements Initializable, Observer {
         
         sizeNTF.setText(Double.toString(size));
         if (activeShape != null) {
-            ((GameModel) activeShape.getUserData()).setSize(size/1000);
+            ((GameModel) activeShape.getUserData()).setSize(size/scaleFactor);
         }
         sizeSlider.setValue(size);
     }
@@ -409,13 +411,13 @@ public class GameControl implements Initializable, Observer {
     @FXML
     public void onPosXNTF() {
         double posX = posXNTF.getValue();
-        ((GameModel) activeShape.getUserData()).setPosX(posX);
+        ((GameModel) activeShape.getUserData()).setPosX(posX/scaleFactor);
     }
     
     @FXML
     public void onPosYNTF() {
         double posY = posYNTF.getValue();
-        ((GameModel) activeShape.getUserData()).setPosY(posY);
+        ((GameModel) activeShape.getUserData()).setPosY(posY/scaleFactor);
     }
     
     @FXML

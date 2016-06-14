@@ -11,10 +11,10 @@
     -fx-margin-top: 15px;
 }
 
-/*.obstacle {
+.obstacle {
     -fx-stroke-width: 4px;
     -fx-stroke: black;
-}*/
+}
 
 .hole {
     -fx-fill: #33cc00;

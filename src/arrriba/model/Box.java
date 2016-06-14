@@ -28,9 +28,9 @@ public class Box extends GameModel {
         shape.getStyleClass().add("obstacle");
         this.setShape(shape);
         // Skalierungsfaktor 100 Pixel = 0.1 Meter
-        this.setPosX(posX/1000);
-        this.setPosY(posY/1000);
-        this.setSize(size/1000);
+        this.setPosX(posX/scaleFactor);
+        this.setPosY(posY/scaleFactor);
+        this.setSize(size/scaleFactor);
     }
     
     @Override

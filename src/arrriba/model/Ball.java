@@ -90,13 +90,13 @@ public class Ball extends GameModel {
         double sizeD=size;
         this.setShape(shape);
         // Skalierungsfaktor 100 Pixel = 0.1 Meter
-        this.setSize(sizeD/1000);
-        this.setPosX(posX/1000);
-        this.setPosY(posY/1000);
+        this.setSize(sizeD/scaleFactor);
+        this.setPosX(posX/scaleFactor);
+        this.setPosY(posY/scaleFactor);
         this.setRotation(rotation);
-        this.setVelocity(velocity/1000);
-        this.setStartX(posX/1000);
-        this.setStartY(posY/1000);
+        this.setVelocity(velocity/scaleFactor);
+        this.setStartX(posX/scaleFactor);
+        this.setStartY(posY/scaleFactor);
         this.setMaterial(material);
     }
 

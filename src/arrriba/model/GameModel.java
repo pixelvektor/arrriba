@@ -31,6 +31,8 @@ public class GameModel extends Observable {
     private Shape shape;
     /** Die Eckpunkte des Objekts wenn es ein Rechteck ist. */
     private double[] cornerPoints;
+    /** Skalierungsfaktor 100 Pixel = 0.1 Meter. */
+    protected final double scaleFactor=1000;
     
     /** Getter der Position des Objekts.
      * @return Die x-Position des Objekts.
@@ -98,17 +100,17 @@ public class GameModel extends Observable {
             // Das Rechteck.
             Rectangle r = (Rectangle) this.shape;
             // Der Mittelpunkt des Rechtecks.
-            double mX=getPosX()+r.getWidth()/1000/2;
-            double mY=getPosY()+r.getHeight()/1000/2;
+            double mX=getPosX()+r.getWidth()/scaleFactor/2;
+            double mY=getPosY()+r.getHeight()/scaleFactor/2;
             // Die Eckpunkte des Rechtecks in der Reihenfolge in der die Seiten berechnet werden.
             double[] cornerPoints={mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
                 ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()+r.getWidth()/1000-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()+r.getWidth()/1000-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()+r.getWidth()/1000-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/1000-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()+r.getWidth()/1000-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/1000-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/1000-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/1000-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()+r.getWidth()/scaleFactor-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()+r.getWidth()/scaleFactor-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()+r.getWidth()/scaleFactor-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/scaleFactor-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()+r.getWidth()/scaleFactor-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/scaleFactor-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/scaleFactor-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/scaleFactor-mY)*Math.cos(Math.toRadians(-getRotation())))
                 ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
                 ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))};
             return cornerPoints;
@@ -124,10 +126,10 @@ public class GameModel extends Observable {
         // Skalierungsfaktor 100 Pixel = 0.1 Meter
         if (isCircle()) {
             Circle c = (Circle) this.shape;
-            c.setCenterX(posX*1000);
+            c.setCenterX(posX*scaleFactor);
         } else {
             Rectangle r = (Rectangle) this.shape;
-            r.setX(posX*1000);
+            r.setX(posX*scaleFactor);
         }
         //this.setChanged();
         //this.notifyObservers();
@@ -141,10 +143,10 @@ public class GameModel extends Observable {
         // Skalierungsfaktor 100 Pixel = 0.1 Meter
         if (isCircle()) {
             Circle c = (Circle) this.shape;
-            c.setCenterY(posY*1000);
+            c.setCenterY(posY*scaleFactor);
         } else {
             Rectangle r = (Rectangle) this.shape;
-            r.setY(posY*1000);
+            r.setY(posY*scaleFactor);
         }
         //this.hasChanged();
         //this.notifyObservers();
@@ -167,17 +169,17 @@ public class GameModel extends Observable {
         if (isCircle()) {
             // Skalierungsfaktor 100 Pixel = 0.1 Meter
             Circle c = (Circle) this.shape;
-            c.setRadius(size*1000 / 2);
+            c.setRadius(size*scaleFactor / 2);
             this.size = size;
         }else if(isPuffer()){
             Rectangle r = (Rectangle) this.shape;
-            r.setWidth(size*1000*2);
-            r.setHeight(size*1000);
+            r.setWidth(size*scaleFactor*2);
+            r.setHeight(size*scaleFactor);
             this.size = size;
         }else {
             Rectangle r = (Rectangle) this.shape;
-            r.setWidth(size*1000);
-            r.setHeight(size*1000);
+            r.setWidth(size*scaleFactor);
+            r.setHeight(size*scaleFactor);
             this.size = size;
         }
         //this.setChanged();
