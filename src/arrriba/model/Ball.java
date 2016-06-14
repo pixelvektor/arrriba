@@ -34,8 +34,6 @@ public class Ball extends GameModel {
 
     /** Volumen des Balls. */
     private double volume;
-    /** Der Untergrund. */
-    private Ground ground;
     /** Die Zeit die vergangen ist. */
     private double timeline;
     /** Ob das Spiel beendet ist. */
@@ -72,7 +70,7 @@ public class Ball extends GameModel {
      */
     public Ball(final int size, final double posX, final double posY,
             final double velocity, final double rotation) {
-        this(size, posX, posY, velocity, rotation, new Wood(), new Ground());
+        this(size, posX, posY, velocity, rotation, new Wood());
     }
     
     /** 
@@ -82,10 +80,9 @@ public class Ball extends GameModel {
      * @param velocity Geschwindigkeit des Balls.
      * @param rotation Rotation des Balls.
      * @param material Material des Balls.
-     * @param ground Untegrund.
      */
     public Ball(final int size, final double posX, final double posY,
-            final double velocity, final double rotation, final Material material, final Ground ground) {
+            final double velocity, final double rotation, final Material material) {
         // Erstellt das Shape
         Circle shape = new Circle(posX, posY, size / 2);
         shape.setFill(Paint.valueOf("RED"));
@@ -100,7 +97,6 @@ public class Ball extends GameModel {
         this.setVelocity(velocity/1000);
         this.setStartX(posX/1000);
         this.setStartY(posY/1000);
-        this.ground = ground;
         this.setMaterial(material);
     }
 
@@ -210,8 +206,6 @@ public class Ball extends GameModel {
      */
     public void setMaterial(Material material) {
         this.material=material;
-        // Der Rollreibungskoeffizient des Materials.
-        double frictionCoefficient = this.ground.getFrictionCoefficient();
         // Die Dichte des Materials.
         double density = material.getDensity();
         // Die Masse des Materials.

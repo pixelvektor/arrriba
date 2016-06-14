@@ -11,7 +11,6 @@ import arrriba.model.Box;
 import arrriba.model.Config;
 import arrriba.model.GameModel;
 import arrriba.model.Hole;
-import arrriba.model.Ground;
 import arrriba.model.Level;
 import arrriba.model.Puffer;
 import arrriba.model.Spring;
@@ -37,12 +36,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
@@ -96,12 +93,6 @@ public class GameControl implements Initializable, Observer {
     @FXML
     private Button deleteButton;
     
-    @FXML
-    private Slider frictionSlider;
-    
-    @FXML
-    private NumberTextField frictionNTF;
-    
     // Spielfeld
     @FXML
     private Pane gameArea;
@@ -137,7 +128,6 @@ public class GameControl implements Initializable, Observer {
     
     /** Letzter Bildaufruf. */
     private long lastFrame = 0;
-    Ground ground = new Ground();
     
     private double startPosX;
     private double startPosY;
@@ -446,7 +436,7 @@ public class GameControl implements Initializable, Observer {
             Ball b = new Ball(100,
                     x + offset * i,
                     y + (offset * i) / 2,
-                    500, 15, materials.get(i), ground);
+                    500, 15, materials.get(i));
             b.addObserver(this);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);

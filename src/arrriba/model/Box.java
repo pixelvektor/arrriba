@@ -14,18 +14,23 @@ import javafx.scene.shape.Rectangle;
  * @author fabian
  */
 public class Box extends GameModel {
-    
+    /** Der Konstruktor der Kiste.
+     * @param posX Die X-Koordinate der oberen linken Ecke der Kiste.
+     * @param posY Die Y-Koordinate der oberen linken Ecke der Kiste.
+     * @param size Die Größe der Kiste.
+     */
     public Box (final double posX, final double posY, final double size) {
+        // Das Shape der Kiste.
         Rectangle shape = new Rectangle(posX, posY, size, size);
+        // Die Textur der Kiste.
         Image texture = new Image("/arrriba/view/Textur.png");
         shape.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
         shape.getStyleClass().add("obstacle");
         this.setShape(shape);
-        
+        // Skalierungsfaktor 100 Pixel = 0.1 Meter
         this.setPosX(posX/1000);
         this.setPosY(posY/1000);
         this.setSize(size/1000);
-        System.out.println(shape.getHeight());
     }
     
     @Override

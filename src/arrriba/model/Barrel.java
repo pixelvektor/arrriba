@@ -14,14 +14,20 @@ import javafx.scene.shape.Circle;
  * @author fabian
  */
 public class Barrel extends GameModel {
-    
+    /** Konstruktor der Tonne.
+     * @param posX Die X-Koordinate des Mittelpunkts der Tonne.
+     * @param posY Die Y-Koordinate des Mittelpunkts der Tonne.
+     * @param size Der Durchmesser der Tonne.
+     */
     public Barrel (final double posX, final double posY, final double size) {
+        // Das Shape der Tonne.
         Circle shape = new Circle(posX, posY, size / 2);
+        // Die Textur der Tonne.
         Image texture = new Image("/arrriba/view/Textur.png");
         shape.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
         shape.getStyleClass().add("obstacle");
         this.setShape(shape);
-        
+        // Skalierungsfaktor 100 Pixel = 0.1 Meter
         this.setPosX(posX/1000);
         this.setPosY(posY/1000);
         this.setSize(size/1000);
