@@ -152,7 +152,6 @@ public class GameModel extends Observable {
     }
 
     public void setMass(final double mass) {
-        System.out.println("arrriba.model.GameModel.setMass(): " + mass);
         this.mass = mass;
     }
     protected void setShape(final Shape shape) {

@@ -11,7 +11,7 @@ package arrriba.model.material;
  */
 public class Metal extends Material {
     private static final String NAME = "Metall";
-    private double density = 7.8;
+    private double density = 7874;
     private double frictionCoefficient = 0.016; // Nur geschätzt, evtl überarbeiten
     private String texturePath = "/arrriba/view/metallkugel.png";
     

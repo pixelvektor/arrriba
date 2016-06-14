@@ -12,12 +12,6 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.DecompositionSolver;
-import org.apache.commons.math3.linear.LUDecomposition;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
 
 /**
  *
@@ -31,12 +25,8 @@ public class Ball extends GameModel {
     private static final double ONE_HALF = 0.5;
     private double cos;
     private double sin;
-    private double equalizer;
 
     private double volume;
-    private double gravitation = 9.81;
-    private double weightForce;
-    private double friction;
     private Ground ground;
     private double timeline;
     private boolean finish = false;
@@ -55,9 +45,7 @@ public class Ball extends GameModel {
     
     /** Speichert aktuell kollidierte Objekte, solange diese in der Naehe sind. */
     private ArrayList<GameModel> collided = new ArrayList<GameModel>();
-    private Material material;
-    
-    
+    private Material material;  
     
     public Ball(final int size, final double posX, final double posY,
             final double velocity, final double rotation) {
@@ -81,14 +69,6 @@ public class Ball extends GameModel {
         this.setStartY(posY/1000);
         this.ground = ground;
         this.setMaterial(material);
-        
-//        cos= Math.cos(Math.toRadians(getRotation()));
-//        sin= Math.sin(Math.toRadians(getRotation()));
-        //double acceleration = ONE_HALF*(FRICTION*factor)*elapsedTime*elapsedTime;
-        //vX += acceleration - FRICTION*velocity;
-        //vY += acceleration - FRICTION*velocity;
-//        setvX(getVelocity()*cos);
-//        setvY(getVelocity()*sin);
     }
 
     public double getVelocity() {
@@ -130,31 +110,21 @@ public class Ball extends GameModel {
     }
     
     public void setVelocityVector(final double elapsedTime) {
-
         timeline += elapsedTime;
         if (timeline==0+elapsedTime){           
-
             cos= Math.cos(Math.toRadians(getRotation()));
             sin= Math.sin(Math.toRadians(getRotation()));
             setvX(getVelocity()*cos);
             setvY(getVelocity()*sin);
-            /*System.out.println(getVelocity());
-            System.out.println(getvX()+"vx");
-            System.out.println(VectorCalculation.abs(getvX(), getvY())+"vel");
-            System.out.println(material.getFrictionCoefficient()+" material.getFrictionCoefficient()");*/
             aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
             aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-            //System.out.println(-getvY()/VectorCalculation.abs(getvX(), getvY()));
         }else if(VectorCalculation.abs(getvX(), getvY())<=0){
-          //  System.out.println((-getvY()/VectorCalculation.abs(getvX(), getvY()));
             setvX(0);
             setvY(0);
         }else{
             setvX(getvX()+aX*elapsedTime);
             setvY(getvY()+aY*elapsedTime);
-            //System.out.println(VectorCalculation.abs(getvX(), getvY()));
-        }
-        
+        }  
     }
     
     public void setStartX(final double startX) {
@@ -220,7 +190,7 @@ public class Ball extends GameModel {
                 break;
                 case "Ball": collideBall(that);
                 break;                               
-                default: collideBox(that, time);
+                default: checkCollideBoxShapes(that, time);
                 
             }
 //            if (that.isCircle()) {
@@ -246,73 +216,49 @@ public class Ball extends GameModel {
         }                
     }
 
-    private void collideBoxShapes(GameModel that,String name,double d, double time) {
-        if(name.equals("Puffer")){
-            //System.out.println(d);         
-
-            double[] cornerPoints=that.getCornerPoints();
-            ArrayList<Double> distance=new ArrayList();
-            for(int c=0;c<=cornerPoints.length-3;c=c+2){
-            double a=cornerPoints[c]-cornerPoints[c+2];
-                double b=cornerPoints[c+1]-cornerPoints[c+3];
-                gX.add(a);
-                gY.add(b);
-                double nX=-b;
-                 double nY=a;
-                double e= VectorCalculation.times(nX, nY, getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
-                distance.add(Math.round(Math.abs(e)/VectorCalculation.abs(nX, nY)*1000)/1000.0);
-            }
-            //System.out.println(distance.get(0)+" "+distance.get(2)+" " +distance.get(1)+" "+distance.get(3));
-            //System.out.println((distance.get(0)+distance.get(2))+" " +(distance.get(1)+distance.get(3)));
-            
-            if(distance.get(0)+distance.get(2)==that.getSize() && distance.get(1)+distance.get(3)==(that.getSize()*2)){
-                double cosPuf= Math.cos(Math.toRadians(that.getRotation()+0.000001));
-                double sinPuf= Math.sin(Math.toRadians(that.getRotation()+0.000001));
-                double a=0.1;
-                double vel=0.5*a*timeline*timeline;
-                setvX(getvX()+vel*cosPuf);
-                setvY(getvY()+vel*sinPuf);
+    private void collideBoxShapes(GameModel that,String name) {
+            double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
+            double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
+            double gamma = alpha-(2*beta);
+            double delta= 180-getRotation()-gamma;
+            setRotation(delta);
+            cos= Math.cos(Math.toRadians(getRotation()));
+            sin= Math.sin(Math.toRadians(getRotation()));
+            if(name.equals("Spring")){
+                springHitTime=timeline;
+                s = that.getSize()/2;
+                double D = 20;
+                springVel=Math.sqrt((D*s*s/getMass()));
+                collideSpring(that);
+            }else{
+                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
                 aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
                 aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-                //System.out.println(vel+" puf");                
-            //System.out.println("HitPuf");                
-
             }
-            distance.clear();
-        }else{
-            
-                //System.out.println(d);
-                double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
-                double beta= Math.toDegrees(Math.atan(ngY.get(ngY.size()-1)/ngX.get(ngX.size()-1)));
-                double gamma = alpha-(2*beta);
-                double delta= 180-getRotation()-gamma;
-                //System.out.println(VectorCalculation.abs(getvX(),getvY()));
-                setRotation(delta);
-                cos= Math.cos(Math.toRadians(getRotation()));
-                sin= Math.sin(Math.toRadians(getRotation()));
-                if(name.equals("Spring")){
-                    springHitTime=timeline;
-                    s = that.getSize()/2;
-                    double D = 2;
-                    springVel=Math.sqrt((D*s*s/getMass()));
-                    collideSpring(that);
-                }else{
-                    //System.out.println("setVx");
-                    setvX(VectorCalculation.abs(getvX(),getvY())*cos);
-                    setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+            System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");                
+    }
 
-                    aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-                    aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-
-//                    System.out.println(getPosX());
-//                    System.out.println(getPosY());
-
-                }
-                //setvX(VectorCalculation.abs(getvX(),getvY())*Math.cos(Math.toRadians(delta)));
-                //setvY(VectorCalculation.abs(getvX(),getvY())*Math.sin(Math.toRadians(delta)));
-                //System.out.println(VectorCalculation.abs(getvX(),getvY()));
-                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            
+    private void collidePuffer(GameModel that) {
+        double[] cornerPoints=that.getCornerPoints();
+        ArrayList<Double> distance=new ArrayList();
+        for(int c=0;c<=cornerPoints.length-3;c=c+2){
+            double a=cornerPoints[c]-cornerPoints[c+2];
+            double b=cornerPoints[c+1]-cornerPoints[c+3];
+            double nX=-b;
+            double nY=a;
+            double e= VectorCalculation.times(nX, nY, getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
+            distance.add(Math.round(Math.abs(e)/VectorCalculation.abs(nX, nY)*1000)/1000.0);
+        }
+        if(distance.get(0)+distance.get(2)==that.getSize() && distance.get(1)+distance.get(3)==(that.getSize()*2)){
+            double cosPuf= Math.cos(Math.toRadians(that.getRotation()));
+            double sinPuf= Math.sin(Math.toRadians(that.getRotation()));
+            double a=0.1;
+            double vel=0.5*a*timeline*timeline;
+            setvX(getvX()+vel*cosPuf);
+            setvY(getvY()+vel*sinPuf);
+            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
         }
     }
     
@@ -425,15 +371,13 @@ public class Ball extends GameModel {
         }
     }
     
-    private void collideBox(final GameModel that, double time) {
-        double[] cornerPoints;
-            if(that.getRotation()==getRotation()||that.getRotation()== getRotation()+180){
-                that.setRotation(that.getRotation()+0.0000001);
-            }
-            cornerPoints=that.getCornerPoints();
-            //System.out.println(obstacle.getSize());
+    private void checkCollideBoxShapes(final GameModel that, double time) {
+        if(that.toString().equals("Puffer")){
+            System.out.print("puff");
+            collidePuffer(that);
+        }else{
+            double[] cornerPoints=that.getCornerPoints();
             for(int c=0;c<=cornerPoints.length-3;c=c+2){
-                //System.out.println(c);
                 double a=cornerPoints[c]-cornerPoints[c+2];
                 double b=cornerPoints[c+1]-cornerPoints[c+3];
                 gX.add(a);
@@ -442,135 +386,44 @@ public class Ball extends GameModel {
                 ngY.add(gX.get(gX.size()-1));
                 double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
                 double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
-//                System.out.println(getvX()+" vx");
-//                System.out.println(getvY()+" vy");
-//                System.out.println(ONE_HALF*aX*time*time+time*getvX()+this.getPosX());
-//                System.out.println(ONE_HALF*aY*time*time+time*getvY()+this.getPosY());
-//                RealMatrix coefficients =
-//                new Array2DRowRealMatrix(new double[][] { { (ONE_HALF*aX*time*time+time*getvX()+this.getPosX())-getPosX(),-(cornerPoints[c+2]-cornerPoints[c])}, 
-//                    { (ONE_HALF*aY*time*time+time*getvY()+this.getPosY())-getPosY(),-(cornerPoints[c+3]-cornerPoints[c+1])} },
-//                   false);
-//                DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
-//
-//                RealVector constants = new ArrayRealVector(new double[] { cornerPoints[c]-getPosX(),cornerPoints[c+1]-getPosY()}, false);
-//                System.out.println(getPosX()+" PosX");
-//                System.out.println(getPosY()+" PosY");
-//                System.out.println(coefficients.getEntry(0, 0) + " " + coefficients.getEntry(0, 1));
-//                System.out.println(coefficients.getEntry(1, 0) + " " + coefficients.getEntry(1, 1));
-//                System.out.println(constants.getEntry(0)+" "+constants.getEntry(1)+" cons");
-//                RealVector solution = solver.solve(constants); 
-//                //System.out.println(solution.getEntry(1));
-//                double collX=cornerPoints[c]+solution.getEntry(1)*(cornerPoints[c+2]-cornerPoints[c]);
-//                //System.out.println(collX+"collx");
-//                //double collX=getStartX()+solution.getEntry(0)*((getVX()+200)-getStartX());
-//
-//                double collY=cornerPoints[c+1]+solution.getEntry(1)*(cornerPoints[c+3]-cornerPoints[c+1]);
-                //double collY=getStartY()+solution.getEntry(0)*((getVY()+200)-getStartY());
-                 //System.out.println(collY+"colly");
-                String col="None";
-            switch (c) {
-                case 0:
-                    if(that.getRotation()<=89&&that.getRotation()>=0){
-                        col="A";
-                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
-                        col="B";
-                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
-                        col="C";
-                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
-                        col="D";
+                if(!checkCollisionCorner(cornerPoints, c)){                   
+                    if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
+                        System.out.println(d+"distanceA");
+                        collideBoxShapes(that,that.toString());
                     }
-                    break;
-                case 2:
-                    if(that.getRotation()<=89&&that.getRotation()>=0){
-                        col="B";
-                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
-                        col="C";
-                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
-                        col="D";
-                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
-                        col="A";
+                    if(d<=getSize()/2&&getPosY()>cornerPoints[c+1]&&getPosY()<cornerPoints[c+3]){
+                        System.out.println(d+"distanceB");
+                        collideBoxShapes(that,that.toString());                 
                     }
-                    break;
-                case 4:
-                    if(that.getRotation()<=89&&that.getRotation()>=0){
-                        col="C";
-                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
-                        col="D";
-                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
-                        col="A";
-                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
-                        col="B";
+                    if(d<=getSize()/2&&getPosX()<cornerPoints[c]&&getPosX()>cornerPoints[c+2]){
+                        System.out.println(d+"distanceC");
+                        collideBoxShapes(that,that.toString());
                     }
-                    break;
-                case 6:
-                    if(that.getRotation()<=89&&that.getRotation()>=0){
-                        col="D";
-                    }else if(that.getRotation()<=179&&that.getRotation()>=90){
-                        col="A";
-                    }else if(that.getRotation()<=269&&that.getRotation()>=180){
-                        col="B";
-                    }else if(that.getRotation()<=359&&that.getRotation()>=270){
-                        col="C";
+                    if(d<=getSize()/2&&getPosY()<cornerPoints[c+1]&&getPosY()>cornerPoints[c+3]){
+                        System.out.println(d+"distanceD");
+                        collideBoxShapes(that,that.toString());
                     }
-                    break;
-                default:
-                    break;
-            }
-                double distance = Math.sqrt(
-                Math.pow(this.getPosX() - cornerPoints[c], 2)
-                        + Math.pow(this.getPosY() - cornerPoints[c+1], 2)); 
-            if(distance<=getSize()/2){
-                System.out.println(distance+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                setRotation(180+getRotation());
-                cos= Math.cos(Math.toRadians(getRotation()));
-                sin= Math.sin(Math.toRadians(getRotation()));
-                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
-                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
-                aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-                aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-            }else{     
-                switch (col) {
-                    case "A":
-                        if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
-                            System.out.println(d+"distanceA");
-                            System.out.println(c);
-
-                            collideBoxShapes(that,that.toString(),d, time);
-                        }
-                        break;
-                    case "B":
-                        if(d<=getSize()/2&&getPosY()>cornerPoints[c+1]&&getPosY()<cornerPoints[c+3]){
-                            System.out.println(d+"distanceB");
-
-                            collideBoxShapes(that,that.toString(),d, time);                 
-                        }
-                        break;
-                    case "C":
-                        if(d<=getSize()/2&&getPosX()<cornerPoints[c]&&getPosX()>cornerPoints[c+2]){
-                            System.out.println(d+"distanceC");
-
-                            collideBoxShapes(that,that.toString(),d, time);
-                        }
-                        break;
-                    case "D":
-                        //                    System.out.println("AHHH");
-                        if(d<=getSize()/2&&getPosY()<cornerPoints[c+1]&&getPosY()>cornerPoints[c+3]){
-                            System.out.println(d+"distanceD");
-
-                            collideBoxShapes(that,that.toString(),d, time);
-                        }
-                        break;
-                    default:
-                        break;
                 }
             }
         }
     }
-    
-   
 
-    private void collidePuffer() {
-        
+    private Boolean checkCollisionCorner(double[] cornerPoints, int c) {
+        double distance = Math.sqrt(
+                Math.pow(this.getPosX() - cornerPoints[c], 2)
+                        + Math.pow(this.getPosY() - cornerPoints[c+1], 2));
+        if(distance<=getSize()/2){         
+            System.out.println(distance+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            setRotation(180+getRotation());
+            cos= Math.cos(Math.toRadians(getRotation()));
+            sin= Math.sin(Math.toRadians(getRotation()));
+            setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+            setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            return true;
+        }
+        return false;
     }
     
     private void collideSpring(GameModel that) {                 
@@ -585,57 +438,34 @@ public class Ball extends GameModel {
        double[][] upperBoundaries=config.getUpperBoundary();
        double[][] lowerBoundaries=config.getLowerBoundary();
        
-       for(int c=0;c<upperBoundaries.length-1;c++){
-            double a=upperBoundaries[c][0]-upperBoundaries[c+1][0];
-            double b=upperBoundaries[c][1]-upperBoundaries[c+1][1];
-                
-            double nX=(-b);
-            double nY=(a);
-            double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[c][0], getPosY()-upperBoundaries[c][1]);
-            double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
-            if(d<=getSize()/2 && getPosX()<upperBoundaries[c+1][0] && getPosX()>upperBoundaries[c][0]){
-                System.out.println(d);
-                double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
-                double beta= Math.toDegrees(Math.atan(nY/nX));
-                double gamma = alpha-(2*beta);
-                double delta= 180-getRotation()-gamma;
-                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                setRotation(delta);
-                cos= Math.cos(Math.toRadians(getRotation()));
-                sin= Math.sin(Math.toRadians(getRotation()));
-                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
-                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
-                aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-                aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-            }         
-       }
+       for(int k=0;k<2;k++){
+            double[][] activeDouble;
+            if(k==0){
+               activeDouble=upperBoundaries;
+            }else{
+               activeDouble=lowerBoundaries;
+            }
        
-       for(int c=0;c<lowerBoundaries.length-1;c++){
-            double a=lowerBoundaries[c][0]-lowerBoundaries[c+1][0];
-            double b=lowerBoundaries[c][1]-lowerBoundaries[c+1][1];
-                
-            double nX=(-b);
-            double nY=(a);
-            double e= VectorCalculation.times(nX, nY, getPosX()-lowerBoundaries[c][0], getPosY()-lowerBoundaries[c][1]);
-            double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
-            if(d<=getSize()/2 && getPosX()<lowerBoundaries[c+1][0] && getPosX()>lowerBoundaries[c][0]){
-                System.out.println(d);
-                double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
-                double beta= Math.toDegrees(Math.atan(nY/nX));
-                double gamma = alpha-(2*beta);
-                double delta= 180-getRotation()-gamma;
-                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                setRotation(delta);
-                cos= Math.cos(Math.toRadians(getRotation()));
-                sin= Math.sin(Math.toRadians(getRotation()));
-                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
-                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
-                aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-                aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-            }         
-       }
-            
-            for(int i = 0;i<7;i=i+6){
+            for(int c=0;c<activeDouble.length-1;c++){
+                double a=activeDouble[c][0]-activeDouble[c+1][0];
+                double b=activeDouble[c][1]-activeDouble[c+1][1];
+
+                double nX=(-b);
+                double nY=(a);
+                double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[c][0], getPosY()-upperBoundaries[c][1]);
+                double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
+                if(k==0){
+                    if(d<=getSize()/2 && getPosX()<upperBoundaries[c+1][0] && getPosX()>upperBoundaries[c][0]){
+                                collisionBoundary(d, nY, nX);
+                    }
+                }else{
+                     if(d<=getSize()/2 && getPosX()<lowerBoundaries[c+1][0] && getPosX()>lowerBoundaries[c][0]){
+                         collisionBoundary(d, nY, nX);
+                     }
+                }
+            }
+        }          
+        for(int i = 0;i<7;i=i+6){
             double a=upperBoundaries[i][0]-lowerBoundaries[i][0];
             double b=upperBoundaries[i][1]-lowerBoundaries[i][1];
                 
@@ -644,20 +474,24 @@ public class Ball extends GameModel {
             double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[i][0], getPosY()-upperBoundaries[i][1]);
             double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
             if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
-                System.out.println(d);
-                double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
-                double beta= Math.toDegrees(Math.atan(nY/nX));
-                double gamma = alpha-(2*beta);
-                double delta= 180-getRotation()-gamma;
-                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                setRotation(delta);
-                cos= Math.cos(Math.toRadians(getRotation()));
-                sin= Math.sin(Math.toRadians(getRotation()));
-                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
-                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
-                aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-                aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+                collisionBoundary(d, nY, nX);
             }
-            }
+        }
+    }
+
+    private void collisionBoundary(double d, double nY, double nX) {
+        System.out.println(d);
+        double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
+        double beta= Math.toDegrees(Math.atan(nY/nX));
+        double gamma = alpha-(2*beta);
+        double delta= 180-getRotation()-gamma;
+        System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        setRotation(delta);
+        cos= Math.cos(Math.toRadians(getRotation()));
+        sin= Math.sin(Math.toRadians(getRotation()));
+        setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+        setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+        aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+        aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
     }
 }

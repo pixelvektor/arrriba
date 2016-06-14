@@ -436,30 +436,6 @@ public class GameControl implements Initializable, Observer {
         deleteButton.disableProperty().set(true);
     }
     
-    @FXML
-    public void onFrictionNTF() {
-        final double origSize = frictionNTF.getValue();
-        double size;
-        
-        if (origSize > 1) {
-            size = 1;
-        } else if (origSize < 0.1) {
-            size = 0.1;
-        } else {
-            size = origSize;
-        }
-        ground.setFrictionCoeffcient(origSize);
-        frictionNTF.setText(Double.toString(size));       
-        frictionSlider.setValue(size);
-    }
-    
-    @FXML
-    public void onFrictionSlider(){
-         final double size = round(frictionSlider.getValue());
-         ground.setFrictionCoeffcient(size);
-         frictionNTF.setValue(size);
-    }
-    
     /** Erstellt die Baelle auf dem Spielfeld.
      */
     private void createBalls(final double x, final double y) {
