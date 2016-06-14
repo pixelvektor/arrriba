@@ -389,6 +389,7 @@ public class Ball extends GameModel {
      */
     private void collideCircle(final GameModel first, final GameModel second) {
         if (!collided.contains(second)) {
+            System.out.println("Ball coll");
             // Vektor zwischen den Mittelpunkten der Kreise -> Distanzvektor
             double distanceX = second.getPosX() - first.getPosX();
             double distanceY = second.getPosY() - first.getPosY();
@@ -546,12 +547,6 @@ public class Ball extends GameModel {
                     }
                 }
             }
-    }
-    
-   
-
-    private void collidePuffer() {
-        
     }
     
     private void collideSpring(GameModel that) {                 

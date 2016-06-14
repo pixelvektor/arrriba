@@ -43,8 +43,10 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TitledPane;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Modality;
@@ -58,7 +60,7 @@ import javafx.stage.StageStyle;
 public class GameControl implements Initializable, Observer {
     // Konstanten
     /** Anzahl der Baelle im Spiel. */
-    private static final int BALL_COUNT = 1;
+    private static final int BALL_COUNT = 2;
     
     /** CSS-Klasse fuer das aktive Shape. */
     private static final String ACTIVE = "active";
@@ -118,13 +120,15 @@ public class GameControl implements Initializable, Observer {
     /** Angewaehltes Shape. */
     private Shape activeShape = null;
     
+    private Hole hole;
+    
     /** Alle Gegenstaende auf dem Spielfeld. */
     private final ArrayList<GameModel> obstacles = new ArrayList<>();
     
+    private ArrayList<GameModel> levelObstacles = new ArrayList<>();
+    
     /** Alle Baelle, die sich im Spiel befinden. */
     private final ArrayList<Ball> balls = new ArrayList<>();
-    
-    private final ArrayList<Hole> holes = new ArrayList<>();
     
     private final ArrayList<Rectangle> wallElements = new ArrayList<>();
     
@@ -207,9 +211,7 @@ public class GameControl implements Initializable, Observer {
                 ((Ball) activeShape.getUserData()).setMaterial(materials.get(newValue.intValue()));
             }
         });
-        //levelStart();
-        
-        createBalls(200,200);
+        levelStart();
         
         // Erstellen des Timers fuer den Spielablauf
         TimerTask timerTask = new TimerTask() {
@@ -230,12 +232,11 @@ public class GameControl implements Initializable, Observer {
     
     @Override
     public void update(Observable o, Object arg) {
-        for (Ball b : balls) {
-            if (b.isFinished()) {
-//                b.getShape().toFront();
-                b.getShape().getStyleClass().add("finish");
-            }
-        }
+//        for (Ball b : balls) {
+//            if (b.isFinished()) {
+//                holes.get(balls.indexOf(b)).getShape().getStyleClass().add("finish");
+//            }
+//        }
     }
     
     /** Schliesst das Fenster und beendet das Programm.
@@ -337,35 +338,48 @@ public class GameControl implements Initializable, Observer {
         }
     }
     
+    /** Startet das Spiel und fixiert die Obstacles auf dem Spielfeld.
+     */
     @FXML
     public void onGamePlay() {
         play = true;
+        
+        // Obstacles fixieren
+        for (GameModel o : obstacles) {
+            o.getShape().removeEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+            o.getShape().removeEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
+        }
+        activeShape = null;
     }
     
+    /** Stoppt das Spiel, setzt die Kugeln auf die Startpositionen und reaktiviert die Obstacles.
+     */
     @FXML
     public void onGameRetry() {
         play = false;
         
+        // Reset der Kugeln und der Zeit
         for (Ball b : balls) {
             gameArea.getChildren().remove(b.getShape());
         }
         balls.removeAll(balls);
         lastFrame = 0;
         
-        createBalls(200,200);
+        // Obstacles veraenderbar setzen
+        for (GameModel o : obstacles) {
+            o.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+            o.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
+        }
+        
+        createBalls(level.getStartPosX(),level.getStartPosY());
         //createBalls(startPosX,startPosY);
     }
     
+    /** Stoppt das Spiel, setzt die Kugeln auf die Startpositionen und entfernt die Obstacles.
+     */
     @FXML
     public void onGameReset() {
-        play = false;
-        
-        gameArea.getChildren().remove(0, gameArea.getChildren().size());
-        balls.removeAll(balls);
-        obstacles.removeAll(obstacles);
-        lastFrame = 0;
-        createBalls(200,200);
-        //createBalls(startPosX,startPosY);
+        loadLevel();
     }
     
     
@@ -461,11 +475,12 @@ public class GameControl implements Initializable, Observer {
     }
     
     /** Erstellt die Baelle auf dem Spielfeld.
+     * @param x x-Position der Kugeln.
+     * @param y y-Position der Kugeln.
      */
     private void createBalls(final double x, final double y) {
-        // Baelle erstellen
         // Temp Offset
-        int offset = 50;
+        int offset = 150;
         for (int i = 0; i < BALL_COUNT; i++) {
             Ball b = new Ball(100,
                     x + offset * i,
@@ -479,18 +494,15 @@ public class GameControl implements Initializable, Observer {
         }
     }
     
-    private void createHoles(final double x, final double y) {
-        // Holes erstellen
-        // Temp Offset
-        int offset = 50;
-        for (int i = 0; i < BALL_COUNT; i++) {
-            Hole h = new Hole(x + offset * i,
-                    y + (offset * i) / 2,
-                    balls.get(i).getSize());
-            holes.add(h);
-            h.addObserver(this);
-            gameArea.getChildren().add(h.getShape());
-        }
+    /** Erstellt das Zielloch.
+     * @param x x-Position des Lochs.
+     * @param y y-Position des Lochs.
+     */
+    private void createHole(final double x, final double y) {
+        hole = new Hole(x, y, 100);
+//        hole.addObserver(this);
+        hole.getShape().setEffect(new InnerShadow(50, Color.BLACK));
+        gameArea.getChildren().add(hole.getShape());
     }
     
     private void nextStep() {
@@ -498,6 +510,12 @@ public class GameControl implements Initializable, Observer {
             if (lastFrame == 0) {
                 lastFrame = System.currentTimeMillis() - FRAME_RATE;
             }
+            
+            ArrayList<GameModel> objects = new ArrayList<>();
+            objects.addAll(obstacles);
+            objects.addAll(levelObstacles);
+//            objects.addAll(balls);
+            objects.add(hole);
 
             // vergangene Zeit zum letzten Bildaufruf in Sekunden (SI-Einheit)
             long actualTime = System.currentTimeMillis();
@@ -505,18 +523,14 @@ public class GameControl implements Initializable, Observer {
             lastFrame = actualTime;
             for (Ball b : balls) {
                 b.checkCollisionBoundary(config);
-                for(GameModel obstacle : obstacles){
-                    b.checkCollision(obstacle, deltaTime);
-                }
-                for(GameModel h : holes){
-                    b.checkCollision(h, deltaTime);
+                for(GameModel object : objects){
+                    b.checkCollision(object, deltaTime);
                 }
                 b.move(deltaTime);
             }
         }
         
     }
-    
     
     /** Rundet auf eine Nachkommastelle.
      * @param unround Der zu rundende Wert.
@@ -526,21 +540,28 @@ public class GameControl implements Initializable, Observer {
         return (double) Math.round(unround * 10) / 10;
     }
     
+    /** Laedt die Daten aus dem aktuellen Level.
+     */
     private void loadLevel() {
-        play = false;     
+        gameReset();
+        
+        // Laden der Gegenstaende im Level
+        levelObstacles = level.getObstacles();
+        for( GameModel obstacle : levelObstacles){
+            gameArea.getChildren().add(obstacle.getShape());
+        }
+        
+        createBalls(level.getStartPosX(), level.getStartPosY());
+        createHole(level.getHoleX(),level.getHoleY());
+    }
+
+    /** Setzt das Spiel auf einen leeren Zustand zurueck.
+     */
+    private void gameReset() {
+        play = false;
         gameArea.getChildren().remove(0, gameArea.getChildren().size());
         balls.removeAll(balls);
         obstacles.removeAll(obstacles);
         lastFrame = 0;
-        
-        ArrayList<GameModel> obs=level.getObstacles();
-        for( GameModel obstacle : obs){
-            obstacles.add(obstacle);
-            gameArea.getChildren().add(obstacle.getShape());
-        }     
-        startPosX=level.getStartPosX();
-        startPosY=level.getStartPosY();
-        createBalls(startPosX, startPosY);
-        createHoles(level.getHoleX(),level.getHoleY());
     }
 }
