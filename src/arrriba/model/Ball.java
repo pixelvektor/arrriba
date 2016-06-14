@@ -391,7 +391,7 @@ public class Ball extends GameModel {
                 ngY.add(gX.get(gX.size()-1));
                 double e= VectorCalculation.times(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1), getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
                 double d= Math.abs(e)/VectorCalculation.abs(ngX.get(ngX.size()-1), ngY.get(ngY.size()-1));
-                if(!checkCollisionCorner(cornerPoints, c, elapsedTime)){                   
+                if(!checkCollisionCorner(cornerPoints, c, elapsedTime,that)){                   
                     if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
                         System.out.println(d+"distanceA");
                         justHit=true;
@@ -421,7 +421,7 @@ public class Ball extends GameModel {
         }
     }
 
-    private Boolean checkCollisionCorner(double[] cornerPoints, int c,double elapsedTime) {
+    private Boolean checkCollisionCorner(double[] cornerPoints, int c,double elapsedTime,GameModel that) {
         double distance = Math.sqrt(
                 Math.pow(this.getPosX() - cornerPoints[c], 2)
                         + Math.pow(this.getPosY() - cornerPoints[c+1], 2));
@@ -429,7 +429,23 @@ public class Ball extends GameModel {
             justHit=true;
             justHitTime=timeline+2*elapsedTime;
             System.out.println(distance+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            setRotation(180+getRotation());
+            switch (c) {
+                case 0:
+                    setRotation(225+that.getRotation());
+                    break;
+                case 2:
+                    setRotation(315+that.getRotation());
+                    break;
+                case 4:
+                    setRotation(45+that.getRotation());
+                    break;
+                case 6:
+                    setRotation(135+that.getRotation());
+                    break;
+                default:
+                    break;
+            }
+            System.out.println(c);
             cos= Math.cos(Math.toRadians(getRotation()));
             sin= Math.sin(Math.toRadians(getRotation()));
             setvX(VectorCalculation.abs(getvX(),getvY())*cos);
