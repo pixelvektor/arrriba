@@ -516,36 +516,55 @@ public class Ball extends GameModel {
                 default:
                     break;
             }
-                
-                 
-                if(col.equals("A")){
-                    if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
-                        System.out.println(d+"distanceA");
-                        System.out.println(c);
-                        
-                        collideBoxShapes(that,that.toString(),d, time);
-                    }
-                }else if(col.equals("B")){
-                    if(d<=getSize()/2&&getPosY()>cornerPoints[c+1]&&getPosY()<cornerPoints[c+3]){
-                        System.out.println(d+"distanceB");
-                        
-                        collideBoxShapes(that,that.toString(),d, time);                 
-                    }
-                }else if(col.equals("C")){
-                    if(d<=getSize()/2&&getPosX()<cornerPoints[c]&&getPosX()>cornerPoints[c+2]){
-                        System.out.println(d+"distanceC");
-                        
-                        collideBoxShapes(that,that.toString(),d, time);
-                    }
-                } else if(col.equals("D")){
-//                    System.out.println("AHHH");
-                    if(d<=getSize()/2&&getPosY()<cornerPoints[c+1]&&getPosY()>cornerPoints[c+3]){
-                       System.out.println(d+"distanceD");
-                    
-                        collideBoxShapes(that,that.toString(),d, time);
-                    }
+                double distance = Math.sqrt(
+                Math.pow(this.getPosX() - cornerPoints[c], 2)
+                        + Math.pow(this.getPosY() - cornerPoints[c+1], 2)); 
+            if(distance<=getSize()/2){
+                System.out.println(distance+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                setRotation(180+getRotation());
+                cos= Math.cos(Math.toRadians(getRotation()));
+                sin= Math.sin(Math.toRadians(getRotation()));
+                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+                aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+                aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            }else{     
+                switch (col) {
+                    case "A":
+                        if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
+                            System.out.println(d+"distanceA");
+                            System.out.println(c);
+
+                            collideBoxShapes(that,that.toString(),d, time);
+                        }
+                        break;
+                    case "B":
+                        if(d<=getSize()/2&&getPosY()>cornerPoints[c+1]&&getPosY()<cornerPoints[c+3]){
+                            System.out.println(d+"distanceB");
+
+                            collideBoxShapes(that,that.toString(),d, time);                 
+                        }
+                        break;
+                    case "C":
+                        if(d<=getSize()/2&&getPosX()<cornerPoints[c]&&getPosX()>cornerPoints[c+2]){
+                            System.out.println(d+"distanceC");
+
+                            collideBoxShapes(that,that.toString(),d, time);
+                        }
+                        break;
+                    case "D":
+                        //                    System.out.println("AHHH");
+                        if(d<=getSize()/2&&getPosY()<cornerPoints[c+1]&&getPosY()>cornerPoints[c+3]){
+                            System.out.println(d+"distanceD");
+
+                            collideBoxShapes(that,that.toString(),d, time);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
+        }
     }
     
    
