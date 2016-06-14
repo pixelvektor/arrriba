@@ -15,10 +15,6 @@ public class Wood extends Material {
     private double frictionCoefficient = 0.02;
     private String texturePath = "/arrriba/view/holzkugel.png";
     
-    public Wood() {
-        
-    }
-    
     @Override
     public String toString() {
         return NAME;
