@@ -14,8 +14,15 @@ import javafx.scene.shape.Rectangle;
  * @author fabian
  */
 public class Puffer extends GameModel {
+    /** Konstruktor des Kugelfischs.
+     * @param posX Die X-Position des Kugelfischs.
+     * @param posY Die Y-Position des Kugelfischs.
+     * @param size Die Höhe des Kugelfischs.
+     */
     public Puffer (final double posX, final double posY, final double size) {
+        // Das Shape des Kugelfischs. 
         Rectangle shape = new Rectangle(posX, posY, size*2, size);
+        // Die Textur.
         Image texture = new Image("/arrriba/view/Kugelfisch.png");
         shape.setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
         shape.getStyleClass().add("puffer");

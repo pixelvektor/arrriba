@@ -63,11 +63,27 @@ public class Ball extends GameModel {
     /** Das Material der Kugel. */
     private Material material;  
     
+    /** Konstruktor des Balls.
+     * @param size Durchmesser des Balls.
+     * @param posX X-Position des Balls.
+     * @param posY Y-Ppsition des Balls.
+     * @param velocity Geschwindigkeit des Balls.
+     * @param rotation Rotation des Balls.
+     */
     public Ball(final int size, final double posX, final double posY,
             final double velocity, final double rotation) {
         this(size, posX, posY, velocity, rotation, new Wood(), new Ground());
     }
     
+    /** 
+     * @param size Durchmesser des Balls.
+     * @param posX X-Position des Balls.
+     * @param posY Y-Ppsition des Balls.
+     * @param velocity Geschwindigkeit des Balls.
+     * @param rotation Rotation des Balls.
+     * @param material Material des Balls.
+     * @param ground Untegrund.
+     */
     public Ball(final int size, final double posX, final double posY,
             final double velocity, final double rotation, final Material material, final Ground ground) {
         // Erstellt das Shape
@@ -76,6 +92,7 @@ public class Ball extends GameModel {
         double density = material.getDensity();
         double sizeD=size;
         this.setShape(shape);
+        // Skalierungsfaktor 100 Pixel = 0.1 Meter
         this.setSize(sizeD/1000);
         this.setPosX(posX/1000);
         this.setPosY(posY/1000);
@@ -87,18 +104,30 @@ public class Ball extends GameModel {
         this.setMaterial(material);
     }
 
+    /** Getter der Geschwindigkeit.
+     * @return Die Geschwindigkeit.
+     */
     public double getVelocity() {
         return velocity;
     }
     
+    /** Getter der Startposition des Balls.
+     * @return Die Startposition.
+     */
     public double getStartX(){
         return startX;
     }
     
+    /** Getter der Startposition des Balls.
+     * @return Die Startposition.
+     */
     public double getStartY(){
         return startY;
     }
 
+    /** Getter für das Material des Balls
+     * @return Das Material des Balls
+     */
     public Material getMaterial() {
         return material;
     }
@@ -110,17 +139,26 @@ public class Ball extends GameModel {
         return finish;
     }
     
+    /** Typ des Objekts.
+     * @return Der Typ des Objekts.
+     */
     @Override
     public String toString() {
         return "Ball";
     }
     
+    /** Setter des Durchmessers des Balls.
+     * @param size Der Durchmesser des Balls.
+     */
     @Override
     public void setSize(final double size) {
         super.setSize(size);
         volume = (getSize()*getSize()*Math.PI)/4;
     }
     
+    /** Setter für die Geschwindigkeit des Balls.
+     * @param velocity Die Geschwindigkeit des Balls.
+     */
     public void setVelocity(double velocity){
         this.velocity=velocity;
     }
@@ -153,29 +191,32 @@ public class Ball extends GameModel {
         }  
     }
     
+    /** Setter für die Startposition des Balls.
+     * @param startX Die Startposition des Balls.
+     */
     public void setStartX(final double startX) {
         this.startX = startX;
     }
     
+    /** Setter für die Startposition des Balls.
+     * @param startY Die Startposition des Balls.
+     */
     public void setStartY(final double startY) {
         this.startY = startY;
     }
 
+    /** Setter für das Material der Kugel.
+     * @param material Das Material der Kugel.
+     */
     public void setMaterial(Material material) {
         this.material=material;
+        // Der Rollreibungskoeffizient des Materials.
         double frictionCoefficient = this.ground.getFrictionCoefficient();
+        // Die Dichte des Materials.
         double density = material.getDensity();
+        // Die Masse des Materials.
         setMass(density*volume);
-         
-        
-        /* Brauchen wir (ertmal) doch nicht
-        this.material = material;
-        double density = material.getDensity();
-        setMass(density*volume);
-        weightForce = getMass()*gravitation; 
-        double frictionForce = frictionCoefficient*weightForce;
-        friction = frictionForce/getMass();*/
-         
+        // Die Textur des Balls abhängig vom Materaial. 
         String texturePath = material.getTexturePath();
         Image texture = new Image(texturePath);
         getShape().setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
@@ -187,8 +228,6 @@ public class Ball extends GameModel {
         finish = true;
         this.setSize(120); // Zur Anschauung
         this.setVelocityVector(0);
-        this.setChanged();
-        this.notifyObservers();
     }
     
     /** Entfernt den uebergebenen Ball aus der Kollisionsliste.
@@ -340,22 +379,16 @@ public class Ball extends GameModel {
         
         if (!isFinished()) {
             setVelocityVector(elapsedTime);
-//            double x = ONE_HALF*(-friction * equalizer)*timeline*timeline+elapsedTime*vX+this.getPosX();
-//            System.out.println("arrriba.model.Ball.move()");
-//            double x = elapsedTime*getvX()+this.getPosX();
-            
+            // Die Position nach der Bewegung.
             double x = 0.5*aX*elapsedTime*elapsedTime+elapsedTime*getvX()+this.getPosX();
             double y = 0.5*aY*elapsedTime*elapsedTime+elapsedTime*getvY()+this.getPosY();
 
-//           System.out.println("X:"+getvX()+"         y;"+getvY());
-//           System.out.println("HIER:     "+((VectorCalculation.abs(getvX(), getvY()))-(VectorCalculation.abs(aX, aY)*timeline)));
             if((VectorCalculation.abs(getvX(), getvY()))-(VectorCalculation.abs(aX, aY)*timeline)<=-0.3 && elapsedTime != 0);
 //            if (this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
             else{
             setPosX(x);
             setPosY(y);
             }
-            callListener();
         }
     }
     
