@@ -22,9 +22,14 @@ public class GameModel extends Observable {
     private double rotation;
     /** Die Größe des Objekts. */
     private double size;
-    /** Der Geschwindigkeitsvektor des Objekts. */
+    /** Der Geschwindigkeitsvektor des Objekts (x). */
     private double vX;
+    /** Der Geschwindigkeitsvektor des Objekts (y). */
     private double vY;
+    /** Die Reibung (x). */
+    private double aX;
+    /** Die reibung (y). */
+    private double aY;
     /** Die Masse des Objekts. */
     private double mass;
     /** Das Shape des Objekts. */
@@ -75,6 +80,20 @@ public class GameModel extends Observable {
      */
     protected double getvY() {
         return vY;
+    }
+    
+    /** Getter für die Reibung (x).
+     * @return Die x-Komponente der Reibung.
+     */
+    public double getaX() {
+        return aX;
+    }
+
+    /** Getter für die Reibung (y).
+     * @return Die y-Komponente der Reibung.
+     */
+    public double getaY() {
+        return aY;
     }
 
     /** Getter für die Masse des Objekts. 
@@ -198,6 +217,20 @@ public class GameModel extends Observable {
      */
     public void setvY(double vY) {
         this.vY = vY;
+    }
+
+    /** Setter für die Reibung (x).
+     * @param aX x-Komponente der Reibung.
+     */
+    public void setaX(double aX) {
+        this.aX = aX;
+    }
+
+    /** Setter für die Reibung (y).
+     * @param aY y-Komponente der Reibung.
+     */
+    public void setaY(double aY) {
+        this.aY = aY;
     }
 
     /** Setter für die Masse des Objekts.

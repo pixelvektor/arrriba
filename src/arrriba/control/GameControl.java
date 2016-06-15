@@ -341,6 +341,9 @@ public class GameControl implements Initializable, Observer {
             o.getShape().removeEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             o.getShape().removeEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
         }
+        if (activeShape != null) {
+            activeShape.getStyleClass().remove("active");
+        }
         activeShape = null;
     }
     
@@ -482,7 +485,7 @@ public class GameControl implements Initializable, Observer {
             ArrayList<GameModel> objects = new ArrayList<>();
             objects.addAll(obstacles);
             objects.addAll(levelObstacles);
-//            objects.addAll(balls);
+            objects.addAll(balls);
             objects.add(hole);
 
             // vergangene Zeit zum letzten Bildaufruf in Sekunden (SI-Einheit)

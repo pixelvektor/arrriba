@@ -39,8 +39,8 @@ public class Ball extends GameModel {
     /** Ob das Spiel beendet ist. */
     private boolean finish = false;
     /** Die Reibung. */
-    private double aX=0;
-    private double aY=0;
+//    private double aX=0;
+//    private double aY=0;
     
     /** Zeitpunkt an dem der Ball eine Feder trifft. */
     private double springHitTime=0;
@@ -98,6 +98,8 @@ public class Ball extends GameModel {
         this.setStartX(posX/scaleFactor);
         this.setStartY(posY/scaleFactor);
         this.setMaterial(material);
+        this.setaX(0);
+        this.setaY(0);
     }
 
     /** Getter der Geschwindigkeit.
@@ -174,16 +176,16 @@ public class Ball extends GameModel {
             setvX(getVelocity()*cos);
             setvY(getVelocity()*sin);
             // Berechnung der Reibung.
-            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
         }else if(VectorCalculation.abs(getvX(), getvY())<=0){
             setvX(0);
             setvY(0);
         // Der normale Fall wöhrend das Spiel läuft.    
         }else{
             // Berechnung des Geschwindigkeitsvektors.
-            setvX(getvX()+aX*elapsedTime);
-            setvY(getvY()+aY*elapsedTime);
+            setvX(getvX()+getaX()*elapsedTime);
+            setvY(getvY()+getaY()*elapsedTime);
         }  
     }
     
@@ -237,9 +239,9 @@ public class Ball extends GameModel {
      */
     public void checkCollision(final GameModel that, final double elapsedTime) {
         // Wenn das Spiel nicht beendet ist.
-        if (!isFinished()) {
+        // Wenn im letzten Frame keine Kollision stattgefunden hat.
+        if (!isFinished() && !justHit && allowedHitTime <= timeline) {
             // Wenn im letzten Frame keine Kollision stattgefunden hat.
-            if(!justHit&&allowedHitTime<=timeline){
                 // Berechnung des Geschwindigkeitsvektors.
                 setVelocityVector(elapsedTime);
                 // Je nach Objekt welches ueber that uebergeben wird.
@@ -250,11 +252,8 @@ public class Ball extends GameModel {
                 }
                 switch (name) {
                     // Wenn das Objekt ein Loch ist.
-                    case "Hole": 
-                        this.setPosX(that.getPosX());
-                        this.setPosX(that.getPosY());
-                        this.setFinished();
-                        break;
+                    case "Hole": collideHole(that);
+                    break;
                     // Wenn das Objekt eine Tonne ist.    
                     case "Barrel": collideBarrel(that);
                     break;
@@ -263,8 +262,6 @@ public class Ball extends GameModel {
                     break;
                     // Wenn das Objekt ein Rechteck ist.
                     default: checkCollideBoxShapes(that, elapsedTime);
-
-                }
     //            if (that.isCircle()) {
     //                collideBarrel(that);
     //                double distance = Math.sqrt(
@@ -321,8 +318,8 @@ public class Ball extends GameModel {
                 setvX(VectorCalculation.abs(getvX(),getvY())*cos);
                 setvY(VectorCalculation.abs(getvX(),getvY())*sin);
                 // Neuberechnung der Reibung.
-                aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-                aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+                setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+                setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
             }
             System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");                
     }
@@ -360,8 +357,8 @@ public class Ball extends GameModel {
             setvX(getvX()+vel*cosPuf);
             setvY(getvY()+vel*sinPuf);
             // Neuberechnung der Reibung
-            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
         }
     }
     
@@ -374,15 +371,31 @@ public class Ball extends GameModel {
         if (!isFinished()) {
             setVelocityVector(elapsedTime);
             // Die Position nach der Bewegung.
-            double x = 0.5*aX*elapsedTime*elapsedTime+elapsedTime*getvX()+this.getPosX();
-            double y = 0.5*aY*elapsedTime*elapsedTime+elapsedTime*getvY()+this.getPosY();
+            double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*getvX()+this.getPosX();
+            double y = 0.5*getaY()*elapsedTime*elapsedTime+elapsedTime*getvY()+this.getPosY();
 
-            if((VectorCalculation.abs(getvX(), getvY()))-(VectorCalculation.abs(aX, aY)*timeline)<=-0.3 && elapsedTime != 0);
+            if((VectorCalculation.abs(getvX(), getvY()))-(VectorCalculation.abs(getaX(), getaY())*timeline)<=-0.3 && elapsedTime != 0);
 //            if (this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
             else{
             setPosX(x);
             setPosY(y);
             }
+        }
+    }
+    
+    /** Aufruf falls ein Loch kollidiert werden soll.
+     * Legt den Ball bei einer Kollision still.
+     * @param that Das Loch mit dem die Kollision berechnet werden soll.
+     */
+    private void collideHole(final GameModel that) {
+        double distance = Math.sqrt(
+                Math.pow(this.getPosX() - that.getPosX(), 2)
+                        + Math.pow(this.getPosY() - that.getPosY(), 2));
+        
+        if (distance <= this.getSize() / 2 * that.getSize() / 2) {
+            this.setPosX(that.getPosX());
+            this.setPosX(that.getPosY());
+            this.setFinished();
         }
     }
     
@@ -418,12 +431,100 @@ public class Ball extends GameModel {
         // Sonst entfernen aus der Kollisionsliste
         if (distance <= this.getSize()/2 + that.getSize()/2) {
             // Berechnung der neuen Bewegungsvektoren der Bälle
-            collideCircle(this, that);
-            collideCircle(that, this);
+            
+            // Normalenvektor zwischen den Kugeln
+            double normX = that.getPosX() - this.getPosX();
+            double normY = that.getPosY() - this.getPosY();
+            
+            // Relative Geschwindigkeit von this zu that
+            double vRelX = that.getvX() - this.getvX();
+            double vRelY = that.getvY() - this.getvY();
+            
+            double scalar = VectorCalculation.times(vRelX, vRelY, normX, normY);
+            
+            if (scalar > 0) {
+                double[] resultThis = calculateBallCollisionVelocity(this, normX, normY);
+                double[] resultThat = calculateBallCollisionVelocity(that, normX, normY);
+                
+                // Komponente fuer die andere Kugel
+                double[] transferVeloAtoB = {resultThis[0], resultThis[1]};
+                
+                // Komponente fuer diese Kugel
+                double[] ownVeloA = {resultThis[2], resultThis[3]};
+                
+                // Komponente fuer die andere Kugel
+                double[] transferVeloBtoA = {resultThat[0] ,resultThat[1]};
+                
+                // Komponente fuer diese Kugel
+                double[] ownVeloB = {resultThat[2], resultThat[3]};
+                
+                // Zusammenbauen der neuen Vektoren
+                
+                // Geschwindigkeit fuer this
+                double newVeloAX = ownVeloA[0] + transferVeloBtoA[0];
+                double newVeloAY = ownVeloA[1] + transferVeloBtoA[1];
+                
+                // Geschwindigkeit fuer that
+                double newVeloBX = ownVeloB[0] + transferVeloAtoB[0];
+                double newVeloBY = ownVeloB[1] + transferVeloAtoB[1];
+                
+                // Setzen der neuen Geschwindigkeiten
+                this.setvX(newVeloAX);
+                this.setvY(newVeloAY);
+                that.setvX(newVeloBX);
+                that.setvY(newVeloBY);
+                
+                // Setzen der neuen Rotation
+                this.setRotation(Math.toDegrees(Math.atan2(newVeloAY, newVeloAX)));
+                that.setRotation(Math.toDegrees(Math.atan2(newVeloBY, newVeloBX)));
+                
+                // Aktualisieren der Reibung
+                this.setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+                this.setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+                that.setaX((-that.getvX()/VectorCalculation.abs(that.getvX(), that.getvY()))*material.getFrictionCoefficient());
+                that.setaY((-that.getvY()/VectorCalculation.abs(that.getvX(), that.getvY()))*material.getFrictionCoefficient());
+            }
         } else {
             collided.remove(that);
             ((Ball) that).removeCollided(this);
         }
+    }
+    
+    /** Berechnet die Komponenten des Geschwindigkeitsvektors von viewpoint.
+     * @param viewpoint Kugel von der aus die Kollision betrachtet wird.
+     * @param normX Normalenvektor zwischen den Kugeln (x).
+     * @param normY Normalenvektor zwischen den Kugeln (y).
+     * @return Transferkomponente an die andere Kugel, eigene Komponente (tX, tY, eX, eY).
+     */
+    private double[] calculateBallCollisionVelocity(final GameModel viewpoint, final double normX, final double normY) {
+        System.err.println("arrriba.model.Ball.calculateBallCollisionVelocity()");
+        // Winkel zwischen x-Achse und Geschwindigkeitsvektor
+        double phi = Math.atan2(viewpoint.getvY(), viewpoint.getvX());
+
+        // Drehen des Normalenvektors
+        double rotNormX = Math.cos(phi) * normX - Math.sin(phi) * normX;
+        double rotNormY = Math.sin(phi) * normY + Math.cos(phi) * normY;
+
+        // Winkel zwischen Normalenvektor und Geschwindigkeit
+        double alpha = Math.atan2(rotNormY, rotNormX);
+
+        // dritter Winkel des Dreiecks
+        double gamma = Math.PI - (Math.PI / 2) - alpha;
+
+        // Betrag der ersten uebertragenen Geschwindigkeit
+        double transferVeloAtoB = (VectorCalculation.abs(viewpoint.getvX(), viewpoint.getvY()) * Math.sin(gamma)) / Math.sin(Math.PI / 2);
+        double factorTransferVeloAtoB = transferVeloAtoB / VectorCalculation.abs(normX, normY);
+
+        // Komponente fuer die andere Kugel
+        double transferVeloAtoBX = normX * factorTransferVeloAtoB;
+        double transferVeloAtoBY = normY * factorTransferVeloAtoB;
+
+        // Komponente fuer diese Kugel
+        double ownVeloAX = viewpoint.getvX() - transferVeloAtoBX;
+        double ownVeloAY = viewpoint.getvY() - transferVeloAtoBY;
+        
+        double[] returnValues = {transferVeloAtoBX, transferVeloAtoBY, ownVeloAX, ownVeloAY};
+        return returnValues;
     }
     
     /** Berechnet den aus der Kollision zweier Kreise resultierenden Geschwindigkeitsvektor.
@@ -440,6 +541,7 @@ public class Ball extends GameModel {
             // Winkel zwischen Distanzvektor und x-Achse
             double phi = Math.atan2(distanceY, distanceX);
 
+            // ############################################################################################ minus phi?
             // Rotation
             double rotVeloX = Math.cos(phi) * first.getvX() - Math.sin(phi) * first.getvY();
             double rotVeloY = Math.sin(phi) * first.getvX() + Math.cos(phi) * first.getvY();
@@ -461,8 +563,8 @@ public class Ball extends GameModel {
             setvY(VectorCalculation.abs(getvX(), getvY()) * Math.sin(newPhi));
             
             // Aktualisieren der Reibung
-            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            setaY((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
             
             // Als bearbeitet listen
             collided.add(second);
@@ -550,7 +652,7 @@ public class Ball extends GameModel {
                 case 4:
                     setRotation(45+that.getRotation());
                     break;
-                // Abprall untere linke Ecke.    
+                // Abprall untere linke Ecke.
                 case 6:
                     setRotation(135+that.getRotation());
                     break;
@@ -565,8 +667,8 @@ public class Ball extends GameModel {
             setvX(VectorCalculation.abs(getvX(),getvY())*cos);
             setvY(VectorCalculation.abs(getvX(),getvY())*sin);
             // Neuberechnung der Reibung.
-            aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-            aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
             return true;
         }
         return false;
@@ -579,8 +681,8 @@ public class Ball extends GameModel {
                     setvX((VectorCalculation.abs(getvX(),getvY())+springVel)*cos);
                     setvY((VectorCalculation.abs(getvX(),getvY())+springVel)*sin);
                     // Neuberechnung der Reibung.
-                    aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-                    aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+                    setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+                    setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
     }
 
     /** Überprüft ob der Ball mit den Banden kollidiert.
@@ -682,7 +784,7 @@ public class Ball extends GameModel {
         setvX(VectorCalculation.abs(getvX(),getvY())*cos);
         setvY(VectorCalculation.abs(getvX(),getvY())*sin);
         // Neuberechning der Reibung.
-        aX = (-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
-        aY = (-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient();
+        setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+        setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
     }
 }
