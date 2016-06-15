@@ -7,19 +7,21 @@ package arrriba.model;
 
 import java.util.ArrayList;
 
-/**
- *
- * @author Adrian
- */
 public class Level {
     
     /** Alle Gegenstaende auf dem Spielfeld. */
     private final ArrayList<GameModel> obstacles = new ArrayList<>();
+    /** x-Startposition der ersten Kugel. */
     private double startPosX;
+    /** y-Startposition der ersten Kugel. */
     private double startPosY;
+    /** x-Position des Lochs. */
     private double holeX;
+    /** y-Position des Lochs. */
     private double holeY;
     
+    /** Laden des ersten Levels (Oberdeck).
+     */
     public void loadOberdeck() {
         obstacles.clear();
         Box box = new Box(300, 550, 100);        
@@ -30,20 +32,14 @@ public class Level {
         obstacles.add(box3);
         Barrel barrel = new Barrel(900, 450, 100);
         obstacles.add(barrel);
-        Barrel barrel2 = new Barrel(800, 450, 50);
-        obstacles.add(barrel2);
-        Barrel barrel3 = new Barrel(1000, 450, 50);
-        obstacles.add(barrel3);
-        Barrel barrel4 = new Barrel(900, 350, 50);
-        obstacles.add(barrel4);
-        Barrel barrel5 = new Barrel(900, 550, 50);
-        obstacles.add(barrel5);
         startPosX=100;
         startPosY=200;
         holeX=450;
         holeY=750;
     }
     
+    /** Laden des zweiten Levels (Zwischendeck).
+     */
     public void loadZwischendeck() {
         obstacles.clear();
         Box box = new Box(250, 720, 100);        
@@ -60,6 +56,8 @@ public class Level {
         holeY=750;
     }
     
+    /** Laden des dritten Levels (Unterdeck).
+     */
     public void loadUnterdeck() {
         obstacles.clear();
         Box box = new Box(100,350, 100);        
@@ -77,27 +75,41 @@ public class Level {
         startPosX=150; // für die Kugel
         startPosY=750;
         holeX=150; // Loch
-        holeY=150;
+        holeY=200;
     }
     
+    /** Gibt die Obstacles des Levels zurueck.
+     * @return Obstacles des aktuellen Levels
+     */
     public ArrayList getObstacles(){
         return obstacles;
     }
     
+    /** Gibt die x-Startposition der ersten Kugel zurueck.
+     * @return x-Startposition der ersten Kugel
+     */
     public double getStartPosX(){
         return startPosX;
     }
     
+    /** Gibt die y-Startposition der ersten Kugel zurueck.
+     * @return y-Startposition der ersten Kugel
+     */
     public double getStartPosY(){
         return startPosY;
     }
     
+    /** Gibt die x-Position des Lochs zurueck.
+     * @return x-Position des Lochs
+     */
     public double getHoleX(){
         return holeX;
     }
     
+    /** Gibt die y-Position des Lochs zurueck.
+     * @return y-Position des Lochs
+     */
     public double getHoleY(){
         return holeY;
     }
-    
 }

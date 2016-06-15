@@ -133,25 +133,11 @@
                               <Insets />
                            </GridPane.margin>
                         </Button>
-                        <Separator prefWidth="200.0" GridPane.rowIndex="10" />
-                        <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                        <Label text="Untergrund" GridPane.rowIndex="11">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="18.0" layoutY="260.0" prefHeight="69.0" prefWidth="45.0" text="Reibung" GridPane.rowIndex="12">
-                           <padding>
-                              <Insets top="20.0" />
-                           </padding>
-                        </Label>
-                        <Slider fx:id="frictionSlider" layoutX="18.0" layoutY="151.0" majorTickUnit="50.0" max="1.0" min="0.1" minorTickCount="1" onMouseDragged="#onFrictionSlider" onMousePressed="#onFrictionSlider" value="0.1" GridPane.rowIndex="13" />
                         <Label layoutX="18.0" layoutY="498.0" text="Element">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <NumberTextField fx:id="frictionNTF" layoutX="202.0" layoutY="185.0" onAction="#onFrictionNTF" prefHeight="27.0" prefWidth="70.0" GridPane.columnIndex="1" GridPane.rowIndex="13" />
                      </children>
                      <padding>
                         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />

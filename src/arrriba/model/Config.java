@@ -10,6 +10,7 @@ package arrriba.model;
  * @author fabian
  */
 public class Config {
+    /** Die Position der oberen Bande. */
     private final double[][] upperBoundary = {
         {0,0.119},
         {0.720,0.119},
@@ -19,6 +20,7 @@ public class Config {
         {1.230,0.310},
         {1.298,0.400}};
     
+    /** Die Position der unteren Bande. */
     private final double[][] lowerBoundary = {
         {0,0.880},
         {0.720,0.880},

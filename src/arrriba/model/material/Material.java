@@ -10,26 +10,26 @@ package arrriba.model.material;
  * @author fabian
  */
 public abstract class Material {
-    private final String type;
+    /** Die Dichte des Materials. */
+    private double density;
+    /** Der Rollreibungskoeffizient des Materials. */
+    private double frictionCoefficient;
+    /** Der Texturpfad. */
     private String texturePath;
-    private double density = 0.8;
-    
-    public Material() {
-        this.type = "Wood";
-    }
 
-    /*public String getTexturePath(){
-        return texturePath;
-    }*/
-    
-    public String getType() {
-        return type;
-    }
-    
+    /** Getter für die Dichte des Materials.
+     * @return Die Dichte des Materials.
+     */
     public abstract double getDensity();
     
+    /** Getter für den Texturpfad.
+     * @return Der Texturpfad.
+     */
     public abstract String getTexturePath();
     
+    /** Getter für den Rollreibungskoeffizienten.
+     * @return Der Rollreibungskoeffizient.
+     */
     public abstract double getFrictionCoefficient();
 
 }

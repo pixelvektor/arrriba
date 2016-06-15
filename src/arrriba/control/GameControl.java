@@ -11,7 +11,6 @@ import arrriba.model.Box;
 import arrriba.model.Config;
 import arrriba.model.GameModel;
 import arrriba.model.Hole;
-import arrriba.model.Ground;
 import arrriba.model.Level;
 import arrriba.model.Puffer;
 import arrriba.model.Spring;
@@ -37,14 +36,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TitledPane;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Modality;
@@ -58,7 +57,7 @@ import javafx.stage.StageStyle;
 public class GameControl implements Initializable, Observer {
     // Konstanten
     /** Anzahl der Baelle im Spiel. */
-    private static final int BALL_COUNT = 1;
+    private static final int BALL_COUNT = 2;
     
     /** CSS-Klasse fuer das aktive Shape. */
     private static final String ACTIVE = "active";
@@ -96,12 +95,6 @@ public class GameControl implements Initializable, Observer {
     @FXML
     private Button deleteButton;
     
-    @FXML
-    private Slider frictionSlider;
-    
-    @FXML
-    private NumberTextField frictionNTF;
-    
     // Spielfeld
     @FXML
     private Pane gameArea;
@@ -118,13 +111,15 @@ public class GameControl implements Initializable, Observer {
     /** Angewaehltes Shape. */
     private Shape activeShape = null;
     
+    private Hole hole;
+    
     /** Alle Gegenstaende auf dem Spielfeld. */
     private final ArrayList<GameModel> obstacles = new ArrayList<>();
     
+    private ArrayList<GameModel> levelObstacles = new ArrayList<>();
+    
     /** Alle Baelle, die sich im Spiel befinden. */
     private final ArrayList<Ball> balls = new ArrayList<>();
-    
-    private final ArrayList<Hole> holes = new ArrayList<>();
     
     private final ArrayList<Rectangle> wallElements = new ArrayList<>();
     
@@ -137,7 +132,8 @@ public class GameControl implements Initializable, Observer {
     
     /** Letzter Bildaufruf. */
     private long lastFrame = 0;
-    Ground ground = new Ground();
+    
+    private double scaleFactor=1000;
     
     private double startPosX;
     private double startPosY;
@@ -148,8 +144,8 @@ public class GameControl implements Initializable, Observer {
         this.shapeOnMousePressedEH = (MouseEvent e) -> {
             origSceneX = e.getSceneX();
             origSceneY = e.getSceneY();
-            origTranslateX = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosX()*1000;
-            origTranslateY = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosY()*1000;
+            origTranslateX = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosX()*scaleFactor;
+            origTranslateY = ((GameModel) ((Shape) e.getSource()).getUserData()).getPosY()*scaleFactor;
             
             // Setzen des aktuellen Shapes als ausgewaehlt
             if (activeShape != null) {
@@ -160,12 +156,12 @@ public class GameControl implements Initializable, Observer {
             activeShape.toFront();
             
             // Laden der aktuellen Werte des Objektes in die Einstellungen
-            sizeSlider.setValue(((GameModel) activeShape.getUserData()).getSize()*1000);
-            sizeNTF.setValue(((GameModel) activeShape.getUserData()).getSize()*1000);
+            sizeSlider.setValue(((GameModel) activeShape.getUserData()).getSize()*scaleFactor);
+            sizeNTF.setValue(((GameModel) activeShape.getUserData()).getSize()*scaleFactor);
             rotationSlider.setValue(((GameModel) activeShape.getUserData()).getRotation());
             rotationNTF.setValue(((GameModel) activeShape.getUserData()).getRotation());
-            posXNTF.setValue(((GameModel) activeShape.getUserData()).getPosX()*1000);
-            posYNTF.setValue(((GameModel) activeShape.getUserData()).getPosY()*1000);
+            posXNTF.setValue(((GameModel) activeShape.getUserData()).getPosX()*scaleFactor);
+            posYNTF.setValue(((GameModel) activeShape.getUserData()).getPosY()*scaleFactor);
             
             // Materialmenue bei Baellen
             if (activeShape.getUserData().toString().contains("Ball")) {
@@ -186,8 +182,8 @@ public class GameControl implements Initializable, Observer {
             double newTranslateX = origTranslateX + e.getSceneX() - origSceneX;
             double newTranslateY = origTranslateY + e.getSceneY() - origSceneY;
             
-            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosX(newTranslateX/1000);
-            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosY(newTranslateY/1000);
+            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosX(newTranslateX/scaleFactor);
+            ((GameModel) ((Shape) (e.getSource())).getUserData()).setPosY(newTranslateY/scaleFactor);
         };
     }
     
@@ -207,9 +203,7 @@ public class GameControl implements Initializable, Observer {
                 ((Ball) activeShape.getUserData()).setMaterial(materials.get(newValue.intValue()));
             }
         });
-        //levelStart();
-        
-        createBalls(200,200);
+        levelStart();
         
         // Erstellen des Timers fuer den Spielablauf
         TimerTask timerTask = new TimerTask() {
@@ -230,12 +224,11 @@ public class GameControl implements Initializable, Observer {
     
     @Override
     public void update(Observable o, Object arg) {
-        for (Ball b : balls) {
-            if (b.isFinished()) {
-//                b.getShape().toFront();
-                b.getShape().getStyleClass().add("finish");
-            }
-        }
+//        for (Ball b : balls) {
+//            if (b.isFinished()) {
+//                holes.get(balls.indexOf(b)).getShape().getStyleClass().add("finish");
+//            }
+//        }
     }
     
     /** Schliesst das Fenster und beendet das Programm.
@@ -337,35 +330,48 @@ public class GameControl implements Initializable, Observer {
         }
     }
     
+    /** Startet das Spiel und fixiert die Obstacles auf dem Spielfeld.
+     */
     @FXML
     public void onGamePlay() {
         play = true;
+        
+        // Obstacles fixieren
+        for (GameModel o : obstacles) {
+            o.getShape().removeEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+            o.getShape().removeEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
+        }
+        activeShape = null;
     }
     
+    /** Stoppt das Spiel, setzt die Kugeln auf die Startpositionen und reaktiviert die Obstacles.
+     */
     @FXML
     public void onGameRetry() {
         play = false;
         
+        // Reset der Kugeln und der Zeit
         for (Ball b : balls) {
             gameArea.getChildren().remove(b.getShape());
         }
         balls.removeAll(balls);
         lastFrame = 0;
         
-        createBalls(200,200);
+        // Obstacles veraenderbar setzen
+        for (GameModel o : obstacles) {
+            o.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
+            o.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
+        }
+        
+        createBalls(level.getStartPosX(),level.getStartPosY());
         //createBalls(startPosX,startPosY);
     }
     
+    /** Stoppt das Spiel, setzt die Kugeln auf die Startpositionen und entfernt die Obstacles.
+     */
     @FXML
     public void onGameReset() {
-        play = false;
-        
-        gameArea.getChildren().remove(0, gameArea.getChildren().size());
-        balls.removeAll(balls);
-        obstacles.removeAll(obstacles);
-        lastFrame = 0;
-        createBalls(200,200);
-        //createBalls(startPosX,startPosY);
+        loadLevel();
     }
     
     
@@ -373,7 +379,7 @@ public class GameControl implements Initializable, Observer {
     public void onSizeSlider() {
         final double size = round(sizeSlider.getValue());
         if (activeShape != null) {
-            ((GameModel) activeShape.getUserData()).setSize(size/1000);
+            ((GameModel) activeShape.getUserData()).setSize(size/scaleFactor);
         }
         sizeNTF.setValue(size);
     }
@@ -393,7 +399,7 @@ public class GameControl implements Initializable, Observer {
         
         sizeNTF.setText(Double.toString(size));
         if (activeShape != null) {
-            ((GameModel) activeShape.getUserData()).setSize(size/1000);
+            ((GameModel) activeShape.getUserData()).setSize(size/scaleFactor);
         }
         sizeSlider.setValue(size);
     }
@@ -419,13 +425,13 @@ public class GameControl implements Initializable, Observer {
     @FXML
     public void onPosXNTF() {
         double posX = posXNTF.getValue();
-        ((GameModel) activeShape.getUserData()).setPosX(posX);
+        ((GameModel) activeShape.getUserData()).setPosX(posX/scaleFactor);
     }
     
     @FXML
     public void onPosYNTF() {
         double posY = posYNTF.getValue();
-        ((GameModel) activeShape.getUserData()).setPosY(posY);
+        ((GameModel) activeShape.getUserData()).setPosY(posY/scaleFactor);
     }
     
     @FXML
@@ -436,41 +442,18 @@ public class GameControl implements Initializable, Observer {
         deleteButton.disableProperty().set(true);
     }
     
-    @FXML
-    public void onFrictionNTF() {
-        final double origSize = frictionNTF.getValue();
-        double size;
-        
-        if (origSize > 1) {
-            size = 1;
-        } else if (origSize < 0.1) {
-            size = 0.1;
-        } else {
-            size = origSize;
-        }
-        ground.setFrictionCoeffcient(origSize);
-        frictionNTF.setText(Double.toString(size));       
-        frictionSlider.setValue(size);
-    }
-    
-    @FXML
-    public void onFrictionSlider(){
-         final double size = round(frictionSlider.getValue());
-         ground.setFrictionCoeffcient(size);
-         frictionNTF.setValue(size);
-    }
-    
     /** Erstellt die Baelle auf dem Spielfeld.
+     * @param x x-Position der Kugeln.
+     * @param y y-Position der Kugeln.
      */
     private void createBalls(final double x, final double y) {
-        // Baelle erstellen
         // Temp Offset
-        int offset = 50;
+        int offset = 150;
         for (int i = 0; i < BALL_COUNT; i++) {
             Ball b = new Ball(100,
                     x + offset * i,
                     y + (offset * i) / 2,
-                    500, 90, materials.get(i), ground);
+                    500, 15, materials.get(i));
             b.addObserver(this);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
@@ -479,18 +462,15 @@ public class GameControl implements Initializable, Observer {
         }
     }
     
-    private void createHoles(final double x, final double y) {
-        // Holes erstellen
-        // Temp Offset
-        int offset = 50;
-        for (int i = 0; i < BALL_COUNT; i++) {
-            Hole h = new Hole(x + offset * i,
-                    y + (offset * i) / 2,
-                    balls.get(i).getSize());
-            holes.add(h);
-            h.addObserver(this);
-            gameArea.getChildren().add(h.getShape());
-        }
+    /** Erstellt das Zielloch.
+     * @param x x-Position des Lochs.
+     * @param y y-Position des Lochs.
+     */
+    private void createHole(final double x, final double y) {
+        hole = new Hole(x, y, 100);
+//        hole.addObserver(this);
+        hole.getShape().setEffect(new InnerShadow(50, Color.BLACK));
+        gameArea.getChildren().add(hole.getShape());
     }
     
     private void nextStep() {
@@ -498,25 +478,27 @@ public class GameControl implements Initializable, Observer {
             if (lastFrame == 0) {
                 lastFrame = System.currentTimeMillis() - FRAME_RATE;
             }
+            
+            ArrayList<GameModel> objects = new ArrayList<>();
+            objects.addAll(obstacles);
+            objects.addAll(levelObstacles);
+//            objects.addAll(balls);
+            objects.add(hole);
 
             // vergangene Zeit zum letzten Bildaufruf in Sekunden (SI-Einheit)
             long actualTime = System.currentTimeMillis();
             double deltaTime = (actualTime - lastFrame) / 1000.0;
             lastFrame = actualTime;
             for (Ball b : balls) {
-                b.checkCollisionBoundary(config);
-                for(GameModel obstacle : obstacles){
-                    b.checkCollision(obstacle, deltaTime);
-                }
-                for(GameModel h : holes){
-                    b.checkCollision(h, deltaTime);
+                b.checkCollisionBoundary(config, deltaTime);
+                for(GameModel object : objects){
+                    b.checkCollision(object, deltaTime);
                 }
                 b.move(deltaTime);
             }
         }
         
     }
-    
     
     /** Rundet auf eine Nachkommastelle.
      * @param unround Der zu rundende Wert.
@@ -526,21 +508,28 @@ public class GameControl implements Initializable, Observer {
         return (double) Math.round(unround * 10) / 10;
     }
     
+    /** Laedt die Daten aus dem aktuellen Level.
+     */
     private void loadLevel() {
-        play = false;     
+        gameReset();
+        
+        // Laden der Gegenstaende im Level
+        levelObstacles = level.getObstacles();
+        for( GameModel obstacle : levelObstacles){
+            gameArea.getChildren().add(obstacle.getShape());
+        }
+        
+        createBalls(level.getStartPosX(), level.getStartPosY());
+        createHole(level.getHoleX(),level.getHoleY());
+    }
+
+    /** Setzt das Spiel auf einen leeren Zustand zurueck.
+     */
+    private void gameReset() {
+        play = false;
         gameArea.getChildren().remove(0, gameArea.getChildren().size());
         balls.removeAll(balls);
         obstacles.removeAll(obstacles);
         lastFrame = 0;
-        
-        ArrayList<GameModel> obs=level.getObstacles();
-        for( GameModel obstacle : obs){
-            obstacles.add(obstacle);
-            gameArea.getChildren().add(obstacle.getShape());
-        }     
-        startPosX=level.getStartPosX();
-        startPosY=level.getStartPosY();
-        createBalls(startPosX, startPosY);
-        createHoles(level.getHoleX(),level.getHoleY());
     }
 }
