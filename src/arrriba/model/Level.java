@@ -24,42 +24,58 @@ public class Level {
      */
     public void loadOberdeck() {
         obstacles.clear();
-        Box box = new Box(400, 670, 80);        
+        Box box = new Box(300, 550, 100);        
         obstacles.add(box);
-        Barrel barrel = new Barrel(125, 165, 50);
+        Box box2 = new Box(500, 250, 100);        
+        obstacles.add(box2);
+        Box box3 = new Box(150, 700, 80);        
+        obstacles.add(box3);
+        Barrel barrel = new Barrel(900, 450, 100);
         obstacles.add(barrel);
-        startPosX=600;
-        startPosY=700;
-        holeX=300;
-        holeY=400;
+        startPosX=100;
+        startPosY=200;
+        holeX=450;
+        holeY=750;
     }
     
     /** Laden des zweiten Levels (Zwischendeck).
      */
     public void loadZwischendeck() {
         obstacles.clear();
-        Box box = new Box(800, 370, 50);        
+        Box box = new Box(250, 720, 100);        
         obstacles.add(box);
-        Barrel barrel = new Barrel(200, 400, 90);
+        Barrel barrel = new Barrel(900, 500, 120);
         obstacles.add(barrel);
-        startPosX=600;
-        startPosY=700;
-        holeX=500;
-        holeY=800;
+        Barrel barrel2 = new Barrel(300, 280, 60);
+        obstacles.add(barrel2);
+        Spring spring = new Spring(250, 470, 100);
+        obstacles.add(spring);
+        startPosX=450;
+        startPosY=750;
+        holeX=150;
+        holeY=750;
     }
     
     /** Laden des dritten Levels (Unterdeck).
      */
     public void loadUnterdeck() {
         obstacles.clear();
-        Box box = new Box(500, 730, 100);        
-        obstacles.add(box);
-        Barrel barrel = new Barrel(625, 500, 70);
+        Box box = new Box(100,350, 100);        
+        obstacles.add(box); // jedes neue objekt da adden
+        Box box2 = new Box(250, 350, 100);        
+        obstacles.add(box2);
+        Box box3 = new Box(400, 350, 100);        
+        obstacles.add(box3); 
+        Box box4 = new Box(550, 350, 100);        
+        obstacles.add(box4); 
+        Barrel barrel = new Barrel(900, 600, 70);
         obstacles.add(barrel);
-        startPosX=600;
-        startPosY=700;
-        holeX=100;
-        holeY=400;
+        Puffer puffer = new Puffer(100, 500, 100);
+        obstacles.add(puffer);
+        startPosX=150; // für die Kugel
+        startPosY=750;
+        holeX=150; // Loch
+        holeY=200;
     }
     
     /** Gibt die Obstacles des Levels zurueck.

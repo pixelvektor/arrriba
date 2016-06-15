@@ -373,8 +373,14 @@ public class Ball extends GameModel {
             // Die Position nach der Bewegung.
             double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*getvX()+this.getPosX();
             double y = 0.5*getaY()*elapsedTime*elapsedTime+elapsedTime*getvY()+this.getPosY();
-
-            if((VectorCalculation.abs(getvX(), getvY()))-(VectorCalculation.abs(getaX(), getaY())*timeline)<=-0.3 && elapsedTime != 0);
+            System.out.println(Math.round(x*1000)/1000.0);
+            System.out.println(getPosX());
+            if(Math.round(x*1000)/1000.0==Math.round(this.getPosX()*1000)/1000.0 && Math.round(y*1000)/1000.0==Math.round(this.getPosY()*1000)/1000.0 && timeline != 0){
+                setaX(0);
+                setaY(0);
+                setvX(0);
+                setvY(0);
+            }
 //            if (this.getPosX()-x>=0 && this.getPosY()-y>=0 && elapsedTime != 0);
             else{
             setPosX(x);
