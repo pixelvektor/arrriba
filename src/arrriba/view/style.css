@@ -20,18 +20,6 @@
     -fx-fill: #666666;
 }
 
-.finish {
-    -fx-fill: #ff00ff;
-}
-
-.collision {
-    -fx-stroke: #00ffff;
-}
-
-.wall {
-    -fx-opacity: 0;
-}
-
 .active {
     -fx-stroke: #33ff33;
     -fx-stroke-width: 4px;

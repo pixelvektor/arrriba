@@ -83,13 +83,13 @@ public class Ball extends GameModel {
         double sizeD=size;
         this.setShape(shape);
         // Skalierungsfaktor 100 Pixel = 0.1 Meter
-        this.setSize(sizeD/scaleFactor);
-        this.setPosX(posX/scaleFactor);
-        this.setPosY(posY/scaleFactor);
+        this.setSize(sizeD/SCALE_FACTOR);
+        this.setPosX(posX/SCALE_FACTOR);
+        this.setPosY(posY/SCALE_FACTOR);
         this.setRotation(rotation);
-        this.setVelocity(velocity/scaleFactor);
-        this.setStartX(posX/scaleFactor);
-        this.setStartY(posY/scaleFactor);
+        this.setVelocity(velocity/SCALE_FACTOR);
+        this.setStartX(posX/SCALE_FACTOR);
+        this.setStartY(posY/SCALE_FACTOR);
         this.setMaterial(material);
         this.setaX(0);
         this.setaY(0);
@@ -171,6 +171,8 @@ public class Ball extends GameModel {
             // Berechnung der Reibung.
             setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
             setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            
+//            System.out.println("Velocity Ball: " + VectorCalculation.abs(getvX(), getvY()));##############################################################
         }else if(VectorCalculation.abs(getvX(), getvY())<=0){
             setvX(0);
             setvY(0);
@@ -179,7 +181,7 @@ public class Ball extends GameModel {
             // Berechnung des Geschwindigkeitsvektors.
             setvX(getvX()+getaX()*elapsedTime);
             setvY(getvY()+getaY()*elapsedTime);
-        }  
+        }
     }
     
     /** Setter für die Startposition des Balls.
@@ -215,9 +217,17 @@ public class Ball extends GameModel {
      */
     private void setFinished() {
         finish = true;
-        this.setSize(120); // Zur Anschauung
-        this.setVelocityVector(0);
+        this.setSize(50/SCALE_FACTOR);
+        this.setvX(0);
+        this.setvY(0);
+        this.setaX(0);
+        this.setaY(0);
     }
+    
+//    public void setvX(final double vX) {
+//        System.out.println(this.getMaterial());
+//        super.setvX(vX);
+//    }
     
     /** Entfernt den uebergebenen Ball aus der Kollisionsliste.
      * @param that Der zu entfernende Ball.
@@ -386,7 +396,7 @@ public class Ball extends GameModel {
         }
     }
     
-    /** Aufruf falls ein Loch kollidiert werden soll.
+    /** Aufruf wenn ein Loch kollidiert werden soll.
      * Legt den Ball bei einer Kollision still.
      * @param that Das Loch mit dem die Kollision berechnet werden soll.
      */
@@ -395,9 +405,10 @@ public class Ball extends GameModel {
                 Math.pow(this.getPosX() - that.getPosX(), 2)
                         + Math.pow(this.getPosY() - that.getPosY(), 2));
         
-        if (distance <= this.getSize() / 2 * that.getSize() / 2) {
+        // Kugel soll in das Loch rutschen und es nicht nur beruehren.
+        if (distance <= this.getSize() / 2 * that.getSize()) {
             this.setPosX(that.getPosX());
-            this.setPosX(that.getPosY());
+            this.setPosY(that.getPosY());
             this.setFinished();
         }
     }
@@ -407,18 +418,43 @@ public class Ball extends GameModel {
      * @param time Vergangene Zeit seit dem letzten Aufruf.
      */
     private void collideBarrel(final GameModel that) {
-        double distance = Math.sqrt(
-                Math.pow(this.getPosX() - that.getPosX(), 2)
-                        + Math.pow(this.getPosY() - that.getPosY(), 2));
+//        double distance = Math.sqrt(
+//                Math.pow(this.getPosX() - that.getPosX(), 2)
+//                        + Math.pow(this.getPosY() - that.getPosY(), 2));
         
         // Wenn sich die Kreise beruehren (Distanz <= der Radien)
         // Sonst entfernen aus der Kollisionsliste
-        if (distance <= this.getSize()/2 + that.getSize()/2) {
+        if (isCircleCollision(that)) {
             // Berechnung des neuen Bewegungsvektors der Kugel (this)
-            collideCircle(this, that);
-        } else {
-            collided.remove(that);
+//            collideCircle(this, that);
+
+            System.out.println("Velo before: " + VectorCalculation.abs(this.getvX(), this.getvY()));
+            // Normalenvektor zwischen den Kugeln
+            double normX = that.getPosX() - this.getPosX();
+            double normY = that.getPosY() - this.getPosY();
+            System.err.println("arrriba.model.Ball.collideBarrel()");
+            double[] result = splitBallVelocity(this, normX, normY);
+            
+            // Zusammenbauen der neuen Geschwindigkeit mit dem um gespiegelten Transfervektor
+            double newVeloX = (-result[0]) + result[2];
+            double newVeloY = (-result[1]) + result[3];
+            
+            // Setzen der neuen Geschwindigekeit
+            this.setvX(newVeloX);
+            this.setvY(newVeloY);
+            
+            System.err.println("Velo after: " + VectorCalculation.abs(this.getvX(), this.getvY()));
+            
+            // Setzen der neuen Rotation
+            this.setRotation(Math.toDegrees(Math.atan2(newVeloY, newVeloX)));
+            
+            // Aktualisieren der Reibung
+            this.setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            this.setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
         }
+//        else {
+//            collided.remove(that);
+//        }
     }
     
     /** Aufruf falls ein Ball kollidiert werden soll.
@@ -426,17 +462,68 @@ public class Ball extends GameModel {
      * @param time Vergangene Zeit seit dem letzten Aufruf.
      */
     private void collideBall(final GameModel that) {
+        if (isCircleCollision(that)) {
+            // Normalenvektor zwischen den Kugeln
+            double normX = that.getPosX() - this.getPosX();
+            double normY = that.getPosY() - this.getPosY();
+
+//            System.err.println("arrriba.model.Ball.collideBall()");
+            double[] resultThis = splitBallVelocity(this, normX, normY);
+            double[] resultThat = splitBallVelocity(that, normX, normY);
+
+            // Komponente fuer die andere Kugel
+            double[] transferVeloAtoB = {resultThis[0], resultThis[1]};
+
+            // Komponente fuer diese Kugel
+            double[] ownVeloA = {resultThis[2], resultThis[3]};
+
+            // Komponente fuer die andere Kugel
+            double[] transferVeloBtoA = {resultThat[0] ,resultThat[1]};
+
+            // Komponente fuer diese Kugel
+            double[] ownVeloB = {resultThat[2], resultThat[3]};
+
+            // Zusammenbauen der neuen Vektoren
+
+            // Geschwindigkeit fuer this
+            double newVeloAX = ownVeloA[0] + transferVeloBtoA[0];
+            double newVeloAY = ownVeloA[1] + transferVeloBtoA[1];
+
+            // Geschwindigkeit fuer that
+            double newVeloBX = ownVeloB[0] + transferVeloAtoB[0];
+            double newVeloBY = ownVeloB[1] + transferVeloAtoB[1];
+
+            // Setzen der neuen Geschwindigkeiten
+            this.setvX(newVeloAX);
+            this.setvY(newVeloAY);
+            that.setvX(newVeloBX);
+            that.setvY(newVeloBY);
+
+            // Setzen der neuen Rotation
+            this.setRotation(Math.toDegrees(Math.atan2(newVeloAY, newVeloAX)));
+            that.setRotation(Math.toDegrees(Math.atan2(newVeloBY, newVeloBX)));
+
+            // Aktualisieren der Reibung
+            this.setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            this.setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            that.setaX((-that.getvX()/VectorCalculation.abs(that.getvX(), that.getvY()))*material.getFrictionCoefficient());
+            that.setaY((-that.getvY()/VectorCalculation.abs(that.getvX(), that.getvY()))*material.getFrictionCoefficient());
+        }
+    }
+    
+    /** Bestimmt ob die Kreise sich beruehren und aufeinander zu kommen.
+     * @param that GameModel, welches ein Rundes Objekt darstellt (Shape = Circle).
+     * @return True wenn sich die Objekte beruehren undaufeinander zu steuern.
+     */
+    private boolean isCircleCollision(final GameModel that) {
         double distance = Math.sqrt(
                 Math.pow(this.getPosX() - that.getPosX(), 2)
                         + Math.pow(this.getPosY() - that.getPosY(), 2));
         
-//            System.out.println("1. d: " + Math.pow(this.getPosX() - that.getPosX(), 2));
-//            System.out.println("2. d: " + Math.pow(this.getPosY() - that.getPosY(), 2));
         // Wenn sich die Kreise beruehren (Distanz <= der Radien)
         // Sonst entfernen aus der Kollisionsliste
+        double scalar = 1;
         if (distance <= this.getSize()/2 + that.getSize()/2) {
-//            System.out.println("Dist: " + distance);
-//            System.out.println("Radi: " + (this.getSize()/2 + that.getSize()/2));
             // Berechnung der neuen Bewegungsvektoren der Bälle
             
             // Normalenvektor zwischen den Kugeln
@@ -447,55 +534,10 @@ public class Ball extends GameModel {
             double vRelX = that.getvX() - this.getvX();
             double vRelY = that.getvY() - this.getvY();
             
-            double scalar = VectorCalculation.times(vRelX, vRelY, normX, normY);
-//            System.err.println("Scalar: " + scalar);
-            if (scalar < 0) {
-//                System.err.println("arrriba.model.Ball.collideBall()");
-                double[] resultThis = calculateBallCollisionVelocity(this, normX, normY);
-                double[] resultThat = calculateBallCollisionVelocity(that, normX, normY);
-                
-                // Komponente fuer die andere Kugel
-                double[] transferVeloAtoB = {resultThis[0], resultThis[1]};
-                
-                // Komponente fuer diese Kugel
-                double[] ownVeloA = {resultThis[2], resultThis[3]};
-                
-                // Komponente fuer die andere Kugel
-                double[] transferVeloBtoA = {resultThat[0] ,resultThat[1]};
-                
-                // Komponente fuer diese Kugel
-                double[] ownVeloB = {resultThat[2], resultThat[3]};
-                
-                // Zusammenbauen der neuen Vektoren
-                
-                // Geschwindigkeit fuer this
-                double newVeloAX = ownVeloA[0] + transferVeloBtoA[0];
-                double newVeloAY = ownVeloA[1] + transferVeloBtoA[1];
-                
-                // Geschwindigkeit fuer that
-                double newVeloBX = ownVeloB[0] + transferVeloAtoB[0];
-                double newVeloBY = ownVeloB[1] + transferVeloAtoB[1];
-                
-                // Setzen der neuen Geschwindigkeiten
-                this.setvX(newVeloAX);
-                this.setvY(newVeloAY);
-                that.setvX(newVeloBX);
-                that.setvY(newVeloBY);
-                
-                // Setzen der neuen Rotation
-                this.setRotation(Math.toDegrees(Math.atan2(newVeloAY, newVeloAX)));
-                that.setRotation(Math.toDegrees(Math.atan2(newVeloBY, newVeloBX)));
-                
-                // Aktualisieren der Reibung
-                this.setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-                this.setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-                that.setaX((-that.getvX()/VectorCalculation.abs(that.getvX(), that.getvY()))*material.getFrictionCoefficient());
-                that.setaY((-that.getvY()/VectorCalculation.abs(that.getvX(), that.getvY()))*material.getFrictionCoefficient());
-            }
-        } else {
-            collided.remove(that);
-            ((Ball) that).removeCollided(this);
+            scalar = VectorCalculation.times(vRelX, vRelY, normX, normY);
         }
+        // Wenn die Kugeln sich in einem spitzen Winkel annaehern (bis 90 Grad).
+        return scalar <= 0;
     }
     
     /** Berechnet die Komponenten des Geschwindigkeitsvektors von viewpoint.
@@ -504,16 +546,16 @@ public class Ball extends GameModel {
      * @param normY Normalenvektor zwischen den Kugeln (y).
      * @return Transferkomponente an die andere Kugel, eigene Komponente (tX, tY, eX, eY).
      */
-    private double[] calculateBallCollisionVelocity(final GameModel viewpoint, final double normX, final double normY) {
+    private double[] splitBallVelocity(final GameModel viewpoint, final double normX, final double normY) {
         // Winkel zwischen x-Achse und Geschwindigkeitsvektor
         double phi = Math.atan2(viewpoint.getvY(), viewpoint.getvX());
 
         // Drehen des Normalenvektors
-        double rotNormX = Math.cos(phi) * normX - Math.sin(phi) * normX;
-        double rotNormY = Math.sin(phi) * normY + Math.cos(phi) * normY;
+        double rotNormX = Math.cos(-phi) * normX - Math.sin(-phi) * normX;
+        double rotNormY = Math.sin(-phi) * normY + Math.cos(-phi) * normY;
 
         // Winkel zwischen Normalenvektor und Geschwindigkeit
-        double alpha = Math.atan2(rotNormY, rotNormX);
+        double alpha = Math.abs(Math.atan2(rotNormY, rotNormX));
 
         // dritter Winkel des Dreiecks
         double gamma = Math.PI - (Math.PI / 2) - alpha;
@@ -576,7 +618,7 @@ public class Ball extends GameModel {
             setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
             
             // Als bearbeitet listen
-            collided.add(second);
+//            collided.add(second);
         }
     }
     
@@ -806,7 +848,7 @@ public class Ball extends GameModel {
         if(delta<0){
                 delta=360+delta;
             }
-        System.out.println("alpha "+ alpha +" beta "+ beta+" gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println("alpha "+ alpha +" beta "+ beta+" gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!#!!!!!!!!!!!!!!");
         // Setzen des Rotationswinkels.
         setRotation(delta);
         // Berechnung des Cosinus und Sinus des Abprallwinkels.

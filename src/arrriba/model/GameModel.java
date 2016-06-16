@@ -15,8 +15,11 @@ import javafx.scene.shape.Shape;
  * @author fabian
  */
 public class GameModel extends Observable {
-    /** Die Position des Objekts. */
+    /** Skalierungsfaktor 100 Pixel = 0.1 Meter. */
+    protected final static double SCALE_FACTOR=1000;
+    /** Die Position des Objekts (x). */
     private double posX;
+    /** Die Position des Objekts (y). */
     private double posY;
     /** Die Rotation des Objekts. */
     private double rotation;
@@ -36,8 +39,6 @@ public class GameModel extends Observable {
     private Shape shape;
     /** Die Eckpunkte des Objekts wenn es ein Rechteck ist. */
     private double[] cornerPoints;
-    /** Skalierungsfaktor 100 Pixel = 0.1 Meter. */
-    protected final double scaleFactor=1000;
     
     /** Getter der Position des Objekts.
      * @return Die x-Position des Objekts.
@@ -85,14 +86,14 @@ public class GameModel extends Observable {
     /** Getter für die Reibung (x).
      * @return Die x-Komponente der Reibung.
      */
-    public double getaX() {
+    protected double getaX() {
         return aX;
     }
 
     /** Getter für die Reibung (y).
      * @return Die y-Komponente der Reibung.
      */
-    public double getaY() {
+    protected double getaY() {
         return aY;
     }
 
@@ -119,17 +120,17 @@ public class GameModel extends Observable {
             // Das Rechteck.
             Rectangle r = (Rectangle) this.shape;
             // Der Mittelpunkt des Rechtecks.
-            double mX=getPosX()+r.getWidth()/scaleFactor/2;
-            double mY=getPosY()+r.getHeight()/scaleFactor/2;
+            double mX=getPosX()+r.getWidth()/SCALE_FACTOR/2;
+            double mY=getPosY()+r.getHeight()/SCALE_FACTOR/2;
             // Die Eckpunkte des Rechtecks in der Reihenfolge in der die Seiten berechnet werden.
             double[] cornerPoints={mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
                 ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()+r.getWidth()/scaleFactor-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()+r.getWidth()/scaleFactor-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()+r.getWidth()/scaleFactor-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/scaleFactor-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()+r.getWidth()/scaleFactor-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/scaleFactor-mY)*Math.cos(Math.toRadians(-getRotation())))
-                ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/scaleFactor-mY)*Math.sin(Math.toRadians(-getRotation())))
-                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/scaleFactor-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()+r.getWidth()/SCALE_FACTOR-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()+r.getWidth()/SCALE_FACTOR-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()+r.getWidth()/SCALE_FACTOR-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/SCALE_FACTOR-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()+r.getWidth()/SCALE_FACTOR-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/SCALE_FACTOR-mY)*Math.cos(Math.toRadians(-getRotation())))
+                ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/SCALE_FACTOR-mY)*Math.sin(Math.toRadians(-getRotation())))
+                ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()+r.getHeight()/SCALE_FACTOR-mY)*Math.cos(Math.toRadians(-getRotation())))
                 ,mX+((getPosX()-mX)*Math.cos(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.sin(Math.toRadians(-getRotation())))
                 ,mY+(-(getPosX()-mX)*Math.sin(Math.toRadians(-getRotation()))+(getPosY()-mY)*Math.cos(Math.toRadians(-getRotation())))};
             return cornerPoints;
@@ -145,10 +146,10 @@ public class GameModel extends Observable {
         // Skalierungsfaktor 100 Pixel = 0.1 Meter
         if (isCircle()) {
             Circle c = (Circle) this.shape;
-            c.setCenterX(posX*scaleFactor);
+            c.setCenterX(posX*SCALE_FACTOR);
         } else {
             Rectangle r = (Rectangle) this.shape;
-            r.setX(posX*scaleFactor);
+            r.setX(posX*SCALE_FACTOR);
         }
         //this.setChanged();
         //this.notifyObservers();
@@ -162,10 +163,10 @@ public class GameModel extends Observable {
         // Skalierungsfaktor 100 Pixel = 0.1 Meter
         if (isCircle()) {
             Circle c = (Circle) this.shape;
-            c.setCenterY(posY*scaleFactor);
+            c.setCenterY(posY*SCALE_FACTOR);
         } else {
             Rectangle r = (Rectangle) this.shape;
-            r.setY(posY*scaleFactor);
+            r.setY(posY*SCALE_FACTOR);
         }
         //this.hasChanged();
         //this.notifyObservers();
@@ -188,17 +189,17 @@ public class GameModel extends Observable {
         if (isCircle()) {
             // Skalierungsfaktor 100 Pixel = 0.1 Meter
             Circle c = (Circle) this.shape;
-            c.setRadius(size*scaleFactor / 2);
+            c.setRadius(size*SCALE_FACTOR / 2);
             this.size = size;
         }else if(isPuffer()){
             Rectangle r = (Rectangle) this.shape;
-            r.setWidth(size*scaleFactor*2);
-            r.setHeight(size*scaleFactor);
+            r.setWidth(size*SCALE_FACTOR*2);
+            r.setHeight(size*SCALE_FACTOR);
             this.size = size;
         }else {
             Rectangle r = (Rectangle) this.shape;
-            r.setWidth(size*scaleFactor);
-            r.setHeight(size*scaleFactor);
+            r.setWidth(size*SCALE_FACTOR);
+            r.setHeight(size*SCALE_FACTOR);
             this.size = size;
         }
         //this.setChanged();
@@ -208,28 +209,28 @@ public class GameModel extends Observable {
     /** Setter für den Geschwindigkeitsvektor.
      * @param vX X-Koordinate des Geschwindigkeitsvektors
      */
-    public void setvX(double vX) {
+    protected void setvX(double vX) {
         this.vX = vX;
     }
 
     /** Setter für den Geschwindigkeitsvektor.
      * @param vY Y-Koordinate des Geschwindigkeitsvektors
      */
-    public void setvY(double vY) {
+    protected void setvY(double vY) {
         this.vY = vY;
     }
 
     /** Setter für die Reibung (x).
      * @param aX x-Komponente der Reibung.
      */
-    public void setaX(double aX) {
+    protected void setaX(double aX) {
         this.aX = aX;
     }
 
     /** Setter für die Reibung (y).
      * @param aY y-Komponente der Reibung.
      */
-    public void setaY(double aY) {
+    protected void setaY(double aY) {
         this.aY = aY;
     }
 

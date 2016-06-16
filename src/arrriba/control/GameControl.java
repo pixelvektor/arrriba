@@ -57,7 +57,7 @@ import javafx.stage.StageStyle;
 public class GameControl implements Initializable, Observer {
     // Konstanten
     /** Anzahl der Baelle im Spiel. */
-    private static final int BALL_COUNT = 3;
+    private static final int BALL_COUNT = 2;
     
     /** CSS-Klasse fuer das aktive Shape. */
     private static final String ACTIVE = "active";
@@ -204,7 +204,9 @@ public class GameControl implements Initializable, Observer {
             }
         });
         levelStart();
-        
+
+//        debugSetup();
+
         // Erstellen des Timers fuer den Spielablauf
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -222,13 +224,13 @@ public class GameControl implements Initializable, Observer {
         loadLevel();
     }
     
+    private void debugSetup() {
+        createBalls(200, 200);
+        createHole(400, 200);
+    }
+    
     @Override
     public void update(Observable o, Object arg) {
-//        for (Ball b : balls) {
-//            if (b.isFinished()) {
-//                holes.get(balls.indexOf(b)).getShape().getStyleClass().add("finish");
-//            }
-//        }
     }
     
     /** Schliesst das Fenster und beendet das Programm.
@@ -334,17 +336,25 @@ public class GameControl implements Initializable, Observer {
      */
     @FXML
     public void onGamePlay() {
-        play = true;
+        // Alle Baelle nach vorne bringen, damit diese ueber den Loechern sind
+        for (Ball b : balls) {
+            b.getShape().toFront();
+        }
         
         // Obstacles fixieren
         for (GameModel o : obstacles) {
             o.getShape().removeEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             o.getShape().removeEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
         }
+        
+        // activeShape deaktivieren
         if (activeShape != null) {
             activeShape.getStyleClass().remove("active");
         }
         activeShape = null;
+        
+        // Aktivieren des Spiels
+        play = true;
     }
     
     /** Stoppt das Spiel, setzt die Kugeln auf die Startpositionen und reaktiviert die Obstacles.
@@ -456,7 +466,7 @@ public class GameControl implements Initializable, Observer {
             Ball b = new Ball(100,
                     x + offset * i,
                     y + (offset * i) / 2,
-                    700, 15, materials.get(i));
+                    500, 15, materials.get(i));
             b.addObserver(this);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
@@ -487,7 +497,7 @@ public class GameControl implements Initializable, Observer {
             objects.addAll(levelObstacles);
             objects.addAll(balls);
             objects.add(hole);
-
+            
             // vergangene Zeit zum letzten Bildaufruf in Sekunden (SI-Einheit)
             long actualTime = System.currentTimeMillis();
             double deltaTime = (actualTime - lastFrame) / 1000.0;
@@ -496,10 +506,13 @@ public class GameControl implements Initializable, Observer {
                 // Entfernen des Balls selbst aus der Pruefliste
                 objects.remove(b);
                 
-                b.checkCollisionBoundary(config, deltaTime);
-                for(GameModel object : objects){
-                    b.checkCollision(object, deltaTime);
+                if (!b.isFinished()) {
+                    b.checkCollisionBoundary(config, deltaTime);
+                    for(GameModel object : objects){
+                        b.checkCollision(object, deltaTime);
+                    }
                 }
+                
                 b.move(deltaTime);
             }
         }

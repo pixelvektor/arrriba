@@ -31,9 +31,9 @@ public class Spring extends GameModel {
         shape.getStyleClass().add("spring");
         this.setShape(shape);
         // Skalierungsfaktor 100 Pixel = 0.1 Meter
-        this.setPosX(posX/scaleFactor);
-        this.setPosY(posY/scaleFactor);
-        this.setSize(size/scaleFactor);
+        this.setPosX(posX/SCALE_FACTOR);
+        this.setPosY(posY/SCALE_FACTOR);
+        this.setSize(size/SCALE_FACTOR);
     }
     
     public void setActive(Boolean isActive){

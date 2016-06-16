@@ -18,7 +18,7 @@ public class NumberTextField extends TextField {
     
     /** NumberTextField.
      * Kann nur Zahlen als Double verarbeiten.
-     * Teile hiervon wurden 
+     * Der Konstruktor wurde, ausgenommen des Patterns,
      * http://stackoverflow.com/questions/31458198/how-to-restrict-textfield-so-that-it-can-contain-only-one-character-javafx
      * (Stand 22.05.2016) entnommen.
      */

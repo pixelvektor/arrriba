@@ -21,9 +21,9 @@ public class Hole extends GameModel {
         shape.getStyleClass().add("hole");
         this.setShape(shape);
         
-        this.setPosX(posX/scaleFactor);
-        this.setPosY(posY/scaleFactor);
-        this.setSize(size/scaleFactor);
+        this.setPosX(posX/SCALE_FACTOR);
+        this.setPosY(posY/SCALE_FACTOR);
+        this.setSize(size/SCALE_FACTOR);
     }
     
     /** Gibt die Groesse zurueck.
@@ -40,9 +40,10 @@ public class Hole extends GameModel {
     @Override
     public void setSize(final double size) {
         Circle c = (Circle) this.getShape();
-        c.setRadius(size * 1000 / 2);
+        c.setRadius(size * SCALE_FACTOR / 2);
         // Wenn das Loch zu klein wird, setze den eigentlichen Radius
-        this.size = size > 0.002 ? size / 4 : size / 2;
+//        this.size = size > 0.002 ? size / 4 : size / 2;
+        this.size = size;
     }
     
     /** Gibt den Typ zurueck.
