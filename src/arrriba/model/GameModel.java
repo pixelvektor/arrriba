@@ -31,7 +31,7 @@ public class GameModel extends Observable {
     private double vY;
     /** Die Reibung (x). */
     private double aX;
-    /** Die reibung (y). */
+    /** Die Reibung (y). */
     private double aY;
     /** Die Masse des Objekts. */
     private double mass;
@@ -39,8 +39,9 @@ public class GameModel extends Observable {
     private Shape shape;
     /** Die Eckpunkte des Objekts wenn es ein Rechteck ist. */
     private double[] cornerPoints;
-    
+    /** Ob die Feder schon getroffen wurde. */
     private Boolean onFirstHit=true;
+    /** Ob die Feder aktiv ist. */
     private Boolean isActive=true;
     
     /** Getter der Position des Objekts.
@@ -140,19 +141,33 @@ public class GameModel extends Observable {
         }      
         return cornerPoints;
     }
+    
+    /** Getter ob die Feder schon einmal getroffen wurde.
+     * @return Ob die Feder schon einmal getroffen wurde.
+     */
+    public Boolean getOnFirstHit(){
+        return onFirstHit;
+    }
+     
+    /** Getter ob die Feder aktiv ist.
+     * @return Ob die Feder aktiv ist.
+     */
+    public Boolean getActive(){
+        return isActive;
+    }
+    
+    /** Setter für den ersten Treffer.
+     * @param onFirstHit Ob die Feder schon einmal getroffen wurde.
+     */
     public void setOnFirstHit(Boolean onFirstHit){
         this.onFirstHit=onFirstHit;
     }
     
-    public Boolean getOnFirstHit(){
-    return onFirstHit;
-    }
-     public void setActive(Boolean isActive){
+    /** Setter für den Status des Feder.
+     * @param isActive Ob die Feder aktiv ist.
+     */
+    public void setActive(Boolean isActive){
         this.isActive=isActive;
-    }
-    
-    public Boolean getActive(){
-    return isActive;
     }
 
     /** Setter für die Positon des Objekts.
@@ -257,19 +272,23 @@ public class GameModel extends Observable {
     public void setMass(final double mass) {
         this.mass = mass;
     }
+    
+    /** Setter für den Shape des Objekts.
+     * @param shape Shape des Objekts.
+     */
     protected void setShape(final Shape shape) {
         this.shape = shape;
         this.shape.setUserData(this);
     }
     
-    /** Ob das Onjekt ein Kreis ist.
+    /** Ob das Objekt ein Kreis ist.
      * @return true, wenn das Objekt ein Kreis ist.
      */
     protected boolean isCircle() {
         return this.getShape().toString().contains("Circle");
     }
     
-    /** Ob das Onjekt ein Kugelfisch ist.
+    /** Ob das Objekt ein Kugelfisch ist.
      * @return true, wenn das Objekt ein Kugelfisch ist.
      */
     protected boolean isPuffer() {
