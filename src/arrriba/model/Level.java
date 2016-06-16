@@ -6,24 +6,24 @@
 package arrriba.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Level {
     
     /** Alle Gegenstaende auf dem Spielfeld. */
     private final ArrayList<GameModel> obstacles = new ArrayList<>();
-    /** x-Startposition der ersten Kugel. */
-    private double startPosX;
-    /** y-Startposition der ersten Kugel. */
-    private double startPosY;
     /** x-Position des Lochs. */
     private double holeX;
     /** y-Position des Lochs. */
     private double holeY;
+    /* ArrayList mit x- und y-Positionen der Kugeln beim Start. */
+    ArrayList<Double> startPos = new ArrayList<>();
     
     /** Laden des ersten Levels (Oberdeck).
      */
     public void loadOberdeck() {
         obstacles.clear();
+        startPos.clear();
         Box box = new Box(300, 550, 100);        
         obstacles.add(box);
         Box box2 = new Box(500, 250, 100);        
@@ -32,8 +32,12 @@ public class Level {
         obstacles.add(box3);
         Barrel barrel = new Barrel(900, 450, 100);
         obstacles.add(barrel);
-        startPosX=100;
-        startPosY=200;
+        startPos.add(200.0);
+        startPos.add(200.0);
+        startPos.add(100.0);
+        startPos.add(580.0);
+        startPos.add(800.0);
+        startPos.add(300.0);
         holeX=450;
         holeY=750;
     }
@@ -42,6 +46,7 @@ public class Level {
      */
     public void loadZwischendeck() {
         obstacles.clear();
+        startPos.clear();
         Box box = new Box(250, 720, 100);        
         obstacles.add(box);
         Barrel barrel = new Barrel(900, 500, 120);
@@ -50,8 +55,12 @@ public class Level {
         obstacles.add(barrel2);
         Spring spring = new Spring(250, 470, 100);
         obstacles.add(spring);
-        startPosX=450;
-        startPosY=750;
+        startPos.add(450.0);
+        startPos.add(750.0);
+        startPos.add(1000.0);
+        startPos.add(700.0);
+        startPos.add(600.0);
+        startPos.add(200.0);
         holeX=150;
         holeY=750;
     }
@@ -60,6 +69,7 @@ public class Level {
      */
     public void loadUnterdeck() {
         obstacles.clear();
+        startPos.clear();
         Box box = new Box(100,350, 100);        
         obstacles.add(box); // jedes neue objekt da adden
         Box box2 = new Box(250, 350, 100);        
@@ -72,8 +82,12 @@ public class Level {
         obstacles.add(barrel);
         Puffer puffer = new Puffer(100, 500, 100);
         obstacles.add(puffer);
-        startPosX=150; // für die Kugel
-        startPosY=750;
+        startPos.add(150.0);
+        startPos.add(750.0);
+        startPos.add(750.0);
+        startPos.add(400.0);
+        startPos.add(1100.0);
+        startPos.add(550.0);
         holeX=150; // Loch
         holeY=200;
     }
@@ -85,18 +99,11 @@ public class Level {
         return obstacles;
     }
     
-    /** Gibt die x-Startposition der ersten Kugel zurueck.
+    /** Gibt die Startpositionen der Kugeln zurueck.
      * @return x-Startposition der ersten Kugel
      */
-    public double getStartPosX(){
-        return startPosX;
-    }
-    
-    /** Gibt die y-Startposition der ersten Kugel zurueck.
-     * @return y-Startposition der ersten Kugel
-     */
-    public double getStartPosY(){
-        return startPosY;
+    public ArrayList<Double> getStartPos(){
+        return startPos;
     }
     
     /** Gibt die x-Position des Lochs zurueck.

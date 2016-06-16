@@ -40,6 +40,9 @@ public class GameModel extends Observable {
     /** Die Eckpunkte des Objekts wenn es ein Rechteck ist. */
     private double[] cornerPoints;
     
+    private Boolean onFirstHit=true;
+    private Boolean isActive=true;
+    
     /** Getter der Position des Objekts.
      * @return Die x-Position des Objekts.
      */
@@ -136,6 +139,20 @@ public class GameModel extends Observable {
             return cornerPoints;
         }      
         return cornerPoints;
+    }
+    public void setOnFirstHit(Boolean onFirstHit){
+        this.onFirstHit=onFirstHit;
+    }
+    
+    public Boolean getOnFirstHit(){
+    return onFirstHit;
+    }
+     public void setActive(Boolean isActive){
+        this.isActive=isActive;
+    }
+    
+    public Boolean getActive(){
+    return isActive;
     }
 
     /** Setter für die Positon des Objekts.
