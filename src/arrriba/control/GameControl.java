@@ -366,8 +366,7 @@ public class GameControl implements Initializable, Observer {
             o.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
         }
         
-        createBalls(level.getStartPosX(),level.getStartPosY());
-        //createBalls(startPosX,startPosY);
+        createBalls(level.getStartPos());
     }
     
     /** Stoppt das Spiel, setzt die Kugeln auf die Startpositionen und entfernt die Obstacles.
@@ -446,17 +445,15 @@ public class GameControl implements Initializable, Observer {
     }
     
     /** Erstellt die Baelle auf dem Spielfeld.
-     * @param x x-Position der Kugeln.
-     * @param y y-Position der Kugeln.
+     * @param startPos ArrayList mit x- und y-Positionen der Kugeln.
      */
-    private void createBalls(final double x, final double y) {
-        // Temp Offset
-        int offset = 120;
-        for (int i = 0; i < BALL_COUNT; i++) {
+    private void createBalls(ArrayList startPos) {
+        ArrayList<Double> startPosition = startPos;
+        for (int i = 0; i < BALL_COUNT*2; i=i+2) {
             Ball b = new Ball(100,
-                    x + offset * i,
-                    y + (offset * i) / 2,
-                    700, 15, materials.get(i));
+                    startPosition.get(i),
+                    startPosition.get(i+1),
+                    700, 15, materials.get(0));
             b.addObserver(this);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
@@ -525,7 +522,7 @@ public class GameControl implements Initializable, Observer {
             gameArea.getChildren().add(obstacle.getShape());
         }
         
-        createBalls(level.getStartPosX(), level.getStartPosY());
+        createBalls(level.getStartPos());
         createHole(level.getHoleX(),level.getHoleY());
     }
 
