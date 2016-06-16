@@ -10,16 +10,16 @@
 <?import javafx.scene.layout.*?>
 <?import arrriba.view.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="425.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arrriba.control.HelpControl">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="arrriba.control.HelpControl">
    <children>
-      <ToolBar layoutY="365.0" prefHeight="60.0" prefWidth="300.0">
+      <ToolBar layoutY="422.0" prefHeight="81.0" prefWidth="450.0">
         <items>
             <Button fx:id="okButton" mnemonicParsing="false" onAction="#onOkButton" prefHeight="27.0" prefWidth="104.0" text="Alles klar!" translateX="20.0" />
         </items>
          <padding>
-            <Insets left="77.0" />
+            <Insets left="150.0" />
          </padding>
       </ToolBar>
-      <Text layoutX="34.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." wrappingWidth="235.45140838623047" />
+      <Text layoutX="35.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ziel des Spiels ist es die auf dem Spielfeld befindlichen Kugeln in das schwarze Loch zu befördern. &#10;&#10;Dafür können verschiedene Gegenstände, welche in der Menüleiste unter dem Punkt &quot;Items&quot; zu finden sind, verwendet werden. &#10;Wird ein vom Spieler platzierter Gegenstand  duch klicken ausgewählt, können auf der rechten Seite verschiedene Einstellungen vorgenommen werden. Wird eine Kugel selektiert lässt sich außerdem das Material, aus dem sie gemacht ist, verändern. &#10;Die Kugelbewegung wird durch den unten rechts befindlichen &quot;Play&quot;-Button gestartet. Mit &quot;Retry&quot; wird die Kugel auf ihre Ausgangsposition gesetzt. &quot;Reset&quot; entfernt zusätzlich alle vom Spieler platzierten Objekte. &#10;&#10;Über den Menüpunkt &quot;Level&quot; lassen sich 3 verschiedene Herausforderungen laden." wrappingWidth="381.45140838623047" />
    </children>
 </AnchorPane>

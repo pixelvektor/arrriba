@@ -46,6 +46,11 @@
                   <MenuItem fx:id="unterdeckMI" mnemonicParsing="false" onAction="#onUnterdeckMI" text="Unterdeck" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Hilfe">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#onHelpMenuItem" text="Hilfe" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
       <ScrollPane prefViewportHeight="971.0" prefViewportWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
