@@ -57,7 +57,7 @@ import javafx.stage.StageStyle;
 public class GameControl implements Initializable, Observer {
     // Konstanten
     /** Anzahl der Baelle im Spiel. */
-    private static final int BALL_COUNT = 2;
+    private static final int BALL_COUNT = 3;
     
     /** CSS-Klasse fuer das aktive Shape. */
     private static final String ACTIVE = "active";
@@ -451,12 +451,12 @@ public class GameControl implements Initializable, Observer {
      */
     private void createBalls(final double x, final double y) {
         // Temp Offset
-        int offset = 150;
+        int offset = 120;
         for (int i = 0; i < BALL_COUNT; i++) {
             Ball b = new Ball(100,
                     x + offset * i,
                     y + (offset * i) / 2,
-                    500, 15, materials.get(i));
+                    700, 15, materials.get(i));
             b.addObserver(this);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
@@ -493,6 +493,9 @@ public class GameControl implements Initializable, Observer {
             double deltaTime = (actualTime - lastFrame) / 1000.0;
             lastFrame = actualTime;
             for (Ball b : balls) {
+                // Entfernen des Balls selbst aus der Pruefliste
+                objects.remove(b);
+                
                 b.checkCollisionBoundary(config, deltaTime);
                 for(GameModel object : objects){
                     b.checkCollision(object, deltaTime);

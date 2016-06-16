@@ -433,9 +433,13 @@ public class Ball extends GameModel {
                 Math.pow(this.getPosX() - that.getPosX(), 2)
                         + Math.pow(this.getPosY() - that.getPosY(), 2));
         
+//            System.out.println("1. d: " + Math.pow(this.getPosX() - that.getPosX(), 2));
+//            System.out.println("2. d: " + Math.pow(this.getPosY() - that.getPosY(), 2));
         // Wenn sich die Kreise beruehren (Distanz <= der Radien)
         // Sonst entfernen aus der Kollisionsliste
         if (distance <= this.getSize()/2 + that.getSize()/2) {
+//            System.out.println("Dist: " + distance);
+//            System.out.println("Radi: " + (this.getSize()/2 + that.getSize()/2));
             // Berechnung der neuen Bewegungsvektoren der Bälle
             
             // Normalenvektor zwischen den Kugeln
@@ -447,8 +451,9 @@ public class Ball extends GameModel {
             double vRelY = that.getvY() - this.getvY();
             
             double scalar = VectorCalculation.times(vRelX, vRelY, normX, normY);
-            
-            if (scalar > 0) {
+//            System.err.println("Scalar: " + scalar);
+            if (scalar < 0) {
+//                System.err.println("arrriba.model.Ball.collideBall()");
                 double[] resultThis = calculateBallCollisionVelocity(this, normX, normY);
                 double[] resultThat = calculateBallCollisionVelocity(that, normX, normY);
                 
@@ -503,7 +508,6 @@ public class Ball extends GameModel {
      * @return Transferkomponente an die andere Kugel, eigene Komponente (tX, tY, eX, eY).
      */
     private double[] calculateBallCollisionVelocity(final GameModel viewpoint, final double normX, final double normY) {
-        System.err.println("arrriba.model.Ball.calculateBallCollisionVelocity()");
         // Winkel zwischen x-Achse und Geschwindigkeitsvektor
         double phi = Math.atan2(viewpoint.getvY(), viewpoint.getvX());
 
@@ -528,8 +532,10 @@ public class Ball extends GameModel {
         // Komponente fuer diese Kugel
         double ownVeloAX = viewpoint.getvX() - transferVeloAtoBX;
         double ownVeloAY = viewpoint.getvY() - transferVeloAtoBY;
-        
+//        System.out.println("x: " + viewpoint.getvX() + " y: " + viewpoint.getvY());
         double[] returnValues = {transferVeloAtoBX, transferVeloAtoBY, ownVeloAX, ownVeloAY};
+//        System.out.println("transX: " + returnValues[0] + " transY: " + returnValues[1]
+//                          + " ownX: " + returnValues[2] + " ownY: " + returnValues[3]);
         return returnValues;
     }
     
