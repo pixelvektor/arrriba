@@ -15,7 +15,8 @@ import javafx.scene.shape.Rectangle;
  */
 public class Spring extends GameModel {
     
-    private Boolean isActive=true;
+    
+    
     
     /** Konstruktor der Feder.
      * @param posX X-Koordinate der linken oberen Ecke der Feder. 
@@ -36,13 +37,9 @@ public class Spring extends GameModel {
         this.setSize(size/scaleFactor);
     }
     
-    public void setActive(Boolean isActive){
-        this.isActive=isActive;
-    }
+   
     
-    public Boolean getActive(){
-    return isActive;
-    }
+    
     
     @Override
     public String toString() {

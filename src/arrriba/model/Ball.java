@@ -38,12 +38,7 @@ public class Ball extends GameModel {
     private double timeline;
     /** Ob das Spiel beendet ist. */
     private boolean finish = false;
-    /** Die Reibung. */
-//    private double aX=0;
-//    private double aY=0;
     
-    /** Zeitpunkt an dem der Ball eine Feder trifft. */
-    private double springHitTime=0;
     /** Geschwindigkeit nach dem Treffen der Feder. */
     private double springVel=0;
     /** Auslenkung der Feder aus der Ruhelage. */
@@ -159,7 +154,7 @@ public class Ball extends GameModel {
      */
     public void setVelocityVector(final double elapsedTime) {
         // Die insgesamt vergangene Zeit.
-        timeline += elapsedTime;
+        //timeline += elapsedTime;
         // Zu Beginn des Spiels.
         if (timeline==0+elapsedTime){
             // Berechnung des Cosinus und Sinus des Rotationswinkels des Balls.
@@ -233,10 +228,11 @@ public class Ball extends GameModel {
     public void checkCollision(final GameModel that, final double elapsedTime) {
         // Wenn das Spiel nicht beendet ist.
         // Wenn im letzten Frame keine Kollision stattgefunden hat.
-        if (!isFinished() && !justHit && allowedHitTime <= timeline) {
+        if (!isFinished()) {
+            timeline += elapsedTime;
             // Wenn im letzten Frame keine Kollision stattgefunden hat.
                 // Berechnung des Geschwindigkeitsvektors.
-                setVelocityVector(elapsedTime);
+                //setVelocityVector(elapsedTime);
                 // Je nach Objekt welches ueber that uebergeben wird.
                 String name = that.toString();
                 // Wenn der Ball immer noch von der Feder beschleunigt wird.
@@ -283,29 +279,29 @@ public class Ball extends GameModel {
      * @param that Das Rechteck.
      * @param name Typ des Rechtecks.
      */
-    private void collideBoxShapes(GameModel that,String name,double ngX,double ngY,double rot) {
+    private void collideBoxShapes(GameModel that,String name,double ngX,double ngY,double rot,double elapsedTime,double rotSpring) {
             // Berechnung des Aufprallwinkels.
             double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
             double beta= Math.toDegrees(Math.atan(ngY/ngX));
             double gamma = alpha-(2*beta);
             // Berechnung des Abprallwinkels.
-            System.out.println(rot+"rot");
+            //System.out.println(rot+"rot");
             double delta= (180-rot-gamma) % 360;
             if(delta<0){
                 delta=360+delta;
             }          
             // Wenn das Rechteck eine Feder ist.
-            if(name.equals("Spring")){
-                System.out.println("spring");
-                // Zeit bei der der Ball die Feder trifft. 
-                springHitTime=timeline;
-                // Auslenkung aus der Ruhelage.
-                s = that.getSize()/2;
+            if(name.equals("Spring")&&that.getActive()){
+                if(that.getOnFirstHit()){
                 // Die Federkonstante.
                 double D = 20;
+                // Auslenkung aus der Ruhelage.
+                s = that.getSize()/2;
                 // Geschwindigkeit nach dem Treffer.
                 springVel=Math.sqrt((D*s*s/getMass()));
-                collideSpring((Spring)that);
+                that.setOnFirstHit(false);
+                }
+                collideSpring(that,elapsedTime,rotSpring);
             // Normales Rechteck    
             }else{
                 setRotation(delta);
@@ -318,8 +314,9 @@ public class Ball extends GameModel {
                 // Neuberechnung der Reibung.
                 setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
                 setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
-            System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");                
+                            
     }
 
     /** Überprüft ob eine Kollision stattfindet und berechnet die Beschleunigung im Luftstrom.
@@ -365,7 +362,7 @@ public class Ball extends GameModel {
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
      */
     public void move(final double elapsedTime) {
-        
+        System.out.println("arrriba.model.Ball.move()");
         if (!isFinished()) {
             setVelocityVector(elapsedTime);
             // Die Position nach der Bewegung.
@@ -606,24 +603,24 @@ public class Ball extends GameModel {
                     // Wenn der Ball mit der Bande kollidiert.
                     if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
                         System.out.println(d+"distanceA");
-                        justHit=true;
-                        allowedHitTime=timeline+2*elapsedTime;
-                        collideBoxShapes(that,that.toString(),ngX,ngY,0+that.getRotation());
+//                        justHit=true;
+//                        allowedHitTime=timeline+2*elapsedTime;
+                        collideBoxShapes(that,that.toString(),ngX,ngY,0+(that.getRotation()%90),elapsedTime,270+(that.getRotation()%90));
                     }else if(d<=getSize()/2&&getPosY()>cornerPoints[c+1]&&getPosY()<cornerPoints[c+3]){
                         System.out.println(d+"distanceB");
-                        justHit=true;
-                        allowedHitTime=timeline+2*elapsedTime;
-                        collideBoxShapes(that,that.toString(),ngX,ngY,180+that.getRotation());                 
+//                        justHit=true;
+//                        allowedHitTime=timeline+2*elapsedTime;
+                        collideBoxShapes(that,that.toString(),ngX,ngY,180+(that.getRotation()%90),elapsedTime,0+(that.getRotation()%90));                 
                     }else if(d<=getSize()/2&&getPosX()<cornerPoints[c]&&getPosX()>cornerPoints[c+2]){
                         System.out.println(d+"distanceC");
-                        justHit=true;
-                        allowedHitTime=timeline+2*elapsedTime;
-                        collideBoxShapes(that,that.toString(),ngX,ngY,180+that.getRotation());
+//                        justHit=true;
+//                        allowedHitTime=timeline+2*elapsedTime;
+                        collideBoxShapes(that,that.toString(),ngX,ngY,180+(that.getRotation()%90),elapsedTime,90+(that.getRotation()%90));
                     }else if(d<=getSize()/2&&getPosY()<cornerPoints[c+1]&&getPosY()>cornerPoints[c+3]){
                         System.out.println(d+"distanceD");
-                        justHit=true;
-                        allowedHitTime=timeline+2*elapsedTime;
-                        collideBoxShapes(that,that.toString(),ngX,ngY,0+that.getRotation());
+//                        justHit=true;
+//                        allowedHitTime=timeline+2*elapsedTime;
+                        collideBoxShapes(that,that.toString(),ngX,ngY,0+(that.getRotation()%90),elapsedTime,180+(that.getRotation()%90));
                     }
                 }
             }
@@ -644,8 +641,8 @@ public class Ball extends GameModel {
                         + Math.pow(this.getPosY() - cornerPoints[c+1], 2));
         // Wenn der Abstand kleiner oder gleich dem Radius des Balls ist.
         if(distance<=getSize()/2){
-            justHit=true;
-            allowedHitTime=timeline+2*elapsedTime;
+//            justHit=true;
+//            allowedHitTime=timeline+2*elapsedTime;
             System.out.println(distance+" !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             switch (c) {
                 // Abprall obere linke Ecke.
@@ -684,18 +681,29 @@ public class Ball extends GameModel {
     
     /**Berechnung des Abprallwinkels bei einer Kollision mit einer Feder.
      */
-    private void collideSpring(Spring that) {
-                if(that.getActive()){
-                    that.setSize(that.getSize()*2);
-                    double cosSpring= Math.cos(Math.toRadians(getRotation()));
-                    double sinSpring= Math.sin(Math.toRadians(getRotation()));
+    private void collideSpring(GameModel that, double elapsedTime,double rot) {
+                if(that.getActive()){            
+                    double cosSpring= Math.cos(Math.toRadians(rot));
+                    double sinSpring= Math.sin(Math.toRadians(rot));
                     // Berechnung des Geschwindigkeitsvektors.
-                    setvX(getvX()+springVel*cosSpring);
-                    setvY(getvY()+springVel*sinSpring);
+                    setvX((VectorCalculation.abs(getvX(), getvY())+springVel)*cosSpring);
+                    setvY((VectorCalculation.abs(getvX(), getvY())+springVel)*sinSpring);
                     // Neuberechnung der Reibung.
                     setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
                     setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-                    that.setActive(false);
+                    double vX=getvX()+getaX()*elapsedTime;
+                    double vY=getvY()+getaY()*elapsedTime;
+                    double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*vX;
+                    double y = 0.5*getaY()*elapsedTime*elapsedTime+elapsedTime*vY;
+                    that.setPosX(that.getPosX()+that.getSize()/2);
+                    that.setPosY(that.getPosY()+that.getSize()/2);
+                    that.setSize(that.getSize()+VectorCalculation.abs(x,y)*2);
+                    that.setPosX(that.getPosX()-that.getSize()/2);
+                    that.setPosY(that.getPosY()-that.getSize()/2);
+
+                    if(that.getSize()>=4*s){
+                        that.setActive(false);
+                    }
                 }
                     
     }
