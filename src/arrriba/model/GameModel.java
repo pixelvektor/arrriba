@@ -5,7 +5,7 @@
  */
 package arrriba.model;
 
-import java.util.Observable;
+import arrriba.model.material.Material;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -14,7 +14,7 @@ import javafx.scene.shape.Shape;
  *
  * @author fabian
  */
-public class GameModel extends Observable {
+public class GameModel {
     /** Skalierungsfaktor 100 Pixel = 0.1 Meter. */
     protected final static double SCALE_FACTOR=1000;
     /** Die Position des Objekts (x). */
@@ -37,6 +37,8 @@ public class GameModel extends Observable {
     private double mass;
     /** Das Shape des Objekts. */
     private Shape shape;
+    /** Das Material einer Kugel. */
+    private Material material;
     /** Die Eckpunkte des Objekts wenn es ein Rechteck ist. */
     private double[] cornerPoints;
     
@@ -112,6 +114,13 @@ public class GameModel extends Observable {
      */
     public Shape getShape() {
         return shape;
+    }
+
+    /** Gibt das Material der Kugel zurueck.
+     * @return Das Material der Kugel.
+     */
+    public Material getMaterial() {
+        return material;
     }
     
     /** Verschiebt das Rechteck in den Mittelpunkt, rotiert es dort und schiebt es dann in seine Ursprungsposition und gibt die Eckpunkte zurück.
@@ -257,9 +266,20 @@ public class GameModel extends Observable {
     public void setMass(final double mass) {
         this.mass = mass;
     }
+    
+    /** Setzt das Shape des GameModel und verknuepft das Shape mit selbigem.
+     * @param shape Das zu setzende Shape.
+     */
     protected void setShape(final Shape shape) {
         this.shape = shape;
         this.shape.setUserData(this);
+    }
+
+    /** Setzt das Material der Kugel.
+     * @param material Das zu setzende Material.
+     */
+    public void setMaterial(final Material material) {
+        this.material = material;
     }
     
     /** Ob das Onjekt ein Kreis ist.

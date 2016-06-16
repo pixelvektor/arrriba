@@ -54,7 +54,7 @@ import javafx.stage.StageStyle;
  *
  * @author fabian
  */
-public class GameControl implements Initializable, Observer {
+public class GameControl implements Initializable {
     // Konstanten
     /** Anzahl der Baelle im Spiel. */
     private static final int BALL_COUNT = 2;
@@ -232,10 +232,6 @@ public class GameControl implements Initializable, Observer {
         createHole(400, 200);
     }
     
-    @Override
-    public void update(Observable o, Object arg) {
-    }
-    
     /** Schliesst das Fenster und beendet das Programm.
      */
     @FXML
@@ -252,7 +248,6 @@ public class GameControl implements Initializable, Observer {
         Barrel barrel = new Barrel(125, 165, 50);
         barrel.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
         barrel.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
-        barrel.addObserver(this);
         obstacles.add(barrel);
         gameArea.getChildren().add(barrel.getShape());
     }
@@ -265,7 +260,6 @@ public class GameControl implements Initializable, Observer {
         Box box = new Box(25, 140, 50);
         box.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
         box.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
-        box.addObserver(this);
         obstacles.add(box);
         gameArea.getChildren().add(box.getShape());
     }
@@ -278,7 +272,6 @@ public class GameControl implements Initializable, Observer {
         Puffer puffer = new Puffer(200, 165, 50);
         puffer.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
         puffer.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
-        puffer.addObserver(this);
         obstacles.add(puffer);
         gameArea.getChildren().add(puffer.getShape());
     }
@@ -291,7 +284,6 @@ public class GameControl implements Initializable, Observer {
         Spring spring = new Spring(250, 140, 50);
         spring.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
         spring.getShape().addEventHandler(MouseEvent.MOUSE_DRAGGED, shapeOnMouseDraggedEH);
-        spring.addObserver(this);
         obstacles.add(spring);
         gameArea.getChildren().add(spring.getShape());
     }
@@ -467,10 +459,8 @@ public class GameControl implements Initializable, Observer {
                     startPosition.get(i),
                     startPosition.get(i+1),
                     500, 15, materials.get(0));
-            b.addObserver(this);
             b.getShape().addEventHandler(MouseEvent.MOUSE_PRESSED, shapeOnMousePressedEH);
             balls.add(b);
-            b.addObserver(this);
             gameArea.getChildren().add(b.getShape());
         }
     }
@@ -481,7 +471,6 @@ public class GameControl implements Initializable, Observer {
      */
     private void createHole(final double x, final double y) {
         hole = new Hole(x, y, 100);
-//        hole.addObserver(this);
         hole.getShape().setEffect(new InnerShadow(50, Color.BLACK));
         gameArea.getChildren().add(hole.getShape());
     }

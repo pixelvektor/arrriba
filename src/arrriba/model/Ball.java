@@ -13,10 +13,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
-/**
- *
- * @author fabian
- */
 public class Ball extends GameModel {
     /** Startgeschwindigkeit des Balles. */
     private double velocity;
@@ -46,8 +42,6 @@ public class Ball extends GameModel {
     
     /** Speichert aktuell kollidierte Objekte, solange diese in der Naehe sind. */
     private ArrayList<GameModel> collided = new ArrayList<GameModel>();
-    /** Das Material der Kugel. */
-    private Material material;  
     
     /** Konstruktor des Balls.
      * @param size Durchmesser des Balls.
@@ -110,13 +104,6 @@ public class Ball extends GameModel {
     public double getStartY(){
         return startY;
     }
-
-    /** Getter für das Material des Balls
-     * @return Das Material des Balls
-     */
-    public Material getMaterial() {
-        return material;
-    }
     
     /** Gibt zurueck ob die Kugel im Ziel ist oder nicht.
      * @return True wenn der Ball im Ziel ist, sonst false.
@@ -164,8 +151,8 @@ public class Ball extends GameModel {
             setvX(getVelocity()*cos);
             setvY(getVelocity()*sin);
             // Berechnung der Reibung.
-            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
         }else if(VectorCalculation.abs(getvX(), getvY())<=0){
             setvX(0);
             setvY(0);
@@ -195,7 +182,7 @@ public class Ball extends GameModel {
      * @param material Das Material der Kugel.
      */
     public void setMaterial(Material material) {
-        this.material=material;
+        super.setMaterial(material);
         // Die Dichte des Materials.
         double density = material.getDensity();
         // Die Masse des Materials.
@@ -312,8 +299,8 @@ public class Ball extends GameModel {
                 setvX(VectorCalculation.abs(getvX(),getvY())*cos);
                 setvY(VectorCalculation.abs(getvX(),getvY())*sin);
                 // Neuberechnung der Reibung.
-                setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-                setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+                setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+                setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
                 System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
                             
@@ -352,8 +339,8 @@ public class Ball extends GameModel {
             setvX(getvX()+vel*cosPuf);
             setvY(getvY()+vel*sinPuf);
             // Neuberechnung der Reibung
-            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
         }
     }
     
@@ -436,8 +423,8 @@ public class Ball extends GameModel {
             this.setRotation(Math.toDegrees(Math.atan2(newVeloY, newVeloX)));
             
             // Aktualisieren der Reibung
-            this.setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-            this.setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            this.setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+            this.setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
         }
 //        else {
 //            collided.remove(that);
@@ -454,9 +441,9 @@ public class Ball extends GameModel {
             double normX = that.getPosX() - this.getPosX();
             double normY = that.getPosY() - this.getPosY();
 
-//            System.err.println("arrriba.model.Ball.collideBall()");
+            // Berechnen der Geschwindigkeitskomponenten
             double[] resultThis = splitBallVelocity(this, normX, normY);
-            double[] resultThat = splitBallVelocity(that, normX, normY);
+            double[] resultThat = splitBallVelocity(that, -normX, -normY);
 
             // Komponente fuer die andere Kugel
             double[] transferVeloAtoB = {resultThis[0], resultThis[1]};
@@ -485,16 +472,32 @@ public class Ball extends GameModel {
             this.setvY(newVeloAY);
             that.setvX(newVeloBX);
             that.setvY(newVeloBY);
+            
+            // Berechnen der neuen Rotation
+            double angleA = correctAngle(Math.atan2(newVeloAY, newVeloAX));
+            double angleB = correctAngle(Math.atan2(newVeloBY, newVeloBX));
 
             // Setzen der neuen Rotation
-            this.setRotation(Math.toDegrees(Math.atan2(newVeloAY, newVeloAX)));
-            that.setRotation(Math.toDegrees(Math.atan2(newVeloBY, newVeloBX)));
+            this.setRotation(Math.toDegrees(angleA));
+            that.setRotation(Math.toDegrees(angleB));
 
             // Aktualisieren der Reibung
-            this.setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-            this.setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-            that.setaX((-that.getvX()/VectorCalculation.abs(that.getvX(), that.getvY()))*material.getFrictionCoefficient());
-            that.setaY((-that.getvY()/VectorCalculation.abs(that.getvX(), that.getvY()))*material.getFrictionCoefficient());
+            this.setaX((-getvX() / VectorCalculation.abs(getvX(), getvY())) * getMaterial().getFrictionCoefficient());
+            this.setaY((-getvY() / VectorCalculation.abs(getvX(), getvY())) * getMaterial().getFrictionCoefficient());
+            that.setaX((-that.getvX() / VectorCalculation.abs(that.getvX(), that.getvY())) * that.getMaterial().getFrictionCoefficient());
+            that.setaY((-that.getvY() / VectorCalculation.abs(that.getvX(), that.getvY())) * that.getMaterial().getFrictionCoefficient());
+        }
+    }
+
+    /** Korrektur des Winkels auf einen Bereich von 0 .. 2*PI.
+     * @param angle zu korrigierender Winkel
+     * @return korrigierter Winkel
+     */
+    private double correctAngle(final double angle) {
+        if (angle < 0) {
+            return Math.abs(angle);
+        } else {
+            return (Math.PI * 2) - angle;
         }
     }
     
@@ -538,18 +541,21 @@ public class Ball extends GameModel {
         double phi = Math.atan2(viewpoint.getvY(), viewpoint.getvX());
 
         // Drehen des Normalenvektors
-        double rotNormX = Math.cos(-phi) * normX - Math.sin(-phi) * normX;
-        double rotNormY = Math.sin(-phi) * normY + Math.cos(-phi) * normY;
+        double rotNormX = Math.cos(-phi) * normX - Math.sin(-phi) * normY;
+        double rotNormY = Math.sin(-phi) * normX + Math.cos(-phi) * normY;
 
         // Winkel zwischen Normalenvektor und Geschwindigkeit
+        // In einem Dreieck gibt es keinen negativen Winkel -> muss positiv sein
         double alpha = Math.abs(Math.atan2(rotNormY, rotNormX));
-
+        
         // dritter Winkel des Dreiecks
         double gamma = Math.PI - (Math.PI / 2) - alpha;
 
         // Betrag der ersten uebertragenen Geschwindigkeit
-        double transferVeloAtoB = (VectorCalculation.abs(viewpoint.getvX(), viewpoint.getvY()) * Math.sin(gamma)) / Math.sin(Math.PI / 2);
-        double factorTransferVeloAtoB = transferVeloAtoB / VectorCalculation.abs(normX, normY);
+        double transferVelocity = (
+                VectorCalculation.abs(viewpoint.getvX(), viewpoint.getvY()) * Math.sin(gamma))
+                / Math.sin(Math.PI / 2);
+        double factorTransferVeloAtoB = transferVelocity / VectorCalculation.abs(normX, normY);
 
         // Komponente fuer die andere Kugel
         double transferVeloAtoBX = normX * factorTransferVeloAtoB;
@@ -558,10 +564,9 @@ public class Ball extends GameModel {
         // Komponente fuer diese Kugel
         double ownVeloAX = viewpoint.getvX() - transferVeloAtoBX;
         double ownVeloAY = viewpoint.getvY() - transferVeloAtoBY;
-//        System.out.println("x: " + viewpoint.getvX() + " y: " + viewpoint.getvY());
+        
         double[] returnValues = {transferVeloAtoBX, transferVeloAtoBY, ownVeloAX, ownVeloAY};
-//        System.out.println("transX: " + returnValues[0] + " transY: " + returnValues[1]
-//                          + " ownX: " + returnValues[2] + " ownY: " + returnValues[3]);
+        
         return returnValues;
     }
     
@@ -601,8 +606,8 @@ public class Ball extends GameModel {
             setvY(VectorCalculation.abs(getvX(), getvY()) * Math.sin(newPhi));
             
             // Aktualisieren der Reibung
-            setaY((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            setaY((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
             
             // Als bearbeitet listen
 //            collided.add(second);
@@ -704,8 +709,8 @@ public class Ball extends GameModel {
             setvX(VectorCalculation.abs(getvX(),getvY())*cos);
             setvY(VectorCalculation.abs(getvX(),getvY())*sin);
             // Neuberechnung der Reibung.
-            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
             return true;
         }
         return false;
@@ -721,8 +726,8 @@ public class Ball extends GameModel {
                     setvX((VectorCalculation.abs(getvX(), getvY())+springVel)*cosSpring);
                     setvY((VectorCalculation.abs(getvX(), getvY())+springVel)*sinSpring);
                     // Neuberechnung der Reibung.
-                    setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-                    setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+                    setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+                    setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
                     double vX=getvX()+getaX()*elapsedTime;
                     double vY=getvY()+getaY()*elapsedTime;
                     double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*vX;
@@ -856,7 +861,7 @@ public class Ball extends GameModel {
         setvX(VectorCalculation.abs(getvX(),getvY())*cos);
         setvY(VectorCalculation.abs(getvX(),getvY())*sin);
         // Neuberechning der Reibung.
-        setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
-        setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*material.getFrictionCoefficient());
+        setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+        setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
     }
 }
