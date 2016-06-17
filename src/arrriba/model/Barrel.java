@@ -9,10 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 
-/**
- *
- * @author fabian
- */
 public class Barrel extends GameModel {
     /** Konstruktor der Tonne.
      * @param posX Die X-Koordinate des Mittelpunkts der Tonne.
@@ -36,6 +32,9 @@ public class Barrel extends GameModel {
         this.setMass(10000000);
     }
     
+    /** Gibt den Typ zurueck.
+     * @return Gibt "Barrel" zurueck
+     */
     @Override
     public String toString() {
         return "Barrel";

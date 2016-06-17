@@ -5,33 +5,45 @@
  */
 package arrriba.model.material;
 
-/**
- *
- * @author fabian
- */
 public class Cork extends Material {
+    /** Name des Materials. */
     private static final String NAME = "Kork";
-    private double density = 480;
-    private double frictionCoefficient = 0.011;
-    private String texturePath = "/arrriba/view/korkkugel.png";
+    /** Dichte des Materials. */
+    private static final double DENSITY = 480;
+    /** Der Rollreibungskoeffizient des Materials. */
+    private static final double FRICTION_COEFFICIENT = 0.011;
+    /** Der Texturpfad. */
+    private static final String TEXTURE_PATH = "/arrriba/view/korkkugel.png";
 
+    /** Gibt den Namen des Materials zurueck.
+     * @return Name des Materials (Kork).
+     */
     @Override
     public String toString() {
         return NAME;
     }
     
-     @Override
+    /** Getter für die Dichte des Materials.
+     * @return Die Dichte des Materials.
+     */
+    @Override
     public double getDensity() {
-        return density;
+        return DENSITY;
     }
     
+    /** Getter für den Texturpfad.
+     * @return Der Texturpfad.
+     */
     @Override
     public String getTexturePath() {
-        return texturePath;
+        return TEXTURE_PATH;
     }
     
+    /** Getter für den Rollreibungskoeffizienten.
+     * @return Der Rollreibungskoeffizient.
+     */
     @Override
     public double getFrictionCoefficient() {
-        return frictionCoefficient;
+        return FRICTION_COEFFICIENT;
     }
 }

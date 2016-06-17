@@ -9,14 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
-/**
- *
- * @author fabian
- */
 public class Spring extends GameModel {
-    
-    
-    
     
     /** Konstruktor der Feder.
      * @param posX X-Koordinate der linken oberen Ecke der Feder. 
@@ -37,10 +30,9 @@ public class Spring extends GameModel {
         this.setSize(size/SCALE_FACTOR);
     }
     
-   
-    
-    
-    
+    /** Gibt den Typ zurueck.
+     * @return Gibt "Spring" zurueck
+     */
     @Override
     public String toString() {
         return "Spring";

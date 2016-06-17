@@ -5,33 +5,45 @@
  */
 package arrriba.model.material;
 
-/**
- *
- * @author fabian
- */
 public class Plastic extends Material {
+    /** Name des Materials. */
     private static final String NAME = "Kunststoff";
-    private double density = 2200;
-    private double frictionCoefficient = 0.008;
-    private String texturePath = "/arrriba/view/plastikkugel.png";
+    /** Dichte des Materials. */
+    private static final double DENSITY = 2200;
+    /** Der Rollreibungskoeffizient des Materials. */
+    private static final double FRICTION_COEFFICIENT = 0.008;
+    /** Der Texturpfad. */
+    private static final String TEXTURE_PATH = "/arrriba/view/plastikkugel.png";
     
+    /** Gibt den Namen des Materials zurueck.
+     * @return Name des Materials (Konststoff).
+     */
     @Override
     public String toString() {
         return NAME;
     }
     
-     @Override
+    /** Getter für die Dichte des Materials.
+     * @return Die Dichte des Materials.
+     */
+    @Override
     public double getDensity() {
-        return density;
+        return DENSITY;
     }
     
+    /** Getter für den Texturpfad.
+     * @return Der Texturpfad.
+     */
     @Override
     public String getTexturePath() {
-        return texturePath;
+        return TEXTURE_PATH;
     }
     
+    /** Getter für den Rollreibungskoeffizienten.
+     * @return Der Rollreibungskoeffizient.
+     */
     @Override
     public double getFrictionCoefficient() {
-        return frictionCoefficient;
+        return FRICTION_COEFFICIENT;
     }
 }

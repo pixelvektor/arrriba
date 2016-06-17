@@ -5,10 +5,6 @@
  */
 package arrriba.model.material;
 
-/**
- *
- * @author fabian
- */
 public abstract class Material {
     /** Die Dichte des Materials. */
     private double density;
