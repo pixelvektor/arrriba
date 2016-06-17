@@ -5,10 +5,6 @@
  */
 package arrriba.model;
 
-/**
- *
- * @author fabian
- */
 public class Config {
     /** Die Position der oberen Bande. */
     private final double[][] upperBoundary = {

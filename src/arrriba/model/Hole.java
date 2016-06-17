@@ -43,7 +43,7 @@ public class Hole extends GameModel {
         c.setRadius(size * SCALE_FACTOR / 2);
         // Wenn das Loch zu klein wird, setze den eigentlichen Radius
 //        this.size = size > 0.002 ? size / 4 : size / 2;
-        this.size = size;
+        this.size = size / 2;
     }
     
     /** Gibt den Typ zurueck.

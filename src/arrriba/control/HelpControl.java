@@ -12,18 +12,21 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-/**
- *
- * @author fabian
- */
 public class HelpControl implements Initializable {
+    /** Button zum bestaetigen der Hilfe. */
     @FXML
     private Button okButton;
 
+    /** Initialisiert das Hilfefenster.
+     * @param location n/a
+     * @param resources n/a
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     }
     
+    /** Schliesst das Fenster.
+     */
     @FXML
     public void onOkButton() {
         Stage stage = (Stage) okButton.getScene().getWindow();

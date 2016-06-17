@@ -10,10 +10,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
-/**
- *
- * @author fabian
- */
 public class GameModel {
     /** Skalierungsfaktor 100 Pixel = 0.1 Meter. */
     protected final static double SCALE_FACTOR=1000;

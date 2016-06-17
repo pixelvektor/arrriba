@@ -9,10 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
-/**
- *
- * @author fabian
- */
 public class Puffer extends GameModel {
     /** Konstruktor des Kugelfischs.
      * @param posX Die X-Position des Kugelfischs.
@@ -33,6 +29,9 @@ public class Puffer extends GameModel {
         this.setSize(size/SCALE_FACTOR);
     }
     
+    /** Gibt den Typ zurueck.
+     * @return Gibt "Puffer" zurueck
+     */
     @Override
     public String toString() {
         return "Puffer";

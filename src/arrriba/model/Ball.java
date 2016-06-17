@@ -16,13 +16,15 @@ import javafx.scene.shape.Circle;
 public class Ball extends GameModel {
     /** Startgeschwindigkeit des Balles. */
     private double velocity;
-    /** Startposition des Balles. */
+    /** Startposition des Balles (x). */
     private double startX;
+    /** Startposition des Balles (y). */
     private double startY;
     
-    
-    /** Cosinus und Sinus. */
+
+    /** Cosinus. */
     private double cos;
+    /** Sinus. */
     private double sin;
 
     /** Volumen des Balls. */
@@ -97,8 +99,8 @@ public class Ball extends GameModel {
         return finish;
     }
     
-    /** Typ des Objekts.
-     * @return Der Typ des Objekts.
+    /** Gibt den Typ zurueck.
+     * @return Gibt "Ball" zurueck
      */
     @Override
     public String toString() {
@@ -373,7 +375,7 @@ public class Ball extends GameModel {
                         + Math.pow(this.getPosY() - that.getPosY(), 2));
         
         // Kugel soll in das Loch rutschen und es nicht nur beruehren.
-        if (distance <= this.getSize() / 2 * that.getSize()) {
+        if (distance <= this.getSize() / 2 + that.getSize() / 2) {
             this.setPosX(that.getPosX());
             this.setPosY(that.getPosY());
             this.setFinished();
@@ -588,49 +590,49 @@ public class Ball extends GameModel {
         return returnValues;
     }
     
-    /** Berechnet den aus der Kollision zweier Kreise resultierenden Geschwindigkeitsvektor.
-     * @param first Kreis mit Bewegung.
-     * @param second Kreis mit dem kollidiert wird.
-     */
-    private void collideCircle(final GameModel first, final GameModel second) {
-        if (!collided.contains(second)) {
-            System.out.println("Ball coll");
-            // Vektor zwischen den Mittelpunkten der Kreise -> Distanzvektor
-            double distanceX = second.getPosX() - first.getPosX();
-            double distanceY = second.getPosY() - first.getPosY();
-            
-            // Winkel zwischen Distanzvektor und x-Achse
-            double phi = Math.atan2(distanceY, distanceX);
-
-            // ############################################################################################ minus phi?
-            // Rotation
-            double rotVeloX = Math.cos(phi) * first.getvX() - Math.sin(phi) * first.getvY();
-            double rotVeloY = Math.sin(phi) * first.getvX() + Math.cos(phi) * first.getvY();
-
-            // an der y-Achse spiegeln
-            rotVeloX = -rotVeloX;
-
-            // Rueckrotation des Geschwindigkeitsvektors und anpassen des y-Vektors
-            double newVeloX = Math.cos(-phi) * rotVeloX - Math.sin(-phi) * rotVeloY;
-            double newVeloY = Math.sin(-phi) * rotVeloX + Math.cos(-phi) * rotVeloY;
-            newVeloX = -newVeloX;
-            
-            // Setzen des neuen Richtungswinkels
-            double newPhi = Math.atan2(newVeloY, newVeloX);
-            first.setRotation(Math.toDegrees(newPhi));
-
-            // Setzen des neuen Geschwindkeikeitsvektors
-            setvX(VectorCalculation.abs(getvX(), getvY()) * Math.cos(newPhi));
-            setvY(VectorCalculation.abs(getvX(), getvY()) * Math.sin(newPhi));
-            
-            // Aktualisieren der Reibung
-            setaY((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-            
-            // Als bearbeitet listen
-//            collided.add(second);
-        }
-    }
+//    /** Berechnet den aus der Kollision zweier Kreise resultierenden Geschwindigkeitsvektor.
+//     * @param first Kreis mit Bewegung.
+//     * @param second Kreis mit dem kollidiert wird.
+//     */
+//    private void collideCircle(final GameModel first, final GameModel second) {
+//        if (!collided.contains(second)) {
+//            System.out.println("Ball coll");
+//            // Vektor zwischen den Mittelpunkten der Kreise -> Distanzvektor
+//            double distanceX = second.getPosX() - first.getPosX();
+//            double distanceY = second.getPosY() - first.getPosY();
+//            
+//            // Winkel zwischen Distanzvektor und x-Achse
+//            double phi = Math.atan2(distanceY, distanceX);
+//
+//            // ############################################################################################ minus phi?
+//            // Rotation
+//            double rotVeloX = Math.cos(phi) * first.getvX() - Math.sin(phi) * first.getvY();
+//            double rotVeloY = Math.sin(phi) * first.getvX() + Math.cos(phi) * first.getvY();
+//
+//            // an der y-Achse spiegeln
+//            rotVeloX = -rotVeloX;
+//
+//            // Rueckrotation des Geschwindigkeitsvektors und anpassen des y-Vektors
+//            double newVeloX = Math.cos(-phi) * rotVeloX - Math.sin(-phi) * rotVeloY;
+//            double newVeloY = Math.sin(-phi) * rotVeloX + Math.cos(-phi) * rotVeloY;
+//            newVeloX = -newVeloX;
+//            
+//            // Setzen des neuen Richtungswinkels
+//            double newPhi = Math.atan2(newVeloY, newVeloX);
+//            first.setRotation(Math.toDegrees(newPhi));
+//
+//            // Setzen des neuen Geschwindkeikeitsvektors
+//            setvX(VectorCalculation.abs(getvX(), getvY()) * Math.cos(newPhi));
+//            setvY(VectorCalculation.abs(getvX(), getvY()) * Math.sin(newPhi));
+//            
+//            // Aktualisieren der Reibung
+//            setaY((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+//            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+//            
+//            // Als bearbeitet listen
+////            collided.add(second);
+//        }
+//    }
     
     /** Prüft ob eine Kollision mit einem Rechteck vorliegt.
      * @param that Das Rechteck das überprüft wird.
@@ -729,33 +731,32 @@ public class Ball extends GameModel {
      * @param rot Die Rotation des Normalenvektors der Feder.
      */
     private void collideSpring(GameModel that, double elapsedTime,double rot) {
-                if(that.getActive()){
-                    // Cosinus und Sinus des Normalenvektors der Feder.
-                    double cosSpring= Math.cos(Math.toRadians(rot));
-                    double sinSpring= Math.sin(Math.toRadians(rot));
-                    // Berechnung des Geschwindigkeitsvektors.
-                    setvX((VectorCalculation.abs(getvX(), getvY())+springVel)*cosSpring);
-                    setvY((VectorCalculation.abs(getvX(), getvY())+springVel)*sinSpring);
-                    // Neuberechnung der Reibung.
-                    setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-                    setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-                    // Berechnung der Strecke im nächsten Schritt.
-                    double vX=getvX()+getaX()*elapsedTime;
-                    double vY=getvY()+getaY()*elapsedTime;
-                    double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*vX;
-                    double y = 0.5*getaY()*elapsedTime*elapsedTime+elapsedTime*vY;
-                    // Entspannen der Feder.
-                    that.setPosX(that.getPosX()+that.getSize()/2);
-                    that.setPosY(that.getPosY()+that.getSize()/2);
-                    that.setSize(that.getSize()+VectorCalculation.abs(x,y)*2);
-                    that.setPosX(that.getPosX()-that.getSize()/2);
-                    that.setPosY(that.getPosY()-that.getSize()/2);
-                    // Wenn der entspannte Status erreicht ist.
-                    if(that.getSize()>=4*s){
-                        that.setActive(false);
-                    }
-                }
-                    
+        if(that.getActive()){
+            // Cosinus und Sinus des Normalenvektors der Feder.
+            double cosSpring= Math.cos(Math.toRadians(rot));
+            double sinSpring= Math.sin(Math.toRadians(rot));
+            // Berechnung des Geschwindigkeitsvektors.
+            setvX((VectorCalculation.abs(getvX(), getvY())+springVel)*cosSpring);
+            setvY((VectorCalculation.abs(getvX(), getvY())+springVel)*sinSpring);
+            // Neuberechnung der Reibung.
+            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+            // Berechnung der Strecke im nächsten Schritt.
+            double vX=getvX()+getaX()*elapsedTime;
+            double vY=getvY()+getaY()*elapsedTime;
+            double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*vX;
+            double y = 0.5*getaY()*elapsedTime*elapsedTime+elapsedTime*vY;
+            // Entspannen der Feder.
+            that.setPosX(that.getPosX()+that.getSize()/2);
+            that.setPosY(that.getPosY()+that.getSize()/2);
+            that.setSize(that.getSize()+VectorCalculation.abs(x,y)*2);
+            that.setPosX(that.getPosX()-that.getSize()/2);
+            that.setPosY(that.getPosY()-that.getSize()/2);
+            // Wenn der entspannte Status erreicht ist.
+            if(that.getSize()>=4*s){
+                that.setActive(false);
+            }
+        }
     }
 
     /** Überprüft ob der Ball mit den Banden kollidiert.

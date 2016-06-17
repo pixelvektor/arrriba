@@ -12,12 +12,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- *
- * @author fabian
- */
 public class Arrriba extends Application {
     
+    /** Startet das Spiel mit dem Hauptfenster.
+     * @param stage Stage auf der das Spiel laufen soll.
+     * @throws Exception n/a
+     */
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("view/Arrriba.fxml"));
@@ -29,8 +29,8 @@ public class Arrriba extends Application {
         stage.show();
     }
 
-    /**
-     * @param args the command line arguments
+    /** Hauptmethode.
+     * @param args Uebergabeparameter werden ignoriert.
      */
     public static void main(String[] args) {
         launch(args);

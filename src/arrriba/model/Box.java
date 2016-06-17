@@ -9,10 +9,6 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
-/**
- *
- * @author fabian
- */
 public class Box extends GameModel {
     /** Der Konstruktor der Kiste.
      * @param posX Die X-Koordinate der oberen linken Ecke der Kiste.
@@ -33,6 +29,9 @@ public class Box extends GameModel {
         this.setSize(size/SCALE_FACTOR);
     }
     
+    /** Gibt den Typ zurueck.
+     * @return Gibt "Box" zurueck
+     */
     @Override
     public String toString() {
         return "Box";
