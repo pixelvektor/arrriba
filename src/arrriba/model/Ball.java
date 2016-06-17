@@ -488,7 +488,6 @@ public class Ball extends GameModel {
             double normY = -nY;
             
             scalar = VectorCalculation.times(this.getvX(), this.getvY(), normX, normY);
-                System.out.println(scalar+" scal!!!!");
             }
         // Wenn der Ball sich in einem spitzen Winkel annaehert (bis 90 Grad).
            return scalar >= 0; 

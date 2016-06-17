@@ -14,7 +14,7 @@ public class Spring extends GameModel {
     /** Konstruktor der Feder.
      * @param posX X-Koordinate der linken oberen Ecke der Feder. 
      * @param posY Y-Koordinate der linken oberen Ecke der Feder.
-     * @param size Die Größe der Feder.
+     * @param size Die Groesse der Feder.
      */
     public Spring (final double posX, final double posY, final double size) {
         // Das Shape der Feder.

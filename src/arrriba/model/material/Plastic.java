@@ -16,7 +16,7 @@ public class Plastic extends Material {
     private static final String TEXTURE_PATH = "/arrriba/view/plastikkugel.png";
     
     /** Gibt den Namen des Materials zurueck.
-     * @return Name des Materials (Konststoff).
+     * @return Name des Materials (Kunststoff).
      */
     @Override
     public String toString() {

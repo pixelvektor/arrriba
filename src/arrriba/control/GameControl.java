@@ -221,8 +221,6 @@ public class GameControl implements Initializable {
         // Starten des Levels
         levelStart();
 
-//        debugSetup();
-
         // Erstellen des Timers fuer den Spielablauf
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -233,14 +231,6 @@ public class GameControl implements Initializable {
         
         timer = new Timer(true);
         timer.schedule(timerTask, 0, FRAME_RATE);
-    }
-    
-    private void debugSetup() {
-        ArrayList<Double> startPos = new ArrayList<>();
-        startPos.add(200.0);
-        startPos.add(200.0);
-        createBalls(startPos);
-        createHole(400, 200);
     }
 
     /** Startet und laedt das erste Level.

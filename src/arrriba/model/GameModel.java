@@ -19,7 +19,7 @@ public class GameModel {
     private double posY;
     /** Die Rotation des Objekts. */
     private double rotation;
-    /** Die Größe des Objekts. */
+    /** Die Groesse des Objekts. */
     private double size;
     /** Der Geschwindigkeitsvektor des Objekts (x). */
     private double vX;
@@ -56,7 +56,7 @@ public class GameModel {
         return posY;
     }
 
-    /** Getter für die Rotation des Objekts.
+    /** Getter fuer die Rotation des Objekts.
      * @return Die Rotation des Objekts.
      */
     public double getRotation() {
@@ -71,42 +71,42 @@ public class GameModel {
         return size;
     }
 
-    /** Getter für den Geschwindigkeitsvektor des Objekts.
+    /** Getter fuer den Geschwindigkeitsvektor des Objekts.
      * @return Die X-Koordinate des Geschwindigkeitsvektors.
      */
     protected double getvX() {
         return vX;
     }
 
-    /** Getter für den Geschwindigkeitsvektor des Objekts.
+    /** Getter fuer den Geschwindigkeitsvektor des Objekts.
      * @return Die Y-Koordinate des Geschwindigkeitsvektors.
      */
     protected double getvY() {
         return vY;
     }
     
-    /** Getter für die Reibung (x).
+    /** Getter fuer die Reibung (x).
      * @return Die x-Komponente der Reibung.
      */
     protected double getaX() {
         return aX;
     }
 
-    /** Getter für die Reibung (y).
+    /** Getter fuer die Reibung (y).
      * @return Die y-Komponente der Reibung.
      */
     protected double getaY() {
         return aY;
     }
 
-    /** Getter für die Masse des Objekts. 
+    /** Getter fuer die Masse des Objekts. 
      * @return Die Masse des Objekts.
      */
     protected double getMass() {
         return mass;
     }
 
-    /** Getter für das Shape des Objekts.
+    /** Getter fuer das Shape des Objekts.
      * @return Das Shape des Objekts.
      */
     public Shape getShape() {
@@ -120,7 +120,7 @@ public class GameModel {
         return material;
     }
     
-    /** Verschiebt das Rechteck in den Mittelpunkt, rotiert es dort und schiebt es dann in seine Ursprungsposition und gibt die Eckpunkte zurück.
+    /** Verschiebt das Rechteck in den Mittelpunkt, rotiert es dort und schiebt es dann in seine Ursprungsposition und gibt die Eckpunkte zurueck.
      * @return Die Eckpunkte des Rechtecks
      */
     protected double[] getCornerPoints(){
@@ -161,21 +161,21 @@ public class GameModel {
         return isActive;
     }
     
-    /** Setter für den ersten Treffer.
+    /** Setter fuer den ersten Treffer.
      * @param onFirstHit Ob die Feder schon einmal getroffen wurde.
      */
     public void setOnFirstHit(Boolean onFirstHit){
         this.onFirstHit=onFirstHit;
     }
     
-    /** Setter für den Status des Feder.
+    /** Setter fuer den Status des Feder.
      * @param isActive Ob die Feder aktiv ist.
      */
     public void setActive(Boolean isActive){
         this.isActive=isActive;
     }
 
-    /** Setter für die Positon des Objekts.
+    /** Setter fuer die Positon des Objekts.
      * @param posX Die X-Position des Objekts.
      */
     public void setPosX(final double posX) {
@@ -188,11 +188,9 @@ public class GameModel {
             Rectangle r = (Rectangle) this.shape;
             r.setX(posX*SCALE_FACTOR);
         }
-        //this.setChanged();
-        //this.notifyObservers();
     }
 
-    /** Setter für die Positon des Objekts.
+    /** Setter fuer die Positon des Objekts.
      * @param posY Die Y-Position des Objekts.
      */
     public void setPosY(final double posY) {
@@ -205,22 +203,18 @@ public class GameModel {
             Rectangle r = (Rectangle) this.shape;
             r.setY(posY*SCALE_FACTOR);
         }
-        //this.hasChanged();
-        //this.notifyObservers();
     }
 
-    /** Setter für die Rotation des Objekts.
+    /** Setter fuer die Rotation des Objekts.
      * @param rotation Die Rotation des Objekts.
      */
     public void setRotation(final double rotation) {
         this.rotation = rotation;
         this.shape.setRotate(rotation);
-        //this.hasChanged();
-        //this.notifyObservers();
     }
 
-    /** Setter für die Größe des Objekts.
-     * @param size Die Größe des Objekts. 
+    /** Setter fuer die Groesse des Objekts.
+     * @param size Die Groesse des Objekts. 
      */
     public void setSize(final double size) {
         if (isCircle()) {
@@ -239,39 +233,37 @@ public class GameModel {
             r.setHeight(size*SCALE_FACTOR);
             this.size = size;
         }
-        //this.setChanged();
-        //this.notifyObservers();
     }
 
-    /** Setter für den Geschwindigkeitsvektor.
+    /** Setter fuer den Geschwindigkeitsvektor.
      * @param vX X-Koordinate des Geschwindigkeitsvektors
      */
     protected void setvX(double vX) {
         this.vX = vX;
     }
 
-    /** Setter für den Geschwindigkeitsvektor.
+    /** Setter fuer den Geschwindigkeitsvektor.
      * @param vY Y-Koordinate des Geschwindigkeitsvektors
      */
     protected void setvY(double vY) {
         this.vY = vY;
     }
 
-    /** Setter für die Reibung (x).
+    /** Setter fuer die Reibung (x).
      * @param aX x-Komponente der Reibung.
      */
     protected void setaX(double aX) {
         this.aX = aX;
     }
 
-    /** Setter für die Reibung (y).
+    /** Setter fuer die Reibung (y).
      * @param aY y-Komponente der Reibung.
      */
     protected void setaY(double aY) {
         this.aY = aY;
     }
 
-    /** Setter für die Masse des Objekts.
+    /** Setter fuer die Masse des Objekts.
      * @param mass Die Masse des Objekts.
      */
     public void setMass(final double mass) {

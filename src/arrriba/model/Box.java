@@ -13,7 +13,7 @@ public class Box extends GameModel {
     /** Der Konstruktor der Kiste.
      * @param posX Die X-Koordinate der oberen linken Ecke der Kiste.
      * @param posY Die Y-Koordinate der oberen linken Ecke der Kiste.
-     * @param size Die Größe der Kiste.
+     * @param size Die Groesse der Kiste.
      */
     public Box (final double posX, final double posY, final double size) {
         // Das Shape der Kiste.

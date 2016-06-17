@@ -70,7 +70,7 @@ public class Level {
         obstacles.clear();
         startPos.clear();
         Box box = new Box(100,350, 100);        
-        obstacles.add(box); // jedes neue objekt da adden
+        obstacles.add(box);
         Box box2 = new Box(250, 350, 100);        
         obstacles.add(box2);
         Box box3 = new Box(400, 350, 100);        
@@ -87,7 +87,7 @@ public class Level {
         startPos.add(400.0);
         startPos.add(1100.0);
         startPos.add(550.0);
-        holeX=150; // Loch
+        holeX=150;
         holeY=200;
     }
     

@@ -23,7 +23,7 @@ public class Cork extends Material {
         return NAME;
     }
     
-    /** Getter für die Dichte des Materials.
+    /** Getter fuer die Dichte des Materials.
      * @return Die Dichte des Materials.
      */
     @Override
@@ -31,7 +31,7 @@ public class Cork extends Material {
         return DENSITY;
     }
     
-    /** Getter für den Texturpfad.
+    /** Getter fuer den Texturpfad.
      * @return Der Texturpfad.
      */
     @Override
@@ -39,7 +39,7 @@ public class Cork extends Material {
         return TEXTURE_PATH;
     }
     
-    /** Getter für den Rollreibungskoeffizienten.
+    /** Getter fuer den Rollreibungskoeffizienten.
      * @return Der Rollreibungskoeffizient.
      */
     @Override

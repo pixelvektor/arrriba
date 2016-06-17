@@ -13,17 +13,17 @@ public abstract class Material {
     /** Der Texturpfad. */
     private String texturePath;
 
-    /** Getter für die Dichte des Materials.
+    /** Getter fuer die Dichte des Materials.
      * @return Die Dichte des Materials.
      */
     public abstract double getDensity();
     
-    /** Getter für den Texturpfad.
+    /** Getter fuer den Texturpfad.
      * @return Der Texturpfad.
      */
     public abstract String getTexturePath();
     
-    /** Getter für den Rollreibungskoeffizienten.
+    /** Getter fuer den Rollreibungskoeffizienten.
      * @return Der Rollreibungskoeffizient.
      */
     public abstract double getFrictionCoefficient();

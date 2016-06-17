@@ -41,8 +41,6 @@ public class Hole extends GameModel {
     public void setSize(final double size) {
         Circle c = (Circle) this.getShape();
         c.setRadius(size * SCALE_FACTOR / 2);
-        // Wenn das Loch zu klein wird, setze den eigentlichen Radius
-//        this.size = size > 0.002 ? size / 4 : size / 2;
         this.size = size / 2;
     }
     

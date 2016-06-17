@@ -13,7 +13,7 @@ public class Puffer extends GameModel {
     /** Konstruktor des Kugelfischs.
      * @param posX Die X-Position des Kugelfischs.
      * @param posY Die Y-Position des Kugelfischs.
-     * @param size Die Höhe des Kugelfischs.
+     * @param size Die Hoehe des Kugelfischs.
      */
     public Puffer (final double posX, final double posY, final double size) {
         // Das Shape des Kugelfischs. 
