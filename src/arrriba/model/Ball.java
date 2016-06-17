@@ -382,7 +382,7 @@ public class Ball extends GameModel {
                         + Math.pow(this.getPosY() - that.getPosY(), 2));
         
         // Kugel soll in das Loch rutschen und es nicht nur beruehren.
-        if (distance <= this.getSize() * that.getSize()) {
+        if (distance <= this.getSize() / 2 + that.getSize() / 2) {
             this.setPosX(that.getPosX());
             this.setPosY(that.getPosY());
             this.setFinished();
