@@ -20,10 +20,7 @@ public class Ball extends GameModel {
     private double startX;
     private double startY;
     
-    /** Ob im letzten Frame eine Kollision stattgefunden hat. */
-    private Boolean justHit=false;
-    /** Der Zeitpunkt ab dem wieder eine Kollision stattfinden kann. */
-    private double allowedHitTime=0;
+    
     /** Cosinus und Sinus. */
     private double cos;
     private double sin;
@@ -44,18 +41,6 @@ public class Ball extends GameModel {
     private ArrayList<GameModel> collided = new ArrayList<GameModel>();
     
     /** Konstruktor des Balls.
-     * @param size Durchmesser des Balls.
-     * @param posX X-Position des Balls.
-     * @param posY Y-Ppsition des Balls.
-     * @param velocity Geschwindigkeit des Balls.
-     * @param rotation Rotation des Balls.
-     */
-    public Ball(final int size, final double posX, final double posY,
-            final double velocity, final double rotation) {
-        this(size, posX, posY, velocity, rotation, new Wood());
-    }
-    
-    /** 
      * @param size Durchmesser des Balls.
      * @param posX X-Position des Balls.
      * @param posY Y-Ppsition des Balls.
@@ -266,17 +251,25 @@ public class Ball extends GameModel {
      * @param that Das Rechteck.
      * @param name Typ des Rechtecks.
      */
-    private void collideBoxShapes(GameModel that,String name,double ngX,double ngY,double rot,double elapsedTime,double rotSpring) {
+    private void collideBoxShapes(GameModel that,String name,double ngX,double ngY,double rot,double elapsedTime,double rotSpring,double d) {
             // Berechnung des Aufprallwinkels.
+            System.out.print(ngX+" "+ngY);
             double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
             double beta= Math.toDegrees(Math.atan(ngY/ngX));
             double gamma = alpha-(2*beta);
+            if(gamma<0){
+                gamma=360+gamma;
+            }
+            if(gamma<180){
+            gamma=180+gamma;
+            }
             // Berechnung des Abprallwinkels.
-            //System.out.println(rot+"rot");
+            System.out.println(rot+"rot");
             double delta= (180-rot-gamma) % 360;
-            if(delta<0){
-                delta=360+delta;
-            }          
+//            if(delta<0){
+//                delta=360+delta;
+//            }
+        
             // Wenn das Rechteck eine Feder ist.
             if(name.equals("Spring")&&that.getActive()){
                 if(that.getOnFirstHit()){
@@ -290,7 +283,7 @@ public class Ball extends GameModel {
                 }
                 collideSpring(that,elapsedTime,rotSpring);
             // Normales Rechteck    
-            }else{
+            }else if(isBoxCollision(ngX,ngY,d)){
                 setRotation(delta);
                 // Berechnung des Cosinus und Sinus des Abprallwinkels.
                 cos= Math.cos(Math.toRadians(getRotation()));
@@ -530,6 +523,31 @@ public class Ball extends GameModel {
         return scalar <= 0;
     }
     
+    /** Bestimmt ob die Kreise sich beruehren und aufeinander zu kommen.
+     * @param that GameModel, welches ein Rundes Objekt darstellt (Shape = Circle).
+     * @return True wenn sich die Objekte beruehren undaufeinander zu steuern.
+     */
+    private boolean isBoxCollision(double nX, double nY,double d) {
+        //System.out.println("arrriba.model.Ball.isBoxCollision()");
+        
+        // Wenn sich die Kreise beruehren (Distanz <= der Radien)
+        double scalar = -1;
+            if(d<=getSize()/2){
+            // Normalenvektor zwischen den Kugeln
+            double normX = -nX;
+            double normY = -nY;
+            
+            scalar = VectorCalculation.times(this.getvX(), this.getvY(), normX, normY);
+                System.out.println(scalar+" scal!!!!");
+            }
+        // Wenn die Kugeln sich in einem spitzen Winkel annaehern (bis 90 Grad).
+//        if(relation==1){
+//        return scalar >= 0;
+//        }else{
+           return scalar >= 0; 
+//        }
+    }
+    
     /** Berechnet die Komponenten des Geschwindigkeitsvektors von viewpoint.
      * @param viewpoint Kugel von der aus die Kollision betrachtet wird.
      * @param normX Normalenvektor zwischen den Kugeln (x).
@@ -641,16 +659,16 @@ public class Ball extends GameModel {
                     // Wenn der Ball mit der Seite kollidiert.
                     if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
                         System.out.println(d+"distanceA");
-                        collideBoxShapes(that,that.toString(),ngX,ngY,0+(that.getRotation()%90),elapsedTime,270+(that.getRotation()%90));
+                        collideBoxShapes(that,that.toString(),ngX,ngY,0+(that.getRotation()%90),elapsedTime,270+(that.getRotation()%90),d);
                     }else if(d<=getSize()/2&&getPosY()>cornerPoints[c+1]&&getPosY()<cornerPoints[c+3]){
                         System.out.println(d+"distanceB");
-                        collideBoxShapes(that,that.toString(),ngX,ngY,180+(that.getRotation()%90),elapsedTime,0+(that.getRotation()%90));                 
+                        collideBoxShapes(that,that.toString(),ngX,ngY,180+(that.getRotation()%90),elapsedTime,0+(that.getRotation()%90),d);                 
                     }else if(d<=getSize()/2&&getPosX()<cornerPoints[c]&&getPosX()>cornerPoints[c+2]){
                         System.out.println(d+"distanceC");
-                        collideBoxShapes(that,that.toString(),ngX,ngY,180+(that.getRotation()%90),elapsedTime,90+(that.getRotation()%90));
+                        collideBoxShapes(that,that.toString(),ngX,ngY,180+(that.getRotation()%90),elapsedTime,90+(that.getRotation()%90),d);
                     }else if(d<=getSize()/2&&getPosY()<cornerPoints[c+1]&&getPosY()>cornerPoints[c+3]){
                         System.out.println(d+"distanceD");
-                        collideBoxShapes(that,that.toString(),ngX,ngY,0+(that.getRotation()%90),elapsedTime,180+(that.getRotation()%90));
+                        collideBoxShapes(that,that.toString(),ngX,ngY,0+(that.getRotation()%90),elapsedTime,180+(that.getRotation()%90),d);
                     }
                 }
             }
@@ -749,13 +767,7 @@ public class Ball extends GameModel {
         double[][] upperBoundaries=config.getUpperBoundary();
         // Die untere Hälfte der Bande.
         double[][] lowerBoundaries=config.getLowerBoundary();
-        // Wenn der Kollisionszeitpunkt früher als die jetzige Zeit ist.
-        if(allowedHitTime<=timeline){
-            justHit=false;
-        }
         
-        // Wenn im letzten Frame keine Kollision stattgefunden hat.
-        if(!justHit&&allowedHitTime<=timeline){
             // Für die untere und obere Hälfte.
             for(int k=0;k<2;k++){
                 double[][] activeDouble;
@@ -770,60 +782,78 @@ public class Ball extends GameModel {
                     double b;
                     // Geraden aufstellen
                     if(k==0){
-                        a=activeDouble[c+1][0]-activeDouble[c][0];
-                        b=activeDouble[c+1][1]-activeDouble[c][1];
-                    }else{
                         a=activeDouble[c][0]-activeDouble[c+1][0];
                         b=activeDouble[c][1]-activeDouble[c+1][1];
+                    }else{
+                        a=activeDouble[c+1][0]-activeDouble[c][0];
+                        b=activeDouble[c+1][1]-activeDouble[c][1];
                     }
+                    System.out.println(a+" ab " + b);
                     // Normale
                     double nX=(-b);
                     double nY=(a);
+                    nX=-(nX/VectorCalculation.abs(nX, nY));
+                    nY=-(nY/VectorCalculation.abs(nX, nY));
+                    //System.out.println(nX+" nx "+nY);
                     // Abstandsberechnung.
                     double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c][0], getPosY()-activeDouble[c][1]);
                     double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
-                    // Wenn die obere Hälfte überprüft wird.
-                    if(k==0){
-                        // Wenn der Ball mit der Bande kollidiert.
-                        if(d<=getSize()/2 && getPosX()<upperBoundaries[c+1][0] && getPosX()>upperBoundaries[c][0]){
-                            collisionBoundary(d, nY, nX,upperBoundaries[c][2]);
-                            justHit=true;
-                            allowedHitTime=timeline+2*elapsedTime;
+                    //System.out.println(k+" "+d+" hier "+ c);
+                    if(isBoxCollision(nX,nY,d)){
+                        //System.out.println(nX+" nx "+nY+" ny");
+                        // Wenn die obere Hälfte überprüft wird.
+                        if(k==0){
+                            // Wenn der Ball mit der Bande kollidiert.
+                            if(d<=getSize()/2 && getPosX()<upperBoundaries[c+1][0] && getPosX()>upperBoundaries[c][0]){
+                                collisionBoundary(d, nY, nX,upperBoundaries[c][2],activeDouble[c+1][0],activeDouble[c+1][0],activeDouble[c][0],activeDouble[c][1]);
+                            }
+                        // Wenn die untere Hälfte überprüft wird.    
+                        }else{
+                            // Wenn der Ball mit der Bande kollidiert.
+                            if(d<=getSize()/2 && getPosX()<lowerBoundaries[c+1][0] && getPosX()>lowerBoundaries[c][0]){
+                                collisionBoundary(d, nY, nX,lowerBoundaries[c][2],activeDouble[c][0],activeDouble[c][1],activeDouble[c+1][0],activeDouble[c+1][0]);
+                            }
                         }
-                    // Wenn die untere Hälfte überprüft wird.    
-                    }else{
-                        // Wenn der Ball mit der Bande kollidiert.
-                        if(d<=getSize()/2 && getPosX()<lowerBoundaries[c+1][0] && getPosX()>lowerBoundaries[c][0]){
-                            collisionBoundary(d, nY, nX,lowerBoundaries[c][2]);
-                            justHit=true;
-                            allowedHitTime=timeline+2*elapsedTime;
-                        }
-                    }
                 }
             }
+                
             // Für die linke und rechte Seite der Bande.
             for(int i = 0;i<7;i=i+6){
                 // Geraden aufstellen.
-                double a=upperBoundaries[i][0]-lowerBoundaries[i][0];
-                double b=upperBoundaries[i][1]-lowerBoundaries[i][1];
+                
+                double a=lowerBoundaries[i][0]-upperBoundaries[i][0];
+                   double b=lowerBoundaries[i][1]-upperBoundaries[i][1];
+                if(i==0){
+                     a=upperBoundaries[i][0]-lowerBoundaries[i][0];
+                     b=upperBoundaries[i][1]-lowerBoundaries[i][1];
+                }
+                System.out.println(a+" ab " + b);
                 // Normale.
                 double nX=(-b);
                 double nY=(a);
+                nX=nX/VectorCalculation.abs(nX, nY);
+                nY=nY/VectorCalculation.abs(nX, nY);
                 // Abstandsberchnung
                 double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[i][0], getPosY()-upperBoundaries[i][1]);
                 double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
                 double rot;
                 if(i==0){
                     rot=180;
+                    if(isBoxCollision(nX,nY,d)){ 
+                    // Wenn der Ballmittelpunkt mit der Bande kollidiert.
+                    if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
+                        collisionBoundary(d, nY, nX, rot,lowerBoundaries[i][0],lowerBoundaries[i][1],upperBoundaries[i][0],upperBoundaries[i][1]); 
+                    }
+                }
                 }else{
                     rot=0;
+                    if(isBoxCollision(nX,nY,d)){ 
+                    // Wenn der Ballmittelpunkt mit der Bande kollidiert.
+                    if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
+                        collisionBoundary(d, nY, nX, rot,upperBoundaries[i][0],upperBoundaries[i][1],lowerBoundaries[i][0],lowerBoundaries[i][1]); 
+                    }
                 }
-                // Wenn der Ballmittelpunkt mit der Bande kollidiert.
-                if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
-                    collisionBoundary(d, nY, nX, rot); 
-                    justHit=true;
-                    allowedHitTime=timeline+2*elapsedTime;
-                }
+                }               
             }
         }
     }
@@ -833,28 +863,44 @@ public class Ball extends GameModel {
      * @param nY Der Y_Wert der Normalen. 
      * @param nX Der X-Wert der Normalen.
      */
-    private void collisionBoundary(double d, double nY, double nX, double rot) {
-        System.out.println(d);
+    private void collisionBoundary(double d, double nY, double nX, double rot,double firstX,double firstY,double secX,double secY) {
+        //System.out.println(d);
         // Berechnung des Aufprallwinkels.
-        double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
-        double beta= Math.toDegrees(Math.atan(nY/nX));
-        System.out.println(nY/nX);
-        double gamma = alpha-(2*beta);
-        // Berechnung des Abprallwinkels.
-        System.out.println(rot + " rot");
-        double delta= (180-rot-gamma) % 360;
-        if(delta<0){
-                delta=360+delta;
-            }
-        System.out.println("alpha "+ alpha +" beta "+ beta+" gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!#!!!!!!!!!!!!!!");
-        // Setzen des Rotationswinkels.
-        setRotation(delta);
-        // Berechnung des Cosinus und Sinus des Abprallwinkels.
-        cos= Math.cos(Math.toRadians(getRotation()));
-        sin= Math.sin(Math.toRadians(getRotation()));
+        //double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            //double beta= Math.toDegrees(Math.atan2(nY,nX));
+            //double gamma = alpha-(2*beta);
+               double boundX=secX-firstX;
+               double boundY=secY-firstY;
+               System.out.println(boundX+" bo " +boundY);
+               double phi=Math.abs(Math.atan2(boundY, boundX));
+               double rotVeloX = Math.cos(-phi) * getvX() - Math.sin(-phi) * getvY();
+            double rotVeloY = Math.sin(-phi) * getvX() + Math.cos(-phi) * getvY();
+            rotVeloY=-rotVeloY;
+            double newRotVelX = Math.cos(phi) * rotVeloX - Math.sin(phi) * rotVeloY;
+            double newRotVelY = Math.sin(phi) * rotVeloX + Math.cos(phi) * rotVeloY;
+            
+//            double alpha=Math.toDegrees(Math.atan2(rotVeloY, rotVeloX));
+//            // Berechnung des Abprallwinkels.
+//            System.out.println(rot+"rot");
+//            double delta;
+//            if(alpha<0){
+//                delta= (180+Math.abs(rot)-alpha) % 360;
+//            }else{
+//                delta= 360+Math.abs(rot)-alpha;
+//            }
+//        if(delta<0){
+//                delta=360+delta;
+//            }
+//        System.out.println("alpha "+ alpha  + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!#!!!!!!!!!!!!!!");
+//        // Setzen des Rotationswinkels.
+//        setRotation(delta);
+//        // Berechnung des Cosinus und Sinus des Abprallwinkels.
+//        cos= Math.cos(Math.toRadians(getRotation()));
+//        sin= Math.sin(Math.toRadians(getRotation()));
         // Berechnung des Geschwindigkeitsvektors.
-        setvX(VectorCalculation.abs(getvX(),getvY())*cos);
-        setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+        setvX(newRotVelX);
+        setvY(newRotVelY);
         // Neuberechning der Reibung.
         setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
         setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
