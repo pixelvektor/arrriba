@@ -259,15 +259,16 @@ public class Ball extends GameModel {
             double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
             double beta= Math.toDegrees(Math.atan(ngY/ngX));
             double gamma = alpha-(2*beta);
-            if(gamma<0){
-                gamma=360+gamma;
-            }
-            if(gamma<180){
-            gamma=180+gamma;
-            }
+//            if(gamma<0){
+//                gamma=360+gamma;
+//            }
+//            if(gamma<180){
+//            gamma=180+gamma;
+//            }
             // Berechnung des Abprallwinkels.
-            System.out.println(rot+"rot");
-            double delta= (180-rot-gamma) % 360;
+            //System.out.println(rot+"rot");
+            double delta= (180-getRotation()-gamma) % 360;
+            //double delta= (180-rot-gamma) % 360;
 //            if(delta<0){
 //                delta=360+delta;
 //            }
