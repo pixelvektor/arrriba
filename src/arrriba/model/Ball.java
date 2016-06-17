@@ -187,13 +187,6 @@ public class Ball extends GameModel {
         this.setaY(0);
     }
     
-    /** Entfernt den uebergebenen Ball aus der Kollisionsliste.
-     * @param that Der zu entfernende Ball.
-     */
-    protected void removeCollided(final GameModel that) {
-        collided.remove(that);
-    }
-    
     /** Ueberprueft ob eine Kollision stattfindet.
      * @param that Das Objekt das ueberprueft wird.
      * @param elapsedTime Die vergangene Zeit seit dem letzten Aufruf.
@@ -216,114 +209,6 @@ public class Ball extends GameModel {
                 break;
                 // Wenn das Objekt ein Rechteck ist.
                 default: checkCollideBoxShapes(that, elapsedTime);
-            }
-        }
-    }
-
-    /** Berechnet den Abprallwinkel bei Objekten mit einer rechteckigen Boundingbox.
-     * @param that Das Rechteck.
-     * @param name Typ des Rechtecks.
-     */
-    private void collideBoxShapes(GameModel that,String name,double ngX,double ngY,double rot,double elapsedTime,double rotSpring,double d) {
-            // Berechnung des Aufprallwinkels.
-            System.out.print(ngX+" "+ngY);
-            double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
-            double beta= Math.toDegrees(Math.atan(ngY/ngX));
-            double gamma = alpha-(2*beta);
-            // Berechnung des Abprallwinkels, fehlerhaft.
-            double delta= (180-getRotation()-gamma) % 360;
-        
-            // Wenn das Rechteck eine Feder ist.
-            if(name.equals("Spring")&&that.getActive()){
-                if(that.getOnFirstHit()){
-                // Die Federkonstante.
-                double D = 20;
-                // Auslenkung aus der Ruhelage.
-                s = that.getSize()/2;
-                // Geschwindigkeit nach dem Treffer.
-                springVel=Math.sqrt((D*s*s/getMass()));
-                that.setOnFirstHit(false);
-                }
-                collideSpring(that,elapsedTime,rotSpring);
-            // Normales Rechteck    
-            }else if(isBoxCollision(ngX,ngY,d)){
-                setRotation(delta);
-                // Berechnung des Cosinus und Sinus des Abprallwinkels.
-                cos= Math.cos(Math.toRadians(getRotation()));
-                sin= Math.sin(Math.toRadians(getRotation()));
-                // Berechnung des Geschwindigkeitsvektors.
-                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
-                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
-                // Neuberechnung der Reibung.
-                setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-                setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            }
-                            
-    }
-
-    /** Ueberprueft ob eine Kollision stattfindet und berechnet die Beschleunigung im Luftstrom.
-     * @param that Der Kugelfisch
-     */
-    private void collidePuffer(GameModel that) {
-        // Die Eckpunkte des Rechtecks.
-        double[] cornerPoints=that.getCornerPoints();
-        // Die Abstaende zu den Seiten des Rechtecks.
-        ArrayList<Double> distance=new ArrayList();
-        // Fuer jede Seite.
-        for(int c=0;c<=cornerPoints.length-3;c=c+2){
-            // Geraden aufstellen
-            double a=cornerPoints[c]-cornerPoints[c+2];
-            double b=cornerPoints[c+1]-cornerPoints[c+3];
-            // Normale
-            double nX=-b;
-            double nY=a;
-            nX=(nX/VectorCalculation.abs(nX, nY));
-            nY=(nY/VectorCalculation.abs(nX, nY));
-            // Abstandsberechnung
-            double e= VectorCalculation.times(nX, nY, getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
-            distance.add(Math.round(Math.abs(e)/VectorCalculation.abs(nX, nY)*1000)/1000.0);
-        }
-        // Wenn der Ballmittelpunkt innerhalb des Rechtecks ist.
-        if(distance.get(0)+distance.get(2)==that.getSize() && distance.get(1)+distance.get(3)==(that.getSize()*2)){
-            // Berechnung des Cosinus und Sinus der Rotation des Kugelfischs. 
-            double cosPuf= Math.cos(Math.toRadians(that.getRotation()));
-            double sinPuf= Math.sin(Math.toRadians(that.getRotation()));
-            // Die Beschleunigung.
-            double a=0.1;
-            // Die Geschwindigkeit.
-            double vel=0.5*a*timeline*timeline;
-            // Berechnung des Geschwindigkeitsvektors.
-            setvX(getvX()+vel*cosPuf);
-            setvY(getvY()+vel*sinPuf);
-            // Neuberechnung der Reibung
-            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-        }
-    }
-    
-    
-    /** Bewegt die Kugel pro Zeitabschnitt weiter.
-     * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
-     */
-    public void move(final double elapsedTime) {
-        if (!isFinished()) {
-            // Die Position nach der Bewegung.
-            double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*getvX()+this.getPosX();
-            double y = 0.5*getaY()*elapsedTime*elapsedTime+elapsedTime*getvY()+this.getPosY();
-
-            // Stilllegen der Kugel sobald sie nicht mehr rollt.
-            if(Math.round(x*1000)/1000.0==Math.round(this.getPosX()*1000)/1000.0
-                    && Math.round(y*1000)/1000.0==Math.round(this.getPosY()*1000)/1000.0
-                    && timeline != 0){
-                setaX(0);
-                setaY(0);
-                setvX(0);
-                setvY(0);
-            }
-            else{
-            setPosX(x);
-            setPosY(y);
             }
         }
     }
@@ -430,108 +315,6 @@ public class Ball extends GameModel {
             that.setaY((-that.getvY() / VectorCalculation.abs(that.getvX(), that.getvY())) * that.getMaterial().getFrictionCoefficient());
         }
     }
-
-    /** Korrektur des Winkels auf einen Bereich von 0 .. 2*PI.
-     * @param angle zu korrigierender Winkel
-     * @return korrigierter Winkel
-     */
-    private double correctAngle(final double angle) {
-        if (angle < 0) {
-            return Math.abs(angle);
-        } else {
-            return (Math.PI * 2) - angle;
-        }
-    }
-    
-    /** Bestimmt ob die Kreise sich beruehren und aufeinander zu kommen.
-     * @param that GameModel, welches ein Rundes Objekt darstellt (Shape = Circle).
-     * @return True wenn sich die Objekte beruehren undaufeinander zu steuern.
-     */
-    private boolean isCircleCollision(final GameModel that) {
-        double distance = Math.sqrt(
-                Math.pow(this.getPosX() - that.getPosX(), 2)
-                        + Math.pow(this.getPosY() - that.getPosY(), 2));
-        
-        // Wenn sich die Kreise beruehren (Distanz <= der Radien)
-        // Sonst entfernen aus der Kollisionsliste
-        double scalar = 1;
-        if (distance <= this.getSize()/2 + that.getSize()/2) {
-            // Berechnung der neuen Bewegungsvektoren der Baelle
-            
-            // Normalenvektor zwischen den Kugeln
-            double normX = that.getPosX() - this.getPosX();
-            double normY = that.getPosY() - this.getPosY();
-            
-            // Relative Geschwindigkeit von this zu that
-            double vRelX = that.getvX() - this.getvX();
-            double vRelY = that.getvY() - this.getvY();
-            
-            scalar = VectorCalculation.times(vRelX, vRelY, normX, normY);
-        }
-        // Wenn die Kugeln sich in einem spitzen Winkel annaehern (bis 90 Grad).
-        return scalar <= 0;
-    }
-    
-    /** Bestimmt ob der Ball sich auf die Seite zubewegt.
-     * @param nX Normalenvektor der Seite(x).
-     * @param nY Normalenvektor der Seite(y)
-     * @param d Abstand Ballmittelpunkt-Seite.
-     * @return True wenn sich die Objekte beruehren undaufeinander zu steuern.
-     */
-    private boolean isBoxCollision(double nX, double nY,double d) {
-        
-        // Wenn der Ball die Seite berueht (Distanz <= der Radius).
-        double scalar = -1;
-            if(d<=getSize()/2){
-            // Negativer Normalenvektor.
-            double normX = -nX;
-            double normY = -nY;
-            
-            scalar = VectorCalculation.times(this.getvX(), this.getvY(), normX, normY);
-            }
-        // Wenn der Ball sich in einem spitzen Winkel annaehert (bis 90 Grad).
-           return scalar >= 0; 
-    }
-    
-    /** Berechnet die Komponenten des Geschwindigkeitsvektors von viewpoint.
-     * @param viewpoint Kugel von der aus die Kollision betrachtet wird.
-     * @param normX Normalenvektor zwischen den Kugeln (x).
-     * @param normY Normalenvektor zwischen den Kugeln (y).
-     * @return Transferkomponente an die andere Kugel, eigene Komponente (tX, tY, eX, eY).
-     */
-    private double[] splitBallVelocity(final GameModel viewpoint, final double normX, final double normY) {
-        // Winkel zwischen x-Achse und Geschwindigkeitsvektor
-        double phi = Math.atan2(viewpoint.getvY(), viewpoint.getvX());
-
-        // Drehen des Normalenvektors
-        double rotNormX = Math.cos(-phi) * normX - Math.sin(-phi) * normY;
-        double rotNormY = Math.sin(-phi) * normX + Math.cos(-phi) * normY;
-
-        // Winkel zwischen Normalenvektor und Geschwindigkeit
-        // In einem Dreieck gibt es keinen negativen Winkel -> muss positiv sein
-        double alpha = Math.abs(Math.atan2(rotNormY, rotNormX));
-        
-        // dritter Winkel des Dreiecks
-        double gamma = Math.PI - (Math.PI / 2) - alpha;
-
-        // Betrag der ersten uebertragenen Geschwindigkeit
-        double transferVelocity = (
-                VectorCalculation.abs(viewpoint.getvX(), viewpoint.getvY()) * Math.sin(gamma))
-                / Math.sin(Math.PI / 2);
-        double factorTransferVeloAtoB = transferVelocity / VectorCalculation.abs(normX, normY);
-
-        // Komponente fuer die andere Kugel
-        double transferVeloAtoBX = normX * factorTransferVeloAtoB;
-        double transferVeloAtoBY = normY * factorTransferVeloAtoB;
-
-        // Komponente fuer diese Kugel
-        double ownVeloAX = viewpoint.getvX() - transferVeloAtoBX;
-        double ownVeloAY = viewpoint.getvY() - transferVeloAtoBY;
-        
-        double[] returnValues = {transferVeloAtoBX, transferVeloAtoBY, ownVeloAX, ownVeloAY};
-        
-        return returnValues;
-    }
     
     /** Prueft ob eine Kollision mit einem Rechteck vorliegt.
      * @param that Das Rechteck das ueberprueft wird.
@@ -626,40 +409,48 @@ public class Ball extends GameModel {
         return false;
     }
     
-    /** Berechnung des Abprallwinkels bei einer Kollision mit einer Feder.
-     * @param that Die Feder.
-     * @param elapsedTime Die vergangene Zeit nach dem letzten Aufruf.
-     * @param rot Die Rotation des Normalenvektors der Feder.
+    /** Berechnet den Abprallwinkel bei Objekten mit einer rechteckigen Boundingbox.
+     * @param that Das Rechteck.
+     * @param name Typ des Rechtecks.
      */
-    private void collideSpring(GameModel that, double elapsedTime,double rot) {
-        if(that.getActive()){
-            // Cosinus und Sinus des Normalenvektors der Feder.
-            double cosSpring= Math.cos(Math.toRadians(rot));
-            double sinSpring= Math.sin(Math.toRadians(rot));
-            // Berechnung des Geschwindigkeitsvektors.
-            setvX((VectorCalculation.abs(getvX(), getvY())+springVel)*cosSpring);
-            setvY((VectorCalculation.abs(getvX(), getvY())+springVel)*sinSpring);
-            // Neuberechnung der Reibung.
-            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-            // Berechnung der Strecke im naechsten Schritt.
-            double vX=getvX()+getaX()*elapsedTime;
-            double vY=getvY()+getaY()*elapsedTime;
-            double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*vX;
-            double y = 0.5*getaY()*elapsedTime*elapsedTime+elapsedTime*vY;
-            // Entspannen der Feder.
-            that.setPosX(that.getPosX()+that.getSize()/2);
-            that.setPosY(that.getPosY()+that.getSize()/2);
-            that.setSize(that.getSize()+VectorCalculation.abs(x,y)*2);
-            that.setPosX(that.getPosX()-that.getSize()/2);
-            that.setPosY(that.getPosY()-that.getSize()/2);
-            // Wenn der entspannte Status erreicht ist.
-            if(that.getSize()>=4*s){
-                that.setActive(false);
+    private void collideBoxShapes(GameModel that,String name,double ngX,double ngY,double rot,double elapsedTime,double rotSpring,double d) {
+            // Berechnung des Aufprallwinkels.
+            System.out.print(ngX+" "+ngY);
+            double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
+            double beta= Math.toDegrees(Math.atan(ngY/ngX));
+            double gamma = alpha-(2*beta);
+            // Berechnung des Abprallwinkels, fehlerhaft.
+            double delta= (180-getRotation()-gamma) % 360;
+        
+            // Wenn das Rechteck eine Feder ist.
+            if(name.equals("Spring")&&that.getActive()){
+                if(that.getOnFirstHit()){
+                // Die Federkonstante.
+                double D = 20;
+                // Auslenkung aus der Ruhelage.
+                s = that.getSize()/2;
+                // Geschwindigkeit nach dem Treffer.
+                springVel=Math.sqrt((D*s*s/getMass()));
+                that.setOnFirstHit(false);
+                }
+                collideSpring(that,elapsedTime,rotSpring);
+            // Normales Rechteck    
+            }else if(isBoxCollision(ngX,ngY,d)){
+                setRotation(delta);
+                // Berechnung des Cosinus und Sinus des Abprallwinkels.
+                cos= Math.cos(Math.toRadians(getRotation()));
+                sin= Math.sin(Math.toRadians(getRotation()));
+                // Berechnung des Geschwindigkeitsvektors.
+                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+                // Neuberechnung der Reibung.
+                setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+                setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
-        }
+                            
     }
-
+    
     /** Ueberprueft ob der Ball mit den Banden kollidiert.
      * @param config Die Bande.
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
@@ -758,6 +549,189 @@ public class Ball extends GameModel {
         
         }
     }
+    
+    /** Bestimmt ob die Kreise sich beruehren und aufeinander zu kommen.
+     * @param that GameModel, welches ein Rundes Objekt darstellt (Shape = Circle).
+     * @return True wenn sich die Objekte beruehren undaufeinander zu steuern.
+     */
+    private boolean isCircleCollision(final GameModel that) {
+        double distance = Math.sqrt(
+                Math.pow(this.getPosX() - that.getPosX(), 2)
+                        + Math.pow(this.getPosY() - that.getPosY(), 2));
+        
+        // Wenn sich die Kreise beruehren (Distanz <= der Radien)
+        // Sonst entfernen aus der Kollisionsliste
+        double scalar = 1;
+        if (distance <= this.getSize()/2 + that.getSize()/2) {
+            // Berechnung der neuen Bewegungsvektoren der Baelle
+            
+            // Normalenvektor zwischen den Kugeln
+            double normX = that.getPosX() - this.getPosX();
+            double normY = that.getPosY() - this.getPosY();
+            
+            // Relative Geschwindigkeit von this zu that
+            double vRelX = that.getvX() - this.getvX();
+            double vRelY = that.getvY() - this.getvY();
+            
+            scalar = VectorCalculation.times(vRelX, vRelY, normX, normY);
+        }
+        // Wenn die Kugeln sich in einem spitzen Winkel annaehern (bis 90 Grad).
+        return scalar <= 0;
+    }
+    
+    /** Bestimmt ob der Ball sich auf die Seite zubewegt.
+     * @param nX Normalenvektor der Seite(x).
+     * @param nY Normalenvektor der Seite(y)
+     * @param d Abstand Ballmittelpunkt-Seite.
+     * @return True wenn sich die Objekte beruehren undaufeinander zu steuern.
+     */
+    private boolean isBoxCollision(double nX, double nY,double d) {
+        
+        // Wenn der Ball die Seite berueht (Distanz <= der Radius).
+        double scalar = -1;
+            if(d<=getSize()/2){
+            // Negativer Normalenvektor.
+            double normX = -nX;
+            double normY = -nY;
+            
+            scalar = VectorCalculation.times(this.getvX(), this.getvY(), normX, normY);
+            }
+        // Wenn der Ball sich in einem spitzen Winkel annaehert (bis 90 Grad).
+           return scalar >= 0; 
+    }
+
+    /** Ueberprueft ob eine Kollision stattfindet und berechnet die Beschleunigung im Luftstrom.
+     * @param that Der Kugelfisch
+     */
+    private void collidePuffer(GameModel that) {
+        // Die Eckpunkte des Rechtecks.
+        double[] cornerPoints=that.getCornerPoints();
+        // Die Abstaende zu den Seiten des Rechtecks.
+        ArrayList<Double> distance=new ArrayList();
+        // Fuer jede Seite.
+        for(int c=0;c<=cornerPoints.length-3;c=c+2){
+            // Geraden aufstellen
+            double a=cornerPoints[c]-cornerPoints[c+2];
+            double b=cornerPoints[c+1]-cornerPoints[c+3];
+            // Normale
+            double nX=-b;
+            double nY=a;
+            nX=(nX/VectorCalculation.abs(nX, nY));
+            nY=(nY/VectorCalculation.abs(nX, nY));
+            // Abstandsberechnung
+            double e= VectorCalculation.times(nX, nY, getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
+            distance.add(Math.round(Math.abs(e)/VectorCalculation.abs(nX, nY)*1000)/1000.0);
+        }
+        // Wenn der Ballmittelpunkt innerhalb des Rechtecks ist.
+        if(distance.get(0)+distance.get(2)==that.getSize() && distance.get(1)+distance.get(3)==(that.getSize()*2)){
+            // Berechnung des Cosinus und Sinus der Rotation des Kugelfischs. 
+            double cosPuf= Math.cos(Math.toRadians(that.getRotation()));
+            double sinPuf= Math.sin(Math.toRadians(that.getRotation()));
+            // Die Beschleunigung.
+            double a=0.1;
+            // Die Geschwindigkeit.
+            double vel=0.5*a*timeline*timeline;
+            // Berechnung des Geschwindigkeitsvektors.
+            setvX(getvX()+vel*cosPuf);
+            setvY(getvY()+vel*sinPuf);
+            // Neuberechnung der Reibung
+            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+        }
+    }
+    
+    
+    
+
+    /** Korrektur des Winkels auf einen Bereich von 0 .. 2*PI.
+     * @param angle zu korrigierender Winkel
+     * @return korrigierter Winkel
+     */
+    private double correctAngle(final double angle) {
+        if (angle < 0) {
+            return Math.abs(angle);
+        } else {
+            return (Math.PI * 2) - angle;
+        }
+    }
+    
+    
+    /** Berechnet die Komponenten des Geschwindigkeitsvektors von viewpoint.
+     * @param viewpoint Kugel von der aus die Kollision betrachtet wird.
+     * @param normX Normalenvektor zwischen den Kugeln (x).
+     * @param normY Normalenvektor zwischen den Kugeln (y).
+     * @return Transferkomponente an die andere Kugel, eigene Komponente (tX, tY, eX, eY).
+     */
+    private double[] splitBallVelocity(final GameModel viewpoint, final double normX, final double normY) {
+        // Winkel zwischen x-Achse und Geschwindigkeitsvektor
+        double phi = Math.atan2(viewpoint.getvY(), viewpoint.getvX());
+
+        // Drehen des Normalenvektors
+        double rotNormX = Math.cos(-phi) * normX - Math.sin(-phi) * normY;
+        double rotNormY = Math.sin(-phi) * normX + Math.cos(-phi) * normY;
+
+        // Winkel zwischen Normalenvektor und Geschwindigkeit
+        // In einem Dreieck gibt es keinen negativen Winkel -> muss positiv sein
+        double alpha = Math.abs(Math.atan2(rotNormY, rotNormX));
+        
+        // dritter Winkel des Dreiecks
+        double gamma = Math.PI - (Math.PI / 2) - alpha;
+
+        // Betrag der ersten uebertragenen Geschwindigkeit
+        double transferVelocity = (
+                VectorCalculation.abs(viewpoint.getvX(), viewpoint.getvY()) * Math.sin(gamma))
+                / Math.sin(Math.PI / 2);
+        double factorTransferVeloAtoB = transferVelocity / VectorCalculation.abs(normX, normY);
+
+        // Komponente fuer die andere Kugel
+        double transferVeloAtoBX = normX * factorTransferVeloAtoB;
+        double transferVeloAtoBY = normY * factorTransferVeloAtoB;
+
+        // Komponente fuer diese Kugel
+        double ownVeloAX = viewpoint.getvX() - transferVeloAtoBX;
+        double ownVeloAY = viewpoint.getvY() - transferVeloAtoBY;
+        
+        double[] returnValues = {transferVeloAtoBX, transferVeloAtoBY, ownVeloAX, ownVeloAY};
+        
+        return returnValues;
+    }
+    
+
+    
+    /** Berechnung des Abprallwinkels bei einer Kollision mit einer Feder.
+     * @param that Die Feder.
+     * @param elapsedTime Die vergangene Zeit nach dem letzten Aufruf.
+     * @param rot Die Rotation des Normalenvektors der Feder.
+     */
+    private void collideSpring(GameModel that, double elapsedTime,double rot) {
+        if(that.getActive()){
+            // Cosinus und Sinus des Normalenvektors der Feder.
+            double cosSpring= Math.cos(Math.toRadians(rot));
+            double sinSpring= Math.sin(Math.toRadians(rot));
+            // Berechnung des Geschwindigkeitsvektors.
+            setvX((VectorCalculation.abs(getvX(), getvY())+springVel)*cosSpring);
+            setvY((VectorCalculation.abs(getvX(), getvY())+springVel)*sinSpring);
+            // Neuberechnung der Reibung.
+            setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+            setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+            // Berechnung der Strecke im naechsten Schritt.
+            double vX=getvX()+getaX()*elapsedTime;
+            double vY=getvY()+getaY()*elapsedTime;
+            double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*vX;
+            double y = 0.5*getaY()*elapsedTime*elapsedTime+elapsedTime*vY;
+            // Entspannen der Feder.
+            that.setPosX(that.getPosX()+that.getSize()/2);
+            that.setPosY(that.getPosY()+that.getSize()/2);
+            that.setSize(that.getSize()+VectorCalculation.abs(x,y)*2);
+            that.setPosX(that.getPosX()-that.getSize()/2);
+            that.setPosY(that.getPosY()-that.getSize()/2);
+            // Wenn der entspannte Status erreicht ist.
+            if(that.getSize()>=4*s){
+                that.setActive(false);
+            }
+        }
+    }
+
 
     /** Berechnet den Abprallwinkel des Balls nach Kollision mit der Bande.
      * @param d Der Abstand des Balls zum Eckpunkt.
@@ -790,5 +764,30 @@ public class Ball extends GameModel {
         // Neuberechnung der Reibung.
         setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
         setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+    }
+    
+    /** Bewegt die Kugel pro Zeitabschnitt weiter.
+     * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
+     */
+    public void move(final double elapsedTime) {
+        if (!isFinished()) {
+            // Die Position nach der Bewegung.
+            double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*getvX()+this.getPosX();
+            double y = 0.5*getaY()*elapsedTime*elapsedTime+elapsedTime*getvY()+this.getPosY();
+
+            // Stilllegen der Kugel sobald sie nicht mehr rollt.
+            if(Math.round(x*1000)/1000.0==Math.round(this.getPosX()*1000)/1000.0
+                    && Math.round(y*1000)/1000.0==Math.round(this.getPosY()*1000)/1000.0
+                    && timeline != 0){
+                setaX(0);
+                setaY(0);
+                setvX(0);
+                setvY(0);
+            }
+            else{
+            setPosX(x);
+            setPosY(y);
+            }
+        }
     }
 }
