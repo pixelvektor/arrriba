@@ -116,7 +116,7 @@ public class Ball extends GameModel {
         volume = (getSize()*getSize()*Math.PI)/4;
     }
     
-    /** Setter für die Geschwindigkeit des Balls.
+    /** Setter fuer die Geschwindigkeit des Balls.
      * @param velocity Die Geschwindigkeit des Balls.
      */
     public void setVelocity(double velocity){
@@ -143,7 +143,7 @@ public class Ball extends GameModel {
         }else if(VectorCalculation.abs(getvX(), getvY())<=0){
             setvX(0);
             setvY(0);
-        // Der normale Fall wöhrend das Spiel läuft.    
+        // Der normale Fall woehrend das Spiel laeuft.    
         }else{
             // Berechnung des Geschwindigkeitsvektors.
             setvX(getvX()+getaX()*elapsedTime);
@@ -151,21 +151,21 @@ public class Ball extends GameModel {
         }
     }
     
-    /** Setter für die Startposition des Balls.
+    /** Setter fuer die Startposition des Balls.
      * @param startX Die Startposition des Balls.
      */
     public void setStartX(final double startX) {
         this.startX = startX;
     }
     
-    /** Setter für die Startposition des Balls.
+    /** Setter fuer die Startposition des Balls.
      * @param startY Die Startposition des Balls.
      */
     public void setStartY(final double startY) {
         this.startY = startY;
     }
 
-    /** Setter für das Material der Kugel.
+    /** Setter fuer das Material der Kugel.
      * @param material Das Material der Kugel.
      */
     public void setMaterial(Material material) {
@@ -174,7 +174,7 @@ public class Ball extends GameModel {
         double density = material.getDensity();
         // Die Masse des Materials.
         setMass(density*volume);
-        // Die Textur des Balls abhängig vom Materaial. 
+        // Die Textur des Balls abhaengig vom Materaial. 
         String texturePath = material.getTexturePath();
         Image texture = new Image(texturePath);
         getShape().setFill(new ImagePattern(texture, 0, 0, 1, 1, true));
@@ -203,8 +203,8 @@ public class Ball extends GameModel {
         collided.remove(that);
     }
     
-    /** Überprüft ob eine Kollision stattfindet.
-     * @param that Das Objekt das überprüft wird.
+    /** Ueberprueft ob eine Kollision stattfindet.
+     * @param that Das Objekt das ueberprueft wird.
      * @param elapsedTime Die vergangene Zeit seit dem letzten Aufruf.
      */
     public void checkCollision(final GameModel that, final double elapsedTime) {
@@ -301,15 +301,15 @@ public class Ball extends GameModel {
                             
     }
 
-    /** Überprüft ob eine Kollision stattfindet und berechnet die Beschleunigung im Luftstrom.
+    /** Ueberprueft ob eine Kollision stattfindet und berechnet die Beschleunigung im Luftstrom.
      * @param that Der Kugelfisch
      */
     private void collidePuffer(GameModel that) {
         // Die Eckpunkte des Rechtecks.
         double[] cornerPoints=that.getCornerPoints();
-        // Die Abstände zu den Seiten des Rechtecks.
+        // Die Abstaende zu den Seiten des Rechtecks.
         ArrayList<Double> distance=new ArrayList();
-        // Für jede Seite.
+        // Fuer jede Seite.
         for(int c=0;c<=cornerPoints.length-3;c=c+2){
             // Geraden aufstellen
             double a=cornerPoints[c]-cornerPoints[c+2];
@@ -509,7 +509,7 @@ public class Ball extends GameModel {
         // Sonst entfernen aus der Kollisionsliste
         double scalar = 1;
         if (distance <= this.getSize()/2 + that.getSize()/2) {
-            // Berechnung der neuen Bewegungsvektoren der Bälle
+            // Berechnung der neuen Bewegungsvektoren der Baelle
             
             // Normalenvektor zwischen den Kugeln
             double normX = that.getPosX() - this.getPosX();
@@ -634,8 +634,8 @@ public class Ball extends GameModel {
 //        }
 //    }
     
-    /** Prüft ob eine Kollision mit einem Rechteck vorliegt.
-     * @param that Das Rechteck das überprüft wird.
+    /** Prueft ob eine Kollision mit einem Rechteck vorliegt.
+     * @param that Das Rechteck das ueberprueft wird.
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
      */
     private void checkCollideBoxShapes(final GameModel that, double elapsedTime) {
@@ -645,7 +645,7 @@ public class Ball extends GameModel {
         }else{
             // Die Eckpunkte des Rechtecks.
             double[] cornerPoints=that.getCornerPoints();
-            // Für jede Seite des Rechtecks.
+            // Fuer jede Seite des Rechtecks.
             for(int c=0;c<=cornerPoints.length-3;c=c+2){
                 // Geraden.
                 double a=cornerPoints[c]-cornerPoints[c+2];
@@ -677,7 +677,7 @@ public class Ball extends GameModel {
         }
     }
 
-    /** Überprüft ob der Ball eine Ecke des Rechtecks trifft und berechnet danach den Abprallwinkel.
+    /** Ueberprueft ob der Ball eine Ecke des Rechtecks trifft und berechnet danach den Abprallwinkel.
      * @param cornerPoints Die Eckpunkte.
      * @param c Index des X-Wertes des Eckpunkts.
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
@@ -741,7 +741,7 @@ public class Ball extends GameModel {
             // Neuberechnung der Reibung.
             setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
             setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-            // Berechnung der Strecke im nächsten Schritt.
+            // Berechnung der Strecke im naechsten Schritt.
             double vX=getvX()+getaX()*elapsedTime;
             double vY=getvY()+getaY()*elapsedTime;
             double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*vX;
@@ -759,102 +759,107 @@ public class Ball extends GameModel {
         }
     }
 
-    /** Überprüft ob der Ball mit den Banden kollidiert.
+    /** Ueberprueft ob der Ball mit den Banden kollidiert.
      * @param config Die Bande.
      * @param elapsedTime Vergangene Zeit seit dem letzten Aufruf.
      */
     public void checkCollisionBoundary(Config config , double elapsedTime) {
-        // Die obere Hälfte der Bande.
+        // Die obere Haelfte der Bande.
         double[][] upperBoundaries=config.getUpperBoundary();
-        // Die untere Hälfte der Bande.
+        // Die untere Haelfte der Bande.
         double[][] lowerBoundaries=config.getLowerBoundary();
         
-            // Für die untere und obere Hälfte.
-            for(int k=0;k<2;k++){
-                double[][] activeDouble;
-                if(k==0){
-                    activeDouble=upperBoundaries;
-                }else{
-                    activeDouble=lowerBoundaries;
-                }              
-                // Für jede Gerade
-                for(int c=0;c<activeDouble.length-1;c++){
-                    double a;
-                    double b;
-                    // Geraden aufstellen
-                    if(k==0){
-                        a=activeDouble[c][0]-activeDouble[c+1][0];
-                        b=activeDouble[c][1]-activeDouble[c+1][1];
-                    }else{
-                        a=activeDouble[c+1][0]-activeDouble[c][0];
-                        b=activeDouble[c+1][1]-activeDouble[c][1];
-                    }
-                    System.out.println(a+" ab " + b);
-                    // Normale
-                    double nX=(-b);
-                    double nY=(a);
-                    nX=-(nX/VectorCalculation.abs(nX, nY));
-                    nY=-(nY/VectorCalculation.abs(nX, nY));
-                    //System.out.println(nX+" nx "+nY);
-                    // Abstandsberechnung.
-                    double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c][0], getPosY()-activeDouble[c][1]);
-                    double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
-                    //System.out.println(k+" "+d+" hier "+ c);
-                    if(isBoxCollision(nX,nY,d)){
-                        //System.out.println(nX+" nx "+nY+" ny");
-                        // Wenn die obere Hälfte überprüft wird.
-                        if(k==0){
-                            // Wenn der Ball mit der Bande kollidiert.
-                            if(d<=getSize()/2 && getPosX()<upperBoundaries[c+1][0] && getPosX()>upperBoundaries[c][0]){
-                                collisionBoundary(d, nY, nX,upperBoundaries[c][2],activeDouble[c+1][0],activeDouble[c+1][0],activeDouble[c][0],activeDouble[c][1]);
-                            }
-                        // Wenn die untere Hälfte überprüft wird.    
-                        }else{
-                            // Wenn der Ball mit der Bande kollidiert.
-                            if(d<=getSize()/2 && getPosX()<lowerBoundaries[c+1][0] && getPosX()>lowerBoundaries[c][0]){
-                                collisionBoundary(d, nY, nX,lowerBoundaries[c][2],activeDouble[c][0],activeDouble[c][1],activeDouble[c+1][0],activeDouble[c+1][0]);
-                            }
-                        }
-                }
+        // Fuer die untere und obere Haelfte.
+        for(int k=0;k<2;k++){
+            double[][] activeDouble;
+            if(k==0){
+                activeDouble=upperBoundaries;
+            }else{
+                activeDouble=lowerBoundaries;
             }
-                
-            // Für die linke und rechte Seite der Bande.
-            for(int i = 0;i<7;i=i+6){
-                // Geraden aufstellen.
-                
-                double a=lowerBoundaries[i][0]-upperBoundaries[i][0];
-                   double b=lowerBoundaries[i][1]-upperBoundaries[i][1];
-                if(i==0){
-                     a=upperBoundaries[i][0]-lowerBoundaries[i][0];
-                     b=upperBoundaries[i][1]-lowerBoundaries[i][1];
+            
+            // Fuer jede Gerade
+            for(int c=0;c<activeDouble.length-1;c++){
+                double a;
+                double b;
+                // Geraden aufstellen
+                if(k==0){
+                    a=activeDouble[c+1][0]-activeDouble[c][0];
+                    b=activeDouble[c+1][1]-activeDouble[c][1];
+                }else{
+                    a=activeDouble[c][0]-activeDouble[c+1][0];
+                    b=activeDouble[c][1]-activeDouble[c+1][1];
                 }
-                System.out.println(a+" ab " + b);
-                // Normale.
+//                System.out.println(a+" ab " + b);
+                // Normale
                 double nX=(-b);
                 double nY=(a);
-                nX=nX/VectorCalculation.abs(nX, nY);
-                nY=nY/VectorCalculation.abs(nX, nY);
-                // Abstandsberchnung
-                double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[i][0], getPosY()-upperBoundaries[i][1]);
+                nX=(nX/VectorCalculation.abs(nX, nY));
+                nY=(nY/VectorCalculation.abs(nX, nY));
+                //System.out.println(nX+" nx "+nY);
+                // Abstandsberechnung.
+                double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c][0], getPosY()-activeDouble[c][1]);
                 double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
-                double rot;
-                if(i==0){
-                    rot=180;
-                    if(isBoxCollision(nX,nY,d)){ 
-                    // Wenn der Ballmittelpunkt mit der Bande kollidiert.
-                    if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
-                        collisionBoundary(d, nY, nX, rot,lowerBoundaries[i][0],lowerBoundaries[i][1],upperBoundaries[i][0],upperBoundaries[i][1]); 
+                //System.out.println(k+" "+d+" hier "+ c);
+                if(isBoxCollision(nX,nY,d)){
+                    //System.out.println(nX+" nx "+nY+" ny");
+                    // Wenn die obere Haelfte ueberprueft wird.
+                    if(k==0){
+                        // Wenn der Ball mit der Bande kollidiert.
+                        if(d<=getSize()/2 && getPosX()<upperBoundaries[c+1][0] && getPosX()>upperBoundaries[c][0]){
+                            collisionBoundary(
+                                    activeDouble[c][0],activeDouble[c][1],
+                                    activeDouble[c+1][0],activeDouble[c+1][1]);
+                        }
+                    // Wenn die untere Haelfte ueberprueft wird.    
+                    }else{
+                        // Wenn der Ball mit der Bande kollidiert.
+                        if(d<=getSize()/2 && getPosX()<lowerBoundaries[c+1][0] && getPosX()>lowerBoundaries[c][0]){
+                            collisionBoundary(
+                                    activeDouble[c+1][0],activeDouble[c+1][1],
+                                    activeDouble[c][0],activeDouble[c][1]);
+                        }
                     }
+            }
+        }
+
+        // Fuer die linke und rechte Seite der Bande.
+        for(int i = 0;i<7;i=i+6){
+            // Geraden aufstellen.
+
+            double a=lowerBoundaries[i][0]-upperBoundaries[i][0];
+               double b=lowerBoundaries[i][1]-upperBoundaries[i][1];
+            if(i==0){
+                 a=upperBoundaries[i][0]-lowerBoundaries[i][0];
+                 b=upperBoundaries[i][1]-lowerBoundaries[i][1];
+            }
+//            System.out.println(a+" ab " + b);
+            // Normale.
+            double nX=(-b);
+            double nY=(a);
+            nX=nX/VectorCalculation.abs(nX, nY);
+            nY=nY/VectorCalculation.abs(nX, nY);
+            // Abstandsberchnung
+            double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[i][0], getPosY()-upperBoundaries[i][1]);
+            double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
+            double rot;
+            if(i==0){
+                rot=180;
+                if(isBoxCollision(nX,nY,d)){ 
+                // Wenn der Ballmittelpunkt mit der Bande kollidiert.
+                if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
+                    collisionBoundary(lowerBoundaries[i][0],lowerBoundaries[i][1],upperBoundaries[i][0],upperBoundaries[i][1]); 
                 }
-                }else{
-                    rot=0;
-                    if(isBoxCollision(nX,nY,d)){ 
-                    // Wenn der Ballmittelpunkt mit der Bande kollidiert.
-                    if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
-                        collisionBoundary(d, nY, nX, rot,upperBoundaries[i][0],upperBoundaries[i][1],lowerBoundaries[i][0],lowerBoundaries[i][1]); 
-                    }
+            }
+            }else{
+                rot=0;
+                if(isBoxCollision(nX,nY,d)){ 
+                // Wenn der Ballmittelpunkt mit der Bande kollidiert.
+                if(d<=getSize()/2 && getPosY()<lowerBoundaries[i][1] && getPosY()>upperBoundaries[i][1]){
+                    collisionBoundary(upperBoundaries[i][0],upperBoundaries[i][1],lowerBoundaries[i][0],lowerBoundaries[i][1]); 
                 }
-                }               
+            }
+            }
             }
         }
     }
@@ -864,22 +869,34 @@ public class Ball extends GameModel {
      * @param nY Der Y_Wert der Normalen. 
      * @param nX Der X-Wert der Normalen.
      */
-    private void collisionBoundary(double d, double nY, double nX, double rot,double firstX,double firstY,double secX,double secY) {
+    private void collisionBoundary(final double firstX, final double firstY, final double secX, final double secY) {
         //System.out.println(d);
         // Berechnung des Aufprallwinkels.
         //double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            //double beta= Math.toDegrees(Math.atan2(nY,nX));
-            //double gamma = alpha-(2*beta);
-               double boundX=secX-firstX;
-               double boundY=secY-firstY;
-               System.out.println(boundX+" bo " +boundY);
-               double phi=Math.abs(Math.atan2(boundY, boundX));
-               double rotVeloX = Math.cos(-phi) * getvX() - Math.sin(-phi) * getvY();
-            double rotVeloY = Math.sin(-phi) * getvX() + Math.cos(-phi) * getvY();
-            rotVeloY=-rotVeloY;
-            double newRotVelX = Math.cos(phi) * rotVeloX - Math.sin(phi) * rotVeloY;
-            double newRotVelY = Math.sin(phi) * rotVeloX + Math.cos(phi) * rotVeloY;
+        System.err.println("#############################################################################################");
+        System.out.println("Kollision bei x: " + this.getPosX() + ", y: " + this.getPosY());
+        System.err.println("1x: " + firstX + ", 1y: " + firstY + ", 2x: " + secX + ", 2y: " + secY);
+        //double beta= Math.toDegrees(Math.atan2(nY,nX));
+        //double gamma = alpha-(2*beta);
+            
+        // Vektor zwischen zwei Eckpunkten
+        double boundX=secX-firstX;
+        double boundY=secY-firstY;
+//        System.out.println(boundX+" bo " +boundY);
+
+        // Winkel zwischen x-Achse und Wand
+        double phi=Math.abs(Math.atan2(boundY, boundX));
+
+         // Rotation des Geschwindigkeitsvektors um diesen Winkel
+        double rotVeloX = Math.cos(-phi) * getvX() - Math.sin(-phi) * getvY();
+        double rotVeloY = Math.sin(-phi) * getvX() + Math.cos(-phi) * getvY();
+
+        // Spiegeln der Geschwindigkeit an der x-Achse
+        rotVeloY=-rotVeloY;
+
+        // Rueckrotation der Geschwindigkeit
+        double newRotVelX = Math.cos(phi) * rotVeloX - Math.sin(phi) * rotVeloY;
+        double newRotVelY = Math.sin(phi) * rotVeloX + Math.cos(phi) * rotVeloY;
             
 //            double alpha=Math.toDegrees(Math.atan2(rotVeloY, rotVeloX));
 //            // Berechnung des Abprallwinkels.
@@ -900,9 +917,12 @@ public class Ball extends GameModel {
 //        cos= Math.cos(Math.toRadians(getRotation()));
 //        sin= Math.sin(Math.toRadians(getRotation()));
         // Berechnung des Geschwindigkeitsvektors.
+        
+        // Setzen der neuen Geschwindigkeit
         setvX(newRotVelX);
         setvY(newRotVelY);
-        // Neuberechning der Reibung.
+        
+        // Neuberechnung der Reibung.
         setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
         setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
     }

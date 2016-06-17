@@ -50,7 +50,7 @@ import javafx.stage.StageStyle;
 public class GameControl implements Initializable {
     // Konstanten
     /** Anzahl der Baelle im Spiel. */
-    private static final int BALL_COUNT = 1;
+    private static final int BALL_COUNT = 3;
     
     /** CSS-Klasse fuer das aktive Shape. */
     private static final String ACTIVE = "active";
@@ -219,9 +219,9 @@ public class GameControl implements Initializable {
         });
         
         // Starten des Levels
-//        levelStart();
+        levelStart();
 
-        debugSetup();
+//        debugSetup();
 
         // Erstellen des Timers fuer den Spielablauf
         TimerTask timerTask = new TimerTask() {
