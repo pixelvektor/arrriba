@@ -345,16 +345,16 @@ public class Ball extends GameModel {
                     // Wenn der Ball mit der Seite kollidiert.
                     if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
                         System.out.println(d+"distanceA");
-                        collideBoxShapes(that,that.toString(),ngX,ngY,0+(that.getRotation()%90),elapsedTime,270+(that.getRotation()%90),d);
+                        collideBoxShapes(that,elapsedTime,ngX, ngY,d,cornerPoints[c+2],cornerPoints[c+3],cornerPoints[c],cornerPoints[c+1],270+(that.getRotation()%90));
                     }else if(d<=getSize()/2&&getPosY()>cornerPoints[c+1]&&getPosY()<cornerPoints[c+3]){
                         System.out.println(d+"distanceB");
-                        collideBoxShapes(that,that.toString(),ngX,ngY,180+(that.getRotation()%90),elapsedTime,0+(that.getRotation()%90),d);                 
+                        collideBoxShapes(that,elapsedTime,ngX, ngY,d,cornerPoints[c+2],cornerPoints[c+3],cornerPoints[c],cornerPoints[c+1],0+(that.getRotation()%90));                 
                     }else if(d<=getSize()/2&&getPosX()<cornerPoints[c]&&getPosX()>cornerPoints[c+2]){
                         System.out.println(d+"distanceC");
-                        collideBoxShapes(that,that.toString(),ngX,ngY,180+(that.getRotation()%90),elapsedTime,90+(that.getRotation()%90),d);
+                        collideBoxShapes(that,elapsedTime,ngX, ngY,d,cornerPoints[c+2],cornerPoints[c+3],cornerPoints[c],cornerPoints[c+1],90+(that.getRotation()%90));
                     }else if(d<=getSize()/2&&getPosY()<cornerPoints[c+1]&&getPosY()>cornerPoints[c+3]){
                         System.out.println(d+"distanceD");
-                        collideBoxShapes(that,that.toString(),ngX,ngY,0+(that.getRotation()%90),elapsedTime,180+(that.getRotation()%90),d);
+                        collideBoxShapes(that,elapsedTime,ngX, ngY,d,cornerPoints[c+2],cornerPoints[c+3],cornerPoints[c],cornerPoints[c+1],180+(that.getRotation()%90));
                     }
                 }
             }
@@ -413,17 +413,17 @@ public class Ball extends GameModel {
      * @param that Das Rechteck.
      * @param name Typ des Rechtecks.
      */
-    private void collideBoxShapes(GameModel that,String name,double ngX,double ngY,double rot,double elapsedTime,double rotSpring,double d) {
-            // Berechnung des Aufprallwinkels.
-            System.out.print(ngX+" "+ngY);
-            double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
-            double beta= Math.toDegrees(Math.atan(ngY/ngX));
-            double gamma = alpha-(2*beta);
-            // Berechnung des Abprallwinkels, fehlerhaft.
-            double delta= (180-getRotation()-gamma) % 360;
-        
+    private void collideBoxShapes(GameModel that, double elapsedTime,double ngX, double ngY, double d, final double firstX, final double firstY, final double secX, final double secY, double rotSpring) {
+              // Fehler
+//            // Berechnung des Aufprallwinkels.
+//            double alpha= Math.toDegrees(Math.atan(getvY()/getvX()));
+//            double beta= Math.toDegrees(Math.atan(ngY/ngX));
+//            double gamma = alpha-(2*beta);
+//            // Berechnung des Abprallwinkels, fehlerhaft.
+//            double delta= (180-getRotation()-gamma) % 360;
+//        
             // Wenn das Rechteck eine Feder ist.
-            if(name.equals("Spring")&&that.getActive()){
+            if(that.toString().equals("Spring")&&that.getActive()){
                 if(that.getOnFirstHit()){
                 // Die Federkonstante.
                 double D = 20;
@@ -436,17 +436,44 @@ public class Ball extends GameModel {
                 collideSpring(that,elapsedTime,rotSpring);
             // Normales Rechteck    
             }else if(isBoxCollision(ngX,ngY,d)){
-                setRotation(delta);
-                // Berechnung des Cosinus und Sinus des Abprallwinkels.
-                cos= Math.cos(Math.toRadians(getRotation()));
-                sin= Math.sin(Math.toRadians(getRotation()));
-                // Berechnung des Geschwindigkeitsvektors.
-                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
-                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
-                // Neuberechnung der Reibung.
-                setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-                setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
-                System.out.println("gamma: " + gamma + " delta: " + delta+ " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                // Fehler
+//                setRotation(delta);
+//                // Berechnung des Cosinus und Sinus des Abprallwinkels.
+//                cos= Math.cos(Math.toRadians(getRotation()));
+//                sin= Math.sin(Math.toRadians(getRotation()));
+//                // Berechnung des Geschwindigkeitsvektors.
+//                setvX(VectorCalculation.abs(getvX(),getvY())*cos);
+//                setvY(VectorCalculation.abs(getvX(),getvY())*sin);
+//                // Neuberechnung der Reibung.
+//                setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+//                setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+
+                // Korrektur
+                // Vektor zwischen zwei Eckpunkten
+                    double boundX=secX-firstX;
+                    double boundY=secY-firstY;
+
+                    // Winkel zwischen x-Achse und Wand
+                    double phi=Math.abs(Math.atan2(boundY, boundX));
+
+                     // Rotation des Geschwindigkeitsvektors um diesen Winkel
+                    double rotVeloX = Math.cos(-phi) * getvX() - Math.sin(-phi) * getvY();
+                    double rotVeloY = Math.sin(-phi) * getvX() + Math.cos(-phi) * getvY();
+
+                    // Spiegeln der Geschwindigkeit an der x-Achse
+                    rotVeloY=-rotVeloY;
+
+                    // Rueckrotation der Geschwindigkeit
+                    double newRotVelX = Math.cos(phi) * rotVeloX - Math.sin(phi) * rotVeloY;
+                    double newRotVelY = Math.sin(phi) * rotVeloX + Math.cos(phi) * rotVeloY;          
+
+                    // Setzen der neuen Geschwindigkeit
+                    setvX(newRotVelX);
+                    setvY(newRotVelY);
+
+                    // Neuberechnung der Reibung.
+                    setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
+                    setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
             }
                             
     }
@@ -488,7 +515,11 @@ public class Ball extends GameModel {
                     nX=(nX/VectorCalculation.abs(nX, nY));
                     nY=(nY/VectorCalculation.abs(nX, nY));
                     // Abstandsberechnung.
-                    double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c][0], getPosY()-activeDouble[c][1]);
+                    // Fehler 
+//                  double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c][0], getPosY()-activeDouble[c][1]);
+                    // Korrektur
+                    double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c+1][0], getPosY()-activeDouble[c+1][1]);
+
                     double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
                     if(isBoxCollision(nX,nY,d)){
                         // Wenn die obere Haelfte ueberprueft wird.
