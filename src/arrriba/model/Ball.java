@@ -335,8 +335,8 @@ public class Ball extends GameModel {
                 // Der Normalenvektor.
                 double ngX=(-b);
                 double ngY=a;
-                ngX=(ngX/VectorCalculation.abs(ngX, ngY));
-                ngY=(ngY/VectorCalculation.abs(ngX, ngY));
+                //ngX=(ngX/VectorCalculation.abs(ngX, ngY));
+                //ngY=(ngY/VectorCalculation.abs(ngX, ngY));
                 // Abstandsberchnung.
                 double e= VectorCalculation.times(ngX, ngY, getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
                 double d= Math.abs(e)/VectorCalculation.abs(ngX, ngY);
@@ -344,16 +344,12 @@ public class Ball extends GameModel {
                 if(!checkCollisionCorner(cornerPoints, c, elapsedTime,that)){
                     // Wenn der Ball mit der Seite kollidiert.
                     if(d<=getSize()/2&&getPosX()>cornerPoints[c]&&getPosX()<cornerPoints[c+2]){
-                        System.out.println(d+"distanceA");
                         collideBoxShapes(that,elapsedTime,ngX, ngY,d,cornerPoints[c+2],cornerPoints[c+3],cornerPoints[c],cornerPoints[c+1],270+(that.getRotation()%90));
                     }else if(d<=getSize()/2&&getPosY()>cornerPoints[c+1]&&getPosY()<cornerPoints[c+3]){
-                        System.out.println(d+"distanceB");
                         collideBoxShapes(that,elapsedTime,ngX, ngY,d,cornerPoints[c+2],cornerPoints[c+3],cornerPoints[c],cornerPoints[c+1],0+(that.getRotation()%90));                 
                     }else if(d<=getSize()/2&&getPosX()<cornerPoints[c]&&getPosX()>cornerPoints[c+2]){
-                        System.out.println(d+"distanceC");
                         collideBoxShapes(that,elapsedTime,ngX, ngY,d,cornerPoints[c+2],cornerPoints[c+3],cornerPoints[c],cornerPoints[c+1],90+(that.getRotation()%90));
                     }else if(d<=getSize()/2&&getPosY()<cornerPoints[c+1]&&getPosY()>cornerPoints[c+3]){
-                        System.out.println(d+"distanceD");
                         collideBoxShapes(that,elapsedTime,ngX, ngY,d,cornerPoints[c+2],cornerPoints[c+3],cornerPoints[c],cornerPoints[c+1],180+(that.getRotation()%90));
                     }
                 }
@@ -512,14 +508,11 @@ public class Ball extends GameModel {
                     // Normale
                     double nX=(-b);
                     double nY=(a);
-                    nX=(nX/VectorCalculation.abs(nX, nY));
-                    nY=(nY/VectorCalculation.abs(nX, nY));
-                    // Abstandsberechnung.
-                    // Fehler 
-//                  double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c][0], getPosY()-activeDouble[c][1]);
-                    // Korrektur
-                    double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c+1][0], getPosY()-activeDouble[c+1][1]);
-
+                    // Fehler
+                    //nX=(nX/VectorCalculation.abs(nX, nY));
+                    //nY=(nY/VectorCalculation.abs(nX, nY));
+                    // Abstandsberechnung.                    
+                    double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c][0], getPosY()-activeDouble[c][1]);                   
                     double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
                     if(isBoxCollision(nX,nY,d)){
                         // Wenn die obere Haelfte ueberprueft wird.
