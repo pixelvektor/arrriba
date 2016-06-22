@@ -232,7 +232,6 @@ public class Ball extends GameModel {
     
     /** Aufruf falls ein Barrel kollidiert werden soll.
      * @param that Das Barrel mit dem die Kollision berechnet werden soll.
-     * @param time Vergangene Zeit seit dem letzten Aufruf.
      */
     private void collideBarrel(final GameModel that) {
         if (isCircleCollision(that)) {
@@ -260,7 +259,6 @@ public class Ball extends GameModel {
     
     /** Aufruf falls ein Ball kollidiert werden soll.
      * @param that Der Ball mit dem kollidiert werden soll.
-     * @param time Vergangene Zeit seit dem letzten Aufruf.
      */
     private void collideBall(final GameModel that) {
         if (isCircleCollision(that)) {
@@ -410,8 +408,16 @@ public class Ball extends GameModel {
     }
     
     /** Berechnet den Abprallwinkel bei Objekten mit einer rechteckigen Boundingbox.
-     * @param that Das Rechteck.
-     * @param name Typ des Rechtecks.
+     * @param that Das rechteckige Objekt.
+     * @param elapsedTime Die vergangene Zeit seit dem letztem Aufruf.
+     * @param ngX Die X-Koordinate der Normale.
+     * @param ngY Die Y-Koordinate der Normale.
+     * @param d Der Abstand von dem Ball bis zur Seite
+     * @param firstX X-Koordinate des ersten Punkts.
+     * @param firstY Y-Koordinate des ersten Punkts.
+     * @param secX X-Koordinate des zweiten Punkts.
+     * @param secY Y-Koordinate des zweiten Punkts.
+     * @param rotSpring Der Winkel des Normalenvektors der Seite der Feder.
      */
     private void collideBoxShapes(GameModel that, double elapsedTime,double ngX, double ngY, double d, final double firstX, final double firstY, final double secX, final double secY, double rotSpring) {
               // Fehler
@@ -448,7 +454,7 @@ public class Ball extends GameModel {
 //                setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
 //                setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
 
-                // Korrektur
+                // Korrektur: Hier hat die Zeit nicht gereicht um die Abprallberechnung aus collisionBoundary() zu implementieren.
                 // Vektor zwischen zwei Eckpunkten
                     double boundX=secX-firstX;
                     double boundY=secY-firstY;
@@ -509,12 +515,13 @@ public class Ball extends GameModel {
                         a=activeDouble[c][0]-activeDouble[c+1][0];
                         b=activeDouble[c][1]-activeDouble[c+1][1];
                     }
-                    // Normale
+                    // Normale.
                     double nX=(-b);
                     double nY=(a);
-                    // Fehler
+                    // Fehler.
                     //nX=(nX/VectorCalculation.abs(nX, nY));
                     //nY=(nY/VectorCalculation.abs(nX, nY));
+                    // Korrektur.
                     double f=VectorCalculation.abs(nX, nY);
                     nX=((1/f)*nX);
                     nY=((1/f)*nY);
@@ -556,13 +563,14 @@ public class Ball extends GameModel {
             // Normale.
             double nX=(-b);
             double nY=(a);
+            // Korrektur.
             double f=VectorCalculation.abs(nX, nY);
             nX=((1/f)*nX);
             nY=((1/f)*nY);
-            // Fehler
+            // Fehler.
             //nX=nX/VectorCalculation.abs(nX, nY);
             //nY=nY/VectorCalculation.abs(nX, nY);
-            // Abstandsberchnung
+            // Abstandsberchnung.
             double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[i][0], getPosY()-upperBoundaries[i][1]);
             double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
             // Die linke Seite
@@ -637,6 +645,7 @@ public class Ball extends GameModel {
 
     /** Ueberprueft ob eine Kollision stattfindet und berechnet die Beschleunigung im Luftstrom.
      * @param that Der Kugelfisch
+     * @param elapsedTime Die vergangene Zeit seit dem letztem Aufruf.
      */
     private void collidePuffer(GameModel that, double elapsedTime) {
         // Die Eckpunkte des Rechtecks.
@@ -645,16 +654,17 @@ public class Ball extends GameModel {
         ArrayList<Double> distance=new ArrayList();
         // Fuer jede Seite.
         for(int c=0;c<=cornerPoints.length-3;c=c+2){
-            // Geraden aufstellen
+            // Geraden aufstellen.
             double a=cornerPoints[c]-cornerPoints[c+2];
             double b=cornerPoints[c+1]-cornerPoints[c+3];
-            // Normale
+            // Normale.
             double nX=-b;
             double nY=a;
-            double f=VectorCalculation.abs(nX, nY);
+            // Korrektur.
+            double f=VectorCalculation.abs(nX, nY);        
             nX=((1/f)*nX);
             nY=((1/f)*nY);
-            // Fehler
+            // Fehler-
 //            nX=(nX/VectorCalculation.abs(nX, nY));
 //            nY=(nY/VectorCalculation.abs(nX, nY));
             // Abstandsberechnung
@@ -672,7 +682,7 @@ public class Ball extends GameModel {
             // Fehler Berechnung Strecke anstatt Geschwindigkeit.
            // double vel=0.5*a*timeline*timeline;
                         
-            // Berechnung des Geschwindigkeitsvektors.
+            // Berechnung des Geschwindigkeitsvektors. //Korrektur Berechnung Geschwindigkeit.
             setvX(getvX()+(a*elapsedTime)*cosPuf);
             setvY(getvY()+(a*elapsedTime)*sinPuf);
             // Neuberechnung der Reibung
@@ -742,7 +752,7 @@ public class Ball extends GameModel {
     /** Berechnung des Abprallwinkels bei einer Kollision mit einer Feder.
      * @param that Die Feder.
      * @param elapsedTime Die vergangene Zeit nach dem letzten Aufruf.
-     * @param rot Die Rotation des Normalenvektors der Feder.
+     * @param rot Der Winkel des Normalenvektors der Seite der Feder.
      */
     private void collideSpring(GameModel that, double elapsedTime,double rot) {
         if(that.getActive()){
@@ -775,9 +785,10 @@ public class Ball extends GameModel {
 
 
     /** Berechnet den Abprallwinkel des Balls nach Kollision mit der Bande.
-     * @param d Der Abstand des Balls zum Eckpunkt.
-     * @param nY Der Y_Wert der Normalen. 
-     * @param nX Der X-Wert der Normalen.
+     * @param firstX X-Koordinate des ersten Punkts.
+     * @param firstY Y-Koordinate des ersten Punkts.
+     * @param secX X-Koordinate des zweiten Punkts.
+     * @param secY Y-Koordinate des zweiten Punkts.
      */
     private void collisionBoundary(final double firstX, final double firstY, final double secX, final double secY) {
         // Vektor zwischen zwei Eckpunkten
