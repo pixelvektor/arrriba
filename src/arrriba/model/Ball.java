@@ -323,7 +323,7 @@ public class Ball extends GameModel {
     private void checkCollideBoxShapes(final GameModel that, double elapsedTime) {
         // Wenn das Rechteck ein Kugelfisch ist.
         if(that.toString().equals("Puffer")){
-            collidePuffer(that);
+            collidePuffer(that, elapsedTime);
         }else{
             // Die Eckpunkte des Rechtecks.
             double[] cornerPoints=that.getCornerPoints();
@@ -335,8 +335,12 @@ public class Ball extends GameModel {
                 // Der Normalenvektor.
                 double ngX=(-b);
                 double ngY=a;
+                // Fehler
                 //ngX=(ngX/VectorCalculation.abs(ngX, ngY));
                 //ngY=(ngY/VectorCalculation.abs(ngX, ngY));
+                double k=VectorCalculation.abs(ngX, ngY);
+                ngX=((1/k)*ngX);
+                ngY=((1/k)*ngY);
                 // Abstandsberchnung.
                 double e= VectorCalculation.times(ngX, ngY, getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
                 double d= Math.abs(e)/VectorCalculation.abs(ngX, ngY);
@@ -511,6 +515,9 @@ public class Ball extends GameModel {
                     // Fehler
                     //nX=(nX/VectorCalculation.abs(nX, nY));
                     //nY=(nY/VectorCalculation.abs(nX, nY));
+                    double f=VectorCalculation.abs(nX, nY);
+                    nX=((1/f)*nX);
+                    nY=((1/f)*nY);
                     // Abstandsberechnung.                    
                     double e= VectorCalculation.times(nX, nY, getPosX()-activeDouble[c][0], getPosY()-activeDouble[c][1]);                   
                     double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
@@ -549,8 +556,12 @@ public class Ball extends GameModel {
             // Normale.
             double nX=(-b);
             double nY=(a);
-            nX=nX/VectorCalculation.abs(nX, nY);
-            nY=nY/VectorCalculation.abs(nX, nY);
+            double f=VectorCalculation.abs(nX, nY);
+            nX=((1/f)*nX);
+            nY=((1/f)*nY);
+            // Fehler
+            //nX=nX/VectorCalculation.abs(nX, nY);
+            //nY=nY/VectorCalculation.abs(nX, nY);
             // Abstandsberchnung
             double e= VectorCalculation.times(nX, nY, getPosX()-upperBoundaries[i][0], getPosY()-upperBoundaries[i][1]);
             double d= Math.abs(e)/VectorCalculation.abs(nX, nY);
@@ -627,7 +638,7 @@ public class Ball extends GameModel {
     /** Ueberprueft ob eine Kollision stattfindet und berechnet die Beschleunigung im Luftstrom.
      * @param that Der Kugelfisch
      */
-    private void collidePuffer(GameModel that) {
+    private void collidePuffer(GameModel that, double elapsedTime) {
         // Die Eckpunkte des Rechtecks.
         double[] cornerPoints=that.getCornerPoints();
         // Die Abstaende zu den Seiten des Rechtecks.
@@ -640,8 +651,12 @@ public class Ball extends GameModel {
             // Normale
             double nX=-b;
             double nY=a;
-            nX=(nX/VectorCalculation.abs(nX, nY));
-            nY=(nY/VectorCalculation.abs(nX, nY));
+            double f=VectorCalculation.abs(nX, nY);
+            nX=((1/f)*nX);
+            nY=((1/f)*nY);
+            // Fehler
+//            nX=(nX/VectorCalculation.abs(nX, nY));
+//            nY=(nY/VectorCalculation.abs(nX, nY));
             // Abstandsberechnung
             double e= VectorCalculation.times(nX, nY, getPosX()-cornerPoints[c], getPosY()-cornerPoints[c+1]);
             distance.add(Math.round(Math.abs(e)/VectorCalculation.abs(nX, nY)*1000)/1000.0);
@@ -652,12 +667,14 @@ public class Ball extends GameModel {
             double cosPuf= Math.cos(Math.toRadians(that.getRotation()));
             double sinPuf= Math.sin(Math.toRadians(that.getRotation()));
             // Die Beschleunigung.
-            double a=0.1;
+            double a=0.9;
             // Die Geschwindigkeit.
-            double vel=0.5*a*timeline*timeline;
+            // Fehler Berechnung Strecke anstatt Geschwindigkeit.
+           // double vel=0.5*a*timeline*timeline;
+                        
             // Berechnung des Geschwindigkeitsvektors.
-            setvX(getvX()+vel*cosPuf);
-            setvY(getvY()+vel*sinPuf);
+            setvX(getvX()+(a*elapsedTime)*cosPuf);
+            setvY(getvY()+(a*elapsedTime)*sinPuf);
             // Neuberechnung der Reibung
             setaX((-getvX()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
             setaY((-getvY()/VectorCalculation.abs(getvX(), getvY()))*getMaterial().getFrictionCoefficient());
@@ -798,7 +815,7 @@ public class Ball extends GameModel {
             // Die Position nach der Bewegung.
             double x = 0.5*getaX()*elapsedTime*elapsedTime+elapsedTime*getvX()+this.getPosX();
             double y = 0.5*getaY()*elapsedTime*elapsedTime+elapsedTime*getvY()+this.getPosY();
-
+            System.out.println(0.5*getaX()*elapsedTime*elapsedTime+" x");
             // Stilllegen der Kugel sobald sie nicht mehr rollt.
             if(Math.round(x*1000)/1000.0==Math.round(this.getPosX()*1000)/1000.0
                     && Math.round(y*1000)/1000.0==Math.round(this.getPosY()*1000)/1000.0
